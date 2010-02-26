@@ -1,0 +1,24 @@
+[server]
+server_name = "quakenet"
+server_autoconnect = "on"
+server_address = "irc.quakenet.org"
+server_port = 6668
+server_ipv6 = "off"
+server_ssl = "off"
+server_password = ""
+server_nick1 = "pbuogt"
+server_nick2 = "guppie"
+server_nick3 = "barbieQ"
+server_username = "halp"
+server_realname = "halp"
+server_hostname = ""
+server_command = ""
+server_autojoin = "#stroggs.nexuiz"
+
+[plugin]
+plugin_autoload = on
+plugin_list = {
+	webui.so
+	stats.so
+}
+
