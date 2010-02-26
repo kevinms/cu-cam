@@ -1,9 +1,9 @@
 CC=gcc
 CFLAGS=-g -Wall
 
-# Build bot
-LDFLAGS=-rdynamic -ldl
-SOURCES=pbuogt.c config.c plugin.c list.c utils.c
+# Build cu-cam
+LDFLAGS = 
+SOURCES=config.c plugin.c list.c utils.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=cu-cam
 
@@ -19,7 +19,7 @@ T_CONFIG_OBJECTS=$(T_CONFIG_SOURCES:.c=.o)
 T_SOURCES = $(T_CONFIG_SOURCES)
 T_EXECUTABLE=test-config
 
-build-tests: $(T_EXECUTABLE)
+build-test: $(T_EXECUTABLE)
 	
 
 test-config: $(T_CONFIG_OBJECTS)
@@ -30,8 +30,30 @@ test-config: $(T_CONFIG_OBJECTS)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Cleanup rules
-clean:
-	rm -fv *.o $(EXECUTABLE) pbuogt-out pbuogt-event pbuogt-script
 
-clean-tests:
-	rm -fv *.o $(T_EXECUTABLE)
+clean:
+	rm -fv *.o $(EXECUTABLE) pbuogt-out pbuogt-event pbuogt-script *~
+
+clean-test:
+	rm -fv *.o $(T_EXECUTABLE) *~
+
+#Karl's Shortcuts
+test:
+	./test-config
+rm:
+	clear
+	make clean
+	make clean-test
+	make build-test
+	clear
+bt:
+	make build-test
+
+cl:
+	clear
+	make clean
+	make clean-test
+	clear
+	@echo All Cleared
+
+
