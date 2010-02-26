@@ -1,0 +1,86 @@
+                         Class Assignment Manager
+
+Table of Contents
+
+    1.  Group Members
+    2.  Disclaimer
+    3.  Developement Schedule
+    4.  Member Contribution
+    5.  Timeline/Progress
+
+--------------------------------------------------------------------------------
+1.  Group Members
+--------------------------------------------------------------------------------
+Kevin Smith
+Burns Hudson
+Karl Brewer
+
+--------------------------------------------------------------------------------
+2.  Disclaimer
+--------------------------------------------------------------------------------
+We have chosen a large project and thus I have strategically set forth a rough
+timeline that should allow us to implement the most important things first
+adding interesting features at a later time.  If we find certain ideas are too
+difficult/time consuming to complete by the deadline they can and will be
+removed from the project.
+
+--------------------------------------------------------------------------------
+3.  Development Schedule
+--------------------------------------------------------------------------------
+
+[Phase1]
+    Brainstorm
+    Clearly define features
+    Unbelievably detailed implementation details to help members work on their
+    respective parts easier.
+[Phase2]
+    Build/Test configuration system (to read/write rc files)
+    Build/Test basic command parser
+    Build/Test authentication/encryption system
+    Build/Test concurrent server skeleton (camd)
+    Build/Test UDP/TCP client skeleton (cam-admin)
+    Extend server to support peering with other servers
+    Extend server to become a daemon (the 'd' in camd =] )
+    Begin implementing features
+
+--------------------------------------------------------------------------------
+4.  Member Contribution
+--------------------------------------------------------------------------------
+
+ALL           Design documentation
+              Concurrent server skeleton
+              UDP/TCP client skeleton
+              Configuration System
+              Command Parser
+              Daemonize
+
+Burns Hudson  Distribute project files to multiple hosts
+              Retrieve project files from any host 'easily'
+              
+Karl Brewer   Simplified rsync for students to 'easily' sync files between 
+              accounts on servers
+              Nightly backups
+              
+Kevin Smith   Server peering
+              Authentication/Encryption System
+              Monitor host activity (student progress,student processes, etc.)
+
+--------------------------------------------------------------------------------
+5.  Timeline/Progress
+--------------------------------------------------------------------------------
+
+Cronological order with some overlap.  Each step with a progess meter.  When 
+the final details for the project have been decided a clearer timeline will be
+presented. Until... enjoy!
+
+[####] Brainstorm session
+[### ] Clearly define features
+[#   ] Unbelievably detailed implementation details
+[### ] Build/Test configuration system
+[    ] Build/Test basic command parser
+[    ] Build/Test authentication/encryption system
+[    ] Build/Test concurrent server skeleton
+[    ] Build/Test UDP/TCP client skeleton
+[    ] Extend server to support peering with other servers
+[#   ] Extend server to become a daemon
+[    ] Begin implementing features

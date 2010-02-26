@@ -1,0 +1,119 @@
+                         Class Assignment Manager
+
+Table of Contents
+
+    1.  GENERAL INFORMATION
+    2.  FEATURE SET
+        2.1  admin
+        2.2  student
+    3.  USAGE GUIDE
+        3.1  admin
+        3.2  student
+    4.  TECHNICAL INFORMATION
+        4.1  CAMP
+        4.2  camd
+        4.3  cam-admin
+        4.4  cam-student
+
+--------------------------------------------------------------------------------
+1.  General Information
+--------------------------------------------------------------------------------
+Name:     Class Assignment Manager (CAM)
+Language: C
+Goals:    The intention is to greatly aid both the student and professor with
+          the menial tasks that only annoy and consume time when done by hand.
+
+Pleasent ASCII art to calm the nerves:
+
+                +------------+
+                |   (VM1)    |
+        .------>| cam-server |<------.
+        |       +------------+       |
+        |              ^             |
+        |              |             |
+        |              |             |
+        |       +------------+       |
+        |   .-->| cam-admin  |<--.   |
+        |   |   +------------+   |   |
+        |   |                    |   |
+        |   |                    |   |
+        v   v                    v   v
+   +------------+            +------------+
+   |   (VM2)    |            |   (VM3)    |
+   | cam-server |<---------->| cam-server |
+   +------------+            +------------+
+
+--------------------------------------------------------------------------------
+2.  Feature Set
+--------------------------------------------------------------------------------
+2.1  ADMIN
+    + Distribute project files to multiple hosts from a centralized location
+    + Retrieve project files from any host 'easily' (help debugging, etc.)
+    + Monitor host activity (watch for progress, see if someone is leaving 
+      processes running, etc.)
+    + Nightly backups
+    
+2.2  STUDENT
+    + Simplified rsync for students to 'easily' sync files between accounts on 
+      servers (e.g. VM1 <-> VM2)
+
+--------------------------------------------------------------------------------
+3.  Usage Guide
+--------------------------------------------------------------------------------
+
+3.1  ADMIN
+    01. On each host that you intend on running the cam daemon on put all 
+        student accounts into the 'student' group (the group name can be change
+        in camrc) or manually state student accounts in camrc
+    02. Be sure to check/modify any other unwanted defaults in 'camrc'
+    03. Start the cam daemon on each host that you would like to manage
+    04. Add all hosts that are running the camd to 'cam-adminrc' or have the
+        server use a broadcast/multicast reachability test to find all hosts
+        running camd (this may only work for lans)
+    05. Run cam-admin to begin managing project files
+
+3.2  STUDENT
+    01. [[yet to be decided]]
+
+--------------------------------------------------------------------------------
+4.  Technical Information
+--------------------------------------------------------------------------------
+
+4.1  CAMP - Class Assignment Manager Protocol
+
+    I do not put faith in security by obscurity and therefore the application 
+    layer protocol will docuemented and incorporate authentication/encryption.
+    This is to insure the clever student will not take advantage of what should 
+    be a helpful program for only 'menial' tasks.
+
+    Possible message format:
+    +---------+-----------+
+    | command | arguments |
+    +---------+-----------+
+
+    Commands={AUTH,PEER,PUT,GET,STAT}
+
+    AUTH
+        
+    PEER
+    
+    PUT
+    
+    GET
+    
+    STAT
+
+4.2  camd
+
+    Server deamon that will be run on each host that contains student accounts
+    that need to be administrated.
+
+4.3  cam-admin
+
+    Utility that will give the administrator commands to upload/download files
+    to the servers as well as a plethora of others.
+
+4.4  cam-student
+    
+    Will let the students sync their files to all the other servers.  Should
+    be straight forward and easy to implement.
