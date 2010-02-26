@@ -6,7 +6,7 @@
 int
 main(int argc, char **argv)
 {
-	config_load("pbuogtrc");
+	config_load("camrc");
 
 	struct config_server_t *s = (struct config_server_t *)config_pref.servers->list->head->item;
 	struct config_plugin_pref_t *p = (struct config_plugin_pref_t *)config_pref.plugins;
