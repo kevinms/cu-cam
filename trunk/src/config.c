@@ -20,7 +20,7 @@ config_load(char *rcfile)
 		return;
 	}
 
-	struct config_plugin_pref_t *p_pref;
+	struct config_client_pref_t *p_pref;
 	struct config_server_pref_t *s_pref;
 
 	s_pref = (struct config_server_pref_t *)malloc(sizeof(*s_pref));
@@ -33,8 +33,8 @@ config_load(char *rcfile)
 		if(buf[0] == '[' || buf[strlen(buf)] == ']') {
 			if(!strcmp(buf,"[server]"))
 				list_add(s_pref->list,config_parse_server(in));
-			else if(!strcmp(buf,"[plugin]"))
-				p_pref = config_parse_plugin(in);
+                        else if(!strcmp(buf,"[client]"))
+				p_pref = config_parse_client(in);
 		}
 
 		fgets(buf,BSIZE,in); buf[strlen(buf)-1]='\0';
@@ -88,17 +88,15 @@ config_parse_server(FILE *in)
 	return s;
 }
 
-struct config_plugin_pref_t *
-config_parse_plugin(FILE *in)
+struct config_client_pref_t *
+config_parse_client(FILE *in)
 {
-	struct config_plugin_pref_t *p;
-	p = (struct config_plugin_pref_t *)malloc(sizeof(*p));
+	struct config_client_pref_t *p;
+	p = (struct config_client_pref_t *)malloc(sizeof(*p));
 
 	config_read_key(in);
 	while(strlen(key)!=0 && !feof(in)) {
-		if(!strcmp(key,"plugin_autoload"))
-			p->autoload = config_read_value(in);
-		else if(!strcmp(key,"plugin_list"))
+		if(!strcmp(key,"client_list"))
 			p->list = config_read_list(in);
 		config_read_key(in);
 	}

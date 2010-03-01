@@ -6,7 +6,7 @@
 struct config_pref_t
 {
 	struct config_server_pref_t *servers;
-	struct config_plugin_pref_t *plugins;
+	struct config_client_pref_t *plugins;
 };
 
 struct config_server_pref_t
@@ -14,9 +14,8 @@ struct config_server_pref_t
 	list_t *list;
 };
 
-struct config_plugin_pref_t
+struct config_client_pref_t
 {
-	char *autoload;
 	list_t *list;
 };
 
@@ -47,7 +46,7 @@ void config_load(char *rcfile);
 
 /* section types */
 struct config_server_t *config_parse_server(FILE *in);
-struct config_plugin_pref_t *config_parse_plugin(FILE *in);
+struct config_client_pref_t *config_parse_client(FILE *in);
 
 /* entry types */
 void config_read_key(FILE *in);
