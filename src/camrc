@@ -15,10 +15,10 @@ server_hostname = ""
 server_command = ""
 server_autojoin = "#stroggs.nexuiz"
 
-[plugin]
-plugin_autoload = on
-plugin_list = {
-	webui.so
-	stats.so
+[client]
+server_list = {
+        LinuxVM1
+        LinuxVM2
+        LinuxVM3
 }
 

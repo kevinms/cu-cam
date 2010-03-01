@@ -9,7 +9,7 @@ main(int argc, char **argv)
 	config_load("camrc");
 
 	struct config_server_t *s = (struct config_server_t *)config_pref.servers->list->head->item;
-	struct config_plugin_pref_t *p = (struct config_plugin_pref_t *)config_pref.plugins;
+	struct config_client_pref_t *p = (struct config_client_pref_t *)config_pref.plugins;
 	printf("Conf Preferences\n");
 	printf("----------------\n");
 	printf("[server]\n");
@@ -31,9 +31,8 @@ main(int argc, char **argv)
 	printf("\n");
 
 	link_t *tmp = p->list->head;
-	printf("[plugin]\n");
-	printf("plugin_autoload = %s\n",p->autoload);
-	printf("plugin_list = {\n");
+	printf("[client]\n");
+	printf("server_list = {\n");
 	while(tmp != NULL) {
 		printf("\t%s\n",(char *)tmp->item);
 		tmp = tmp->next;
