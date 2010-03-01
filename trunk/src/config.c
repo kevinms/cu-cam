@@ -96,7 +96,7 @@ config_parse_client(FILE *in)
 
 	config_read_key(in);
 	while(strlen(key)!=0 && !feof(in)) {
-		if(!strcmp(key,"client_list"))
+		if(!strcmp(key,"server_list"))
 			p->list = config_read_list(in);
 		config_read_key(in);
 	}
