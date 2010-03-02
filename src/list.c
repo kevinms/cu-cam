@@ -1,5 +1,7 @@
 #include "list.h"
 
+link_t *g_link;
+
 /* malloc a new list header and initialize it */
 list_t *
 list_init(void)

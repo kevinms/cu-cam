@@ -28,7 +28,7 @@ struct config_server_t
 };
 
 /* globals */
-struct config_pref_t config_pref;
+extern struct config_pref_t config_pref;
 
 /* rc file types */
 void config_load(char *rcfile);

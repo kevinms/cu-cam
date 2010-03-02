@@ -1,5 +1,9 @@
 #include "utils.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 int
 p_strsplit(char *buf, char **seg)
 {

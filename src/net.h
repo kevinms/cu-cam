@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-
 struct net_t {
 	int sock;                  /* Socket file descriptor */
 	unsigned short port;       /* Port number*/

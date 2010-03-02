@@ -34,3 +34,9 @@ net_create_tcp_socket()
 
 	return 0;
 }
+
+int
+net_create_udp_socket()
+{
+	return 0;
+}

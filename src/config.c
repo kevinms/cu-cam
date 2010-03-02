@@ -8,6 +8,8 @@
 char key[BSIZE];
 char value[BSIZE];
 
+struct config_pref_t config_pref;
+
 void
 config_load(char *rcfile)
 {
