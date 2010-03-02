@@ -33,14 +33,14 @@ config_load(char *rcfile)
 		if(buf[0] == '[' || buf[strlen(buf)] == ']') {
 			if(!strcmp(buf,"[server]"))
 				list_add(s_pref->list,config_parse_server(in));
-                        else if(!strcmp(buf,"[client]"))
+			else if(!strcmp(buf,"[client]"))
 				p_pref = config_parse_client(in);
 		}
 
 		fgets(buf,BSIZE,in); buf[strlen(buf)-1]='\0';
 	}
 
-	config_pref.plugins = p_pref;
+	config_pref.clients = p_pref;
 	config_pref.servers = s_pref;
 }
 
@@ -52,36 +52,14 @@ config_parse_server(FILE *in)
 
 	config_read_key(in);
 	while(strlen(key)!=0 && !feof(in)) {
-		if(!strcmp(key,"server_name"))
-			s->name = config_read_string(in);
-		else if(!strcmp(key,"server_autoconnect"))
-			s->autoconnect = config_read_string(in);
-		else if(!strcmp(key,"server_address"))
-			s->address = config_read_string(in);
-		else if(!strcmp(key,"server_port"))
-			s->port = config_read_value(in);
+		if(!strcmp(key,"server_port_TCP"))
+			s->port_TCP = config_read_value(in);
+		else if(!strcmp(key,"server_port_UDP"))
+			s->port_UDP = config_read_value(in);
 		else if(!strcmp(key,"server_ipv6"))
 			s->ipv6 = config_read_string(in);
-		else if(!strcmp(key,"server_ssl"))
-			s->ssl = config_read_string(in);
-		else if(!strcmp(key,"server_password"))
-			s->password = config_read_string(in);
-		else if(!strcmp(key,"server_nick1"))
-			s->nick1 = config_read_string(in);
-		else if(!strcmp(key,"server_nick2"))
-			s->nick2 = config_read_string(in);
-		else if(!strcmp(key,"server_nick3"))
-			s->nick3 = config_read_string(in);
-		else if(!strcmp(key,"server_username"))
-			s->username = config_read_string(in);
-		else if(!strcmp(key,"server_realname"))
-			s->realname = config_read_string(in);
-		else if(!strcmp(key,"server_hostname"))
-			s->hostname = config_read_string(in);
-		else if(!strcmp(key,"server_command"))
-			s->command = config_read_string(in);
-		else if(!strcmp(key,"server_autojoin"))
-			s->autojoin = config_read_string(in);
+		else if(!strcmp(key,"server_tls"))
+			s->tls = config_read_string(in);
 		config_read_key(in);
 	}
 
