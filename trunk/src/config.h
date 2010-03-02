@@ -1,6 +1,8 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#include <stdio.h>
+
 #include "list.h"
 
 struct config_pref_t
@@ -11,12 +13,12 @@ struct config_pref_t
 
 struct config_server_pref_t
 {
-	list_t *list;
+	struct list_t *list;
 };
 
 struct config_client_pref_t
 {
-	list_t *list;
+	struct list_t *list;
 };
 
 struct config_server_t
@@ -39,7 +41,7 @@ struct config_client_pref_t *config_parse_client(FILE *in);
 
 /* entry types */
 void config_read_key(FILE *in);
-list_t *config_read_list(FILE *in);
+struct list_t *config_read_list(FILE *in);
 char *config_read_string(FILE *in);
 char *config_read_value(FILE *in);
 

@@ -1,11 +1,11 @@
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef UTILS_H_
+#define UTILS_H_
 
 #include "list.h"
 
-int split_string (char *buf, char **seg);
-char *p_strcpy (char *str);
+int split_string(char *buf, char **seg);
+char *p_strcpy(char *str);
 int search_match(char **tree, char *apple);
-int list_lookup_string(list_t *list, char *name);
+int list_lookup_string(struct list_t *list, char *name);
 
-#endif /* !_UTILS_H_ */
+#endif /* !UTILS_H_ */

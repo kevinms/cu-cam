@@ -1,5 +1,6 @@
-#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
 #include "config.h"
 #include "utils.h"
 
@@ -100,10 +101,10 @@ config_read_key(FILE *in)
 	}
 }
 
-list_t *
+struct list_t *
 config_read_list(FILE *in)
 {
-	list_t *list = list_init();
+	struct list_t *list = list_init();
 
 	if(fgetc(in)!='{') {
 		fprintf(stderr,"Error parsing value for key: '%s'\n",key);

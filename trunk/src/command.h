@@ -31,8 +31,8 @@
 
 struct command_t {
 	int type;
-	list_t *users;
-	list_t *files;
+	struct list_t *users;
+	struct list_t *files;
 };
 
 /* Parsing */
@@ -40,7 +40,7 @@ struct command_t *command_parse(char *buf);
 int command_parse_get(struct command_t *cmd, char *par);
 int command_parse_put(struct command_t *cmd, char *par);
 int command_parse_stat(struct command_t *cmd, char *par);
-char *command_parse_list(list_t **list, char *buf);
+char *command_parse_list(struct list_t **list, char *buf);
 
 /* Clean up */
 void command_free(struct command_t *cmd);
