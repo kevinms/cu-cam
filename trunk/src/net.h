@@ -16,12 +16,11 @@ struct net_t {
 	struct net_t *next;
 };
 
-int net_create_tcp_socket();
-int net_create_udp_socket();
+struct net_t *net_create_tcp_socket();
+struct net_t *net_create_udp_socket();
 int net_accept_tcp_client(int fd);
 void net_handle_tcp_client(int fd);
 void net_handle_udp_client(int fd);
-
-void *net_in_addr(struct sockaddr *sa);
+void net_free(struct net_t *n)
 
 #endif /* !NET_H_ */

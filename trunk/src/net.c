@@ -4,7 +4,7 @@
 
 #include "net.h"
 
-int
+struct net_t *
 net_create_tcp_socket()
 {
 
@@ -26,17 +26,17 @@ net_create_tcp_socket()
 		exit(1);
 	}
 
-	// servinfo now points to a linked list of 1 or more struct addrinfos
-
-	// ... do everything until you don't need servinfo anymore ....
-
-	freeaddrinfo(n->servinfo); // free the linked-list
-
-	return 0;
+	return n;
 }
 
-int
+struct net_t *
 net_create_udp_socket()
 {
-	return 0;
+	return NULL;
+}
+
+void
+net_free(struct net_t *n)
+{
+	freeaddrinfo(n->servinfo);
 }
