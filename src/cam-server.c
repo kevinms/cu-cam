@@ -3,7 +3,6 @@
  *  planned to be "daemonized"
  */
 
-
 #include "config.h"
 #include "utils.h"
 #include "net.h"
