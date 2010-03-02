@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-g -Wall `pkg-config gnutls --cflags`
 
+#-----------------------------------------------------------------------
 # Build cu-cam
 LDFLAGS=
 SOURCES=config.c plugin.c list.c utils.c
@@ -11,7 +12,7 @@ all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
-
+#-----------------------------------------------------------------------
 # Build tests
 T_CONFIG_SOURCES=config-test.c config.c list.c utils.c
 T_CONFIG_OBJECTS=$(T_CONFIG_SOURCES:.c=.o)
@@ -20,8 +21,11 @@ T_AUTH_LDFLAGS=`pkg-config gnutls --libs`
 T_AUTH_SOURCES=auth-test.c auth.c
 T_AUTH_OBJECTS=$(T_AUTH_SOURCES:.c=.o)
 
+T_COMMAND_SOURCES=command-test.c command.c list.c utils.c
+T_COMMAND_OBJECTS=$(T_COMMAND_SOURCES:.c=.o)
+
 T_SOURCES = $(T_CONFIG_SOURCES) $(T_AUTH_SOURCES)
-T_EXECUTABLE=test-config test-auth
+T_EXECUTABLE=test-config test-auth test-command
 
 build-test: $(T_EXECUTABLE)
 	
@@ -32,6 +36,9 @@ test-config: $(T_CONFIG_OBJECTS)
 test-auth: $(T_AUTH_OBJECTS)
 	$(CC) $(T_AUTH_LDFLAGS) $(T_AUTH_OBJECTS) -o $@
 
+test-command: $(T_COMMAND_OBJECTS)
+	$(CC) $(T_LDFLAGS) $(T_COMMAND_OBJECTS) -o $@
+#-----------------------------------------------------------------------
 
 # Implicit rule to compile all .c to .o
 .c.o:

@@ -11,6 +11,8 @@ list_init(void)
 	newlist->head = NULL;
 	newlist->tail = NULL;
 
+	newlist->len = 0;
+
 	return newlist;
 }
 
@@ -31,6 +33,7 @@ list_add(list_t *list, void *entity)
 		list->tail->next = newlink;
 		list->tail = newlink;
 	}
+	list->len++;
 }
 
 /* Delete an element from the list */
@@ -62,23 +65,38 @@ list_del_item(list_t *list, void *item)
 	}
 
 	free(templink);
+	list->len--;
+}
+
+int list_del_head(list_t *list)
+{
+	link_t *tmp;
+
+	if(!list)
+		return -1;
+	if(!list->head)
+		return -1;
+
+	if(list->head->item)
+		free(list->head->item);
+
+	tmp = list->head->next;
+	free(list->head);
+
+	if(tmp)
+		tmp->prev = NULL;
+
+	list->head = tmp;
+	return 0;
 }
 
 /* Delete all links and their items */
 void
 list_del(list_t *list)
 {
-	link_t *templink;
-
-	while(list->head != NULL)
-	{
-		templink = list->head;
-		list->head = list->head->next;
-		if (templink->item != NULL)
-			free(templink->item);
-		if (templink != NULL)
-			free(templink);
-	}
+	if(!list)
+		return;
+	while(!list_del_head(list));
 
 	free(list);
 }
