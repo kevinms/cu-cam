@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "list.h"
 
 int
 p_strsplit(char *buf, char **seg)
@@ -24,14 +23,6 @@ p_strcpy(char *str)
 {
 	char *new = malloc (sizeof (char) * strlen (str));
 	strcpy (new, str);
-	return new;
-}
-
-char *
-p_strncpy(char *str, int len)
-{
-	char *new = malloc (sizeof (char) * len);
-	strncpy (new, str, len);
 	return new;
 }
 

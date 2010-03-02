@@ -98,7 +98,8 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-void command_test_cmd(char buf[])
+void
+command_test_cmd(char buf[])
 {
 	struct command_t *cmd;
 
@@ -111,7 +112,8 @@ void command_test_cmd(char buf[])
 	command_free(cmd);
 }
 
-void command_test_get(char buf[])
+void
+command_test_get(char buf[])
 {
 	struct command_t *cmd;
 
@@ -124,7 +126,8 @@ void command_test_get(char buf[])
 	command_free(cmd);
 }
 
-void command_test_put(char buf[])
+void
+command_test_put(char buf[])
 {
 	struct command_t *cmd;
 
@@ -137,7 +140,8 @@ void command_test_put(char buf[])
 	command_free(cmd);
 }
 
-void command_test_stat(char buf[])
+void
+command_test_stat(char buf[])
 {
 	struct command_t *cmd = NULL;
 
@@ -150,7 +154,8 @@ void command_test_stat(char buf[])
 	command_free(cmd);
 }
 
-void command_test_print(struct command_t *cmd)
+void
+command_test_print(struct command_t *cmd)
 {
 	if(cmd) {
 		fprintf(stderr,"Command type: %d\n",cmd->type);
@@ -160,7 +165,8 @@ void command_test_print(struct command_t *cmd)
 	}
 }
 
-void command_test_print_list(list_t *list)
+void
+command_test_print_list(list_t *list)
 {
 	int i = 0;
 

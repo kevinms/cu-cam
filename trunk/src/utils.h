@@ -4,10 +4,12 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "list.h"
 
 int split_string (char *buf, char **seg);
 char *p_strcpy (char *str);
-char *p_strncpy (char *str, int len);
+int search_match(char **tree, char *apple);
+int list_lookup_string(list_t *list, char *name);
 
 #endif /* !_UTILS_H_ */
 

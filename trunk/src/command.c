@@ -10,7 +10,8 @@
  * Returns: NULL on failure
  *          struct command_t * on success
  */
-struct command_t *command_parse(char *buf)
+struct command_t *
+command_parse(char *buf)
 {
 	int rv;
 	int size;
@@ -73,7 +74,8 @@ struct command_t *command_parse(char *buf)
  * Returns: -1 on failure
  *           0 on sucess
  */
-int command_parse_get(struct command_t *cmd, char *par)
+int
+command_parse_get(struct command_t *cmd, char *par)
 {
 	char *tok;
 
@@ -104,7 +106,8 @@ int command_parse_get(struct command_t *cmd, char *par)
  * Returns: -1 on failure
  *           0 on sucess
  */
-int command_parse_put(struct command_t *cmd, char *par)
+int
+command_parse_put(struct command_t *cmd, char *par)
 {
 	char *tok;
 
@@ -135,7 +138,8 @@ int command_parse_put(struct command_t *cmd, char *par)
  * Returns: -1 on failure
  *           0 on sucess
  */
-int command_parse_stat(struct command_t *cmd, char *par)
+int
+command_parse_stat(struct command_t *cmd, char *par)
 {
 	char *tok;
 
@@ -149,7 +153,8 @@ int command_parse_stat(struct command_t *cmd, char *par)
 	return 0;
 }
 
-char *command_parse_list(list_t **list, char *buf)
+char *
+command_parse_list(list_t **list, char *buf)
 {
 	char *remainder = NULL;
 	char *tok;
@@ -186,7 +191,8 @@ char *command_parse_list(list_t **list, char *buf)
 	return remainder;
 }
 
-void command_free(struct command_t *cmd)
+void
+command_free(struct command_t *cmd)
 {
 	if(cmd) {
 		list_del(cmd->users);
