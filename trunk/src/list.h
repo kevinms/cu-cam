@@ -5,8 +5,8 @@
 
 typedef struct link_type
 {
-   struct link_type *next;  /* Next link in the list   */
-   struct link_type *prev;  /* Previous link in the list   */
+   struct link_type *next;  /* Next link in the list */
+   struct link_type *prev;  /* Previous link in the list */
    void             *item;  /* Item owned by this link */
 }  link_t;
 
@@ -27,7 +27,7 @@ void list_tail_to_head(list_t *list);
 void list_head_to_tail(list_t *list);
 
 /* list iteration */
-link_t *g_link;
+extern link_t *g_link;
 
 void list_set_list_to_iterate(list_t *list);
 
@@ -38,6 +38,5 @@ link_t *list_peek_link();
 void *list_next_item();
 void *list_prev_item();
 void *list_peek_item();
-
 
 #endif /* !_LIST_H_ */

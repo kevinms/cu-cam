@@ -23,6 +23,8 @@
  * STAT!all
  */
 
+#include "list.h"
+
 #define CMD_GET  1
 #define CMD_PUT  2
 #define CMD_STAT 3
