@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "command.h"
 #include "utils.h"
@@ -154,7 +155,7 @@ command_parse_stat(struct command_t *cmd, char *par)
 }
 
 char *
-command_parse_list(list_t **list, char *buf)
+command_parse_list(struct list_t **list, char *buf)
 {
 	char *remainder = NULL;
 	char *tok;

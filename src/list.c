@@ -1,14 +1,16 @@
+#include <stdlib.h>
+
 #include "list.h"
 
-link_t *g_link;
+struct link_t *g_link;
 
 /* malloc a new list header and initialize it */
-list_t *
+struct list_t *
 list_init(void)
 {
-	list_t *newlist;
+	struct list_t *newlist;
 
-	newlist = (list_t *)malloc(sizeof(list_t));
+	newlist = (struct list_t *)malloc(sizeof(*newlist));
 
 	newlist->head = NULL;
 	newlist->tail = NULL;
@@ -20,9 +22,9 @@ list_init(void)
 
 /* Add an element to the end of a list */
 void
-list_add(list_t *list, void *entity)
+list_add(struct list_t *list, void *entity)
 {
-	link_t *newlink = (link_t *)malloc(sizeof(link_t));
+	struct link_t *newlink = (struct link_t *)malloc(sizeof(*newlink));
 	newlink->next = NULL;
 	newlink->prev = NULL;
 	newlink->item = entity;
@@ -40,9 +42,9 @@ list_add(list_t *list, void *entity)
 
 /* Delete an element from the list */
 void
-list_del_item(list_t *list, void *item)
+list_del_item(struct list_t *list, void *item)
 {
-	link_t *templink;
+	struct link_t *templink;
 
 	if(list == NULL)
 		return;
@@ -70,9 +72,9 @@ list_del_item(list_t *list, void *item)
 	list->len--;
 }
 
-int list_del_head(list_t *list)
+int list_del_head(struct list_t *list)
 {
-	link_t *tmp;
+	struct link_t *tmp;
 
 	if(!list)
 		return -1;
@@ -94,7 +96,7 @@ int list_del_head(list_t *list)
 
 /* Delete all links and their items */
 void
-list_del(list_t *list)
+list_del(struct list_t *list)
 {
 	if(!list)
 		return;
@@ -105,7 +107,7 @@ list_del(list_t *list)
 
 /* move tail to the head */
 void
-list_tail_to_head(list_t *list)
+list_tail_to_head(struct list_t *list)
 {
 	if(list->tail == list->head)
 		return;
@@ -121,7 +123,7 @@ list_tail_to_head(list_t *list)
 
 /* move head to the tail */
 void
-list_head_to_tail(list_t *list)
+list_head_to_tail(struct list_t *list)
 {
 	if(list->tail == list->head)
 		return;
@@ -136,13 +138,13 @@ list_head_to_tail(list_t *list)
 }
 
 void
-list_set_list_to_iterate(list_t *list)
+list_set_list_to_iterate(struct list_t *list)
 {
 	if(list)
 		g_link = list->head;
 }
 
-link_t *
+struct link_t *
 list_next_link()
 {
 	if(g_link)
@@ -151,7 +153,7 @@ list_next_link()
 	return NULL;
 }
 
-link_t *
+struct link_t *
 list_prev_link()
 {
 	if(g_link)
@@ -197,7 +199,7 @@ list_peek_item()
 	return NULL;
 }
 
-link_t *
+struct link_t *
 list_peek_link()
 {
 	if(g_link)

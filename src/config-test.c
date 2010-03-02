@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <dlfcn.h>
 
 #include "config.h"
 
@@ -19,7 +18,7 @@ main(int argc, char **argv)
 	printf("server_tls = \"%s\"\n",s->tls);
 	printf("\n");
 
-	link_t *tmp = p->list->head;
+	struct link_t *tmp = p->list->head;
 	printf("[client]\n");
 	printf("server_list = {\n");
 	while(tmp != NULL) {

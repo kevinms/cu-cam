@@ -3,7 +3,7 @@
 #include "command.h"
 
 void command_test_print(struct command_t *cmd);
-void command_test_print_list(list_t *list);
+void command_test_print_list(struct list_t *list);
 
 void command_test_cmd(char buf[]);
 void command_test_get(char buf[]);
@@ -166,7 +166,7 @@ command_test_print(struct command_t *cmd)
 }
 
 void
-command_test_print_list(list_t *list)
+command_test_print_list(struct list_t *list)
 {
 	int i = 0;
 

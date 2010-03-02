@@ -43,9 +43,9 @@ search_match(char **tree, char *apple)
 }
 
 int
-list_lookup_string(list_t *list, char *name)
+list_lookup_string(struct list_t *list, char *name)
 {
-	link_t *temp;
+	struct link_t *temp;
 
 	if(list == NULL)
 		return -1;
