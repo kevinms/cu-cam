@@ -12,6 +12,7 @@ typedef struct link_type
 
 typedef struct list_type
 {
+   int len;                 /* Number of elements in list */
    link_t  *head;           /* First link in the list */
    link_t  *tail;           /* Last link in the list  */
 }  list_t;
@@ -20,6 +21,7 @@ typedef struct list_type
 list_t *list_init(void);
 void list_add(list_t *list, void *item);
 void list_del_item(list_t *list, void *entity);
+int list_del_head(list_t *list);
 void list_del(list_t *list);
 void list_tail_to_head(list_t *list);
 void list_head_to_tail(list_t *list);
