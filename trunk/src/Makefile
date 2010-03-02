@@ -4,14 +4,23 @@ CFLAGS=-g -Wall `pkg-config gnutls --cflags`
 #-----------------------------------------------------------------------
 # Build cu-cam
 LDFLAGS=
-SOURCES=config.c plugin.c list.c utils.c
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=cu-cam
+SERVER_SOURCES=cam-server.c command.c config.c net.c list.c utils.c
+SERVER_OBJECTS=$(SERVER_SOURCES:.c=.o)
 
-all: $(SOURCES) $(EXECUTABLE)
+CLIENT_SOURCES=cam-client.c command.c config.c net.c list.c utils.c
+CLIENT_OBJECTS=$(CLIENT_SOURCES:.c=.o)
 
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+EXECUTABLE=cam-server cam-client
+
+all: $(EXECUTABLE)
+	
+
+cam-server: $(SERVER_OBJECTS)
+	$(CC) $(LDFLAGS) $(SERVER_OBJECTS) -o $@
+
+cam-client: $(CLIENT_OBJECTS)
+	$(CC) $(LDFLAGS) $(CLIENT_OBJECTS) -o $@
+
 #-----------------------------------------------------------------------
 # Build tests
 T_CONFIG_SOURCES=config-test.c config.c list.c utils.c
