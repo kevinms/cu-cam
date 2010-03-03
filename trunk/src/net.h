@@ -21,6 +21,6 @@ struct net_t *net_create_udp_socket();
 int net_accept_tcp_client(int fd);
 void net_handle_tcp_client(int fd);
 void net_handle_udp_client(int fd);
-void net_free(struct net_t *n)
+void net_free(struct net_t *n);
 
 #endif /* !NET_H_ */
