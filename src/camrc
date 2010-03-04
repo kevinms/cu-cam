@@ -1,6 +1,5 @@
 [server]
-server_port_TCP = 8888
-server_port_UDP = 8889
+server_port = 8888
 server_ipv6 = "off"
 server_tls = "off"
 

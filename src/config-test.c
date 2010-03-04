@@ -12,8 +12,7 @@ main(int argc, char **argv)
 	printf("Conf Preferences\n");
 	printf("----------------\n");
 	printf("[server]\n");
-	printf("server_port_TCP = %s\n",s->port_TCP);
-	printf("server_port_UDP = %s\n",s->port_UDP);
+	printf("server_port = %s\n",s->port);
 	printf("server_ipv6 = \"%s\"\n",s->ipv6);
 	printf("server_tls = \"%s\"\n",s->tls);
 	printf("\n");
