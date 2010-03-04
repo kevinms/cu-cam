@@ -55,10 +55,8 @@ config_parse_server(FILE *in)
 
 	config_read_key(in);
 	while(strlen(key)!=0 && !feof(in)) {
-		if(!strcmp(key,"server_port_TCP"))
-			s->port_TCP = config_read_value(in);
-		else if(!strcmp(key,"server_port_UDP"))
-			s->port_UDP = config_read_value(in);
+		if(!strcmp(key,"server_port"))
+			s->port = config_read_value(in);
 		else if(!strcmp(key,"server_ipv6"))
 			s->ipv6 = config_read_string(in);
 		else if(!strcmp(key,"server_tls"))

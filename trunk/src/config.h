@@ -23,8 +23,7 @@ struct config_client_pref_t
 
 struct config_server_t
 {
-	char *port_TCP;
-	char *port_UDP;
+	char *port;
 	char *ipv6;
 	char *tls;
 };
