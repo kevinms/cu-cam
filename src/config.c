@@ -9,13 +9,12 @@
 char key[BSIZE];
 char value[BSIZE];
 
-struct config_pref_t config_pref;
+struct config_server_t *server = NULL;
+struct config_client_t *client = NULL;
 
 void
-config_load(char *rcfile)
+config_load(char *rcfile, int type)
 {
-	char buf[BSIZE];
-
 	FILE *in;
 	in = fopen(rcfile,"r");
 	if(in == NULL) {
@@ -23,28 +22,12 @@ config_load(char *rcfile)
 		return;
 	}
 
-	struct config_client_pref_t *p_pref;
-	struct config_server_pref_t *s_pref;
-
-	s_pref = (struct config_server_pref_t *)malloc(sizeof(*s_pref));
-	s_pref->list = list_init();
-
-	/* go through all the sections in the config file */
-	fgets(buf,BSIZE,in); buf[strlen(buf)-1]='\0';
-	while(!feof(in)) {
-		/* make sure it is really a section header */
-		if(buf[0] == '[' || buf[strlen(buf)] == ']') {
-			if(!strcmp(buf,"[server]"))
-				list_add(s_pref->list,config_parse_server(in));
-			else if(!strcmp(buf,"[client]"))
-				p_pref = config_parse_client(in);
-		}
-
-		fgets(buf,BSIZE,in); buf[strlen(buf)-1]='\0';
+	if(type == CONFIG_SERVER) {
+		server = config_parse_server(in);
 	}
-
-	config_pref.clients = p_pref;
-	config_pref.servers = s_pref;
+	else if(type == CONFIG_CLIENT) {
+		client = config_parse_client(in);
+	}
 }
 
 struct config_server_t *
@@ -67,16 +50,46 @@ config_parse_server(FILE *in)
 	return s;
 }
 
-struct config_client_pref_t *
+struct config_client_t *
 config_parse_client(FILE *in)
 {
-	struct config_client_pref_t *p;
-	p = (struct config_client_pref_t *)malloc(sizeof(*p));
+	char *tmp;
+	struct config_client_t *p;
+	p = (struct config_client_t *)malloc(sizeof(*p));
+	p->group = list_init();
 
 	config_read_key(in);
-	while(strlen(key)!=0 && !feof(in)) {
-		if(!strcmp(key,"server_list"))
-			p->list = config_read_list(in);
+	while(!feof(in)) {
+		if(!strcmp(key,"[group]"))
+			list_add(p->group,config_parse_group(in));
+		else if(!strcmp(key,"client_stat_interval")) {
+			tmp = config_read_value(in);
+			p->stat_interval = atoi(tmp);
+			free(tmp);
+		}
+		config_read_key(in);
+	}
+
+	return p;
+}
+
+struct config_group_t *
+config_parse_group(FILE *in)
+{
+	struct config_group_t *p;
+	p = (struct config_group_t *)malloc(sizeof(*p));
+
+	config_read_key(in);
+	while(strlen(key) && !feof(in)) {
+		if(!strcmp(key,"group_name")) {
+			p->name = config_read_string(in);
+		}
+		else if(!strcmp(key,"group_servers")) {
+			p->servers = config_read_list(in);
+		}
+		else if(!strcmp(key,"group_users")) {
+			p->users = config_read_list(in);
+		}
 		config_read_key(in);
 	}
 
@@ -94,7 +107,7 @@ config_read_key(FILE *in)
 	}
 	key[i] = '\0';
 
-	if(strlen(key)) {
+	if(strlen(key) && key[0] != '[' && key[strlen(key)-1] != ']') {
 		fgetc(in);fgetc(in);
 	}
 }
