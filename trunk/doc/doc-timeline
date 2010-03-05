@@ -23,8 +23,8 @@ Karl Brewer
     [### ] Clearly define features
     [#   ] Detailed implementation details
 [Phase2]
-    [### ] Configuration system
-    [####] Basic command parser
+    [####] Configuration system
+    [### ] Basic command parser
     [#   ] Concurrent server skeleton
     [    ] UDP/TCP client skeleton
 [Phase3]

@@ -1,10 +1,30 @@
                CAMP - Class Assignment Manager Protocol
 
 ------------------------------------------------------------------------
+Message Format
+------------------------------------------------------------------------
+
+TCP Application Protocol:
+Commands: GET PUT
++---------+------+
+| Command | Data |
++---------+------+
+
+UDP Application Protocol:
+Commands: STAT
++---------+---------+------+
+| seq_num | Command | Data |
++---------+---------+------+
+
+------------------------------------------------------------------------
 Step 1 - Connect
 ------------------------------------------------------------------------
 
 Connect to cam-server if it is a TCP connection
+
+TCP - GET
+      PUT
+UDP - STAT
 
 ------------------------------------------------------------------------
 Step 2 - Send Request
@@ -12,7 +32,12 @@ Step 2 - Send Request
 
 GET!<user>:<file|folder>{,<file|folder>}
 PUT!<user>{,<user>}|all:<file|folder>{,<file|folder>}
+	- 
+
 STAT!<user>{,<user>}|all
+	- Client sends a request every time it wants info
+	- Will need to have a request interval variable in the camrc
+	- 
 
 ------------------------------------------------------------------------
 Step 3 - Server Confirmation
