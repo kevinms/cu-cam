@@ -27,25 +27,23 @@ TCP - GET
 UDP - STAT
 
 ------------------------------------------------------------------------
-Step 2 - Send Request
+Step 2 - Negotiation/Data Transfer
 ------------------------------------------------------------------------
 
-GET!<user>:<file|folder>{,<file|folder>}
-PUT!<user>{,<user>}|all:<file|folder>{,<file|folder>}
-	- 
+Multiple Files can be sent (folders) with a tarbowling extension
 
-STAT!<user>{,<user>}|all
-	- Client sends a request every time it wants info
-	- Will need to have a request interval variable in the camrc
-	- 
+client: GET!<user>:<file>
+server: <file size or error>
+server: <file>
 
-------------------------------------------------------------------------
-Step 3 - Server Confirmation
-------------------------------------------------------------------------
+client: PUT!<user>{,<user>}|all:<file>
+server: <ready or errors>
+client: <file size>
+client: <file>
 
-
-
-------------------------------------------------------------------------
-Step 4 - Send Data
-------------------------------------------------------------------------
-
+client: STAT!<user>{,<user>}|all:<stat_type>{,<stat_type>}
+server: STAT!<user>:<stats> | STAT!<error>
+server: STAT!<user>:<stats>
+server: etc
+    - Will need to have a stat interval variable in the camclient.rc or 
+      the system default
