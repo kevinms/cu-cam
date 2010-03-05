@@ -5,24 +5,6 @@
 
 #include "list.h"
 
-/*
-struct config_pref_t
-{
-	struct config_server_pref_t *servers;
-	struct config_client_pref_t *clients;
-};
-
-struct config_server_pref_t
-{
-	struct list_t *list;
-};
-
-struct config_client_pref_t
-{
-	struct list_t *list;
-};
-*/
-
 struct config_group_t {
 	char *name;
 	struct list_t *servers;
