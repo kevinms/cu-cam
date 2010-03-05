@@ -1,0 +1,23 @@
+client_stat_interval = 2
+
+[group]
+group_name = "cpsc360"
+group_servers = {
+	LinuxVM1
+	LinuxVM3
+}
+group_users = {
+	KEVIN4
+	KARLB
+	BURNSH
+}
+
+[group]
+group_name = "cpsc854"
+group_servers = {
+	LinuxVM2
+}
+group_users = {
+	ALICE
+	BOB
+}

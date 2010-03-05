@@ -5,6 +5,7 @@
 
 #include "list.h"
 
+/*
 struct config_pref_t
 {
 	struct config_server_pref_t *servers;
@@ -20,6 +21,13 @@ struct config_client_pref_t
 {
 	struct list_t *list;
 };
+*/
+
+struct config_group_t {
+	char *name;
+	struct list_t *servers;
+	struct list_t *users;
+};
 
 struct config_server_t
 {
@@ -28,15 +36,29 @@ struct config_server_t
 	char *tls;
 };
 
+struct config_client_t
+{
+	int stat_interval;
+
+	struct list_t *group;
+};
+
+#define CONFIG_SERVER 0
+#define CONFIG_CLIENT 1
+
 /* globals */
-extern struct config_pref_t config_pref;
+extern struct config_server_t *server;
+extern struct config_client_t *client;
 
 /* rc file types */
-void config_load(char *rcfile);
+void config_load(char *rcfile, int type);
+
+/* config types */
+struct config_server_t *config_parse_server(FILE *in);
+struct config_client_t *config_parse_client(FILE *in);
 
 /* section types */
-struct config_server_t *config_parse_server(FILE *in);
-struct config_client_pref_t *config_parse_client(FILE *in);
+struct config_group_t *config_parse_group(FILE *in);
 
 /* entry types */
 void config_read_key(FILE *in);
