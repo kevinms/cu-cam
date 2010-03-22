@@ -11,9 +11,8 @@ Table of Contents
         3.2  student
     4.  TECHNICAL INFORMATION
         4.1  CAMP
-        4.2  camd
-        4.3  cam-admin
-        4.4  cam-student
+        4.2  cam-server
+        4.3  cam-client
 
 --------------------------------------------------------------------------------
 1.  General Information
@@ -62,12 +61,12 @@ Pleasent ASCII art to calm the nerves:
 --------------------------------------------------------------------------------
 
 3.1  ADMIN
-    01. On each host that you intend on running the cam daemon on put all 
-        student accounts into the 'student' group (the group name can be change
-        in camrc) or manually state student accounts in camrc
-    02. Be sure to check/modify any other unwanted defaults in 'camrc'
-    03. Start the cam daemon on each host that you would like to manage
-    04. Add all hosts that are running the camd to 'cam-adminrc' or have the
+    01. On each host that you intend on running the cam-server on put all 
+        student accounts into the 'student' group (the group name can be changed
+        in camclient.rc) or manually state each student account in camclient.rc
+    02. Be sure to check/modify any other unwanted defaults in 'camclient.rc'
+    03. Start the cam-server on each host that you would like to manage
+    04. Add all hosts that are running the cam-server to 'camclient.rc' or have the
         server use a broadcast/multicast reachability test to find all hosts
         running camd (this may only work for lans)
     05. Run cam-admin to begin managing project files
@@ -93,27 +92,15 @@ Pleasent ASCII art to calm the nerves:
 
     Commands={AUTH,PEER,PUT,GET,STAT}
 
-    AUTH
-        
-    PEER
-    
-    PUT
-    
-    GET
-    
-    STAT
-
-4.2  camd
+4.2  cam-server
 
     Server deamon that will be run on each host that contains student accounts
     that need to be administrated.
 
-4.3  cam-admin
+4.3  cam-client
 
     Utility that will give the administrator commands to upload/download files
     to the servers as well as a plethora of others.
 
-4.4  cam-student
-    
     Will let the students sync their files to all the other servers.  Should
     be straight forward and easy to implement.

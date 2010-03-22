@@ -11,7 +11,6 @@
  * Returns: NULL on failure
  *          struct command_t * on success
  */
-
 struct command_t *
 command_parse(char *buf)
 {

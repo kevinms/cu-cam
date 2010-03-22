@@ -1,4 +1,4 @@
 server_port = 8888
 server_ipv6 = "off"
 server_tls = "off"
-
+server_deamon = 0

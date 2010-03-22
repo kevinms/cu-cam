@@ -33,8 +33,11 @@ T_AUTH_OBJECTS=$(T_AUTH_SOURCES:.c=.o)
 T_COMMAND_SOURCES=command-test.c command.c list.c utils.c
 T_COMMAND_OBJECTS=$(T_COMMAND_SOURCES:.c=.o)
 
+T_NET_SOURCES=net-test.c net.c list.c utils.c
+T_NET_OBJECTS=$(T_NET_SOURCES:.c=.o)
+
 T_SOURCES = $(T_CONFIG_SOURCES) $(T_AUTH_SOURCES)
-T_EXECUTABLE=test-config test-auth test-command
+T_EXECUTABLE=test-config test-auth test-command test-net
 
 build-test: $(T_EXECUTABLE)
 	
@@ -47,6 +50,9 @@ test-auth: $(T_AUTH_OBJECTS)
 
 test-command: $(T_COMMAND_OBJECTS)
 	$(CC) $(T_LDFLAGS) $(T_COMMAND_OBJECTS) -o $@
+
+test-net: $(T_NET_OBJECTS)
+	$(CC) $(T_LDFLAGS) $(T_NET_OBJECTS) -o $@
 #-----------------------------------------------------------------------
 
 # Implicit rule to compile all .c to .o
