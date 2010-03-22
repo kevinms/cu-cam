@@ -16,6 +16,7 @@ main(int argc, char **argv)
 	printf("server_port = %s\n",server->port);
 	printf("server_ipv6 = \"%s\"\n",server->ipv6);
 	printf("server_tls = \"%s\"\n",server->tls);
+	printf("server_deamon = %d\n",server->deamon);
 	printf("\n");
 
 	config_load("camclient.rc",CONFIG_CLIENT);

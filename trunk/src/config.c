@@ -33,6 +33,7 @@ config_load(char *rcfile, int type)
 struct config_server_t *
 config_parse_server(FILE *in)
 {
+	char *tmp;
 	struct config_server_t *s;
 	s = (struct config_server_t *)malloc(sizeof(*s));
 
@@ -44,6 +45,11 @@ config_parse_server(FILE *in)
 			s->ipv6 = config_read_string(in);
 		else if(!strcmp(key,"server_tls"))
 			s->tls = config_read_string(in);
+		else if(!strcmp(key,"server_deamon")) {
+			tmp = config_read_value(in);
+			s->deamon = atoi(tmp);
+			free(tmp);
+		}
 		config_read_key(in);
 	}
 

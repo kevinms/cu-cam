@@ -16,6 +16,7 @@ struct config_server_t
 	char *port;
 	char *ipv6;
 	char *tls;
+	int deamon;
 };
 
 struct config_client_t
