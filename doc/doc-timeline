@@ -25,7 +25,7 @@ Karl Brewer
 [Phase2]
     [####] Configuration system
     [### ] Basic command parser
-    [#   ] Concurrent server skeleton
+    [### ] Concurrent server skeleton
     [    ] UDP/TCP client skeleton
 [Phase3]
     [    ] Retrieve project files from any host 'easily'

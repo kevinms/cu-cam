@@ -16,12 +16,18 @@ struct net_t {
 	struct net_t *next;
 };
 
+#define RCVBUFSIZE 10016 /* Size of receive buffer */
+#define MAXPENDING 5     /* Maximum outstanding connection requests */
+
 /* setup a socket */
 struct net_t *net_create_tcp_socket(char *node, char *service);
-struct net_t *net_create_udp_socket();
+struct net_t *net_create_udp_socket(char *node, char *service);
 
 /* server bind to port */
-int net_bind(struct net_t *n);
+void net_bind(struct net_t *n);
+
+/* server list on port */
+void net_listen(struct net_t *n);
 
 /* client connect to tcp server */
 int net_connect(struct net_t *n);
