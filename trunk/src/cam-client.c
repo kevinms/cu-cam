@@ -7,15 +7,6 @@
  * 
  */
 
-int
-main(int argc, char **argv)
-{
-	
-
-	return 0;
-}
-
-#if 0
 #include <stdio.h>      /* for printf() and fprintf() */
 #include <sys/socket.h> /* for socket(), connect(), send(), and recv() */
 #include <arpa/inet.h>  /* for sockaddr_in and inet_addr() */
@@ -23,20 +14,27 @@ main(int argc, char **argv)
 #include <stdlib.h>     /* for atoi() and exit() */
 #include <string.h>     /* for memset() */
 #include <unistd.h>     /* for close() */
-#include <signal.h>
+#include <signal.h>	
 #include <sys/time.h>
 #include <time.h>
+#include "utils.h"
+#include "net.h"
 
-#define RCVBUFSIZE 16   /* Size of receive buffer */
-                           //SET TO 16 before submitting
+int
+main(int argc, char **argv)
+{
+	struct net_t *
+	//TODO:
+	//argument checking
 
+	
+	
 
-extern void DieWithError(char *errorMessage);  /* Error handling function */
-void debugOut();
-void clientCNTCCode();
-void quit_and_print();
-void catchAlarm(int ignored);
-double getTime();
+	return 0;
+}
+
+#if 0
+
 
 double totalAverageThroughput = 0;
 double totalAverageRTT = 0;
@@ -226,12 +224,6 @@ void   catchAlarm(int ignored){
         alarm(alarmData);
     return;
 
-}
-double getTime() {
-	struct timeval curTime;
-	(void) gettimeofday (&curTime, (struct timezone *) NULL);
-	return (((((double) curTime.tv_sec) * 1000000.0) +
-				(double) curTime.tv_usec) / 1000000.0);
 }
 
 #endif
