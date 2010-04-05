@@ -19,6 +19,7 @@
 #include <time.h>
 
 #include "utils.h"
+#include "command.h"
 #include "net.h"
 #include "config.h"
 
@@ -76,13 +77,16 @@ main(int argc, char **argv)
         if(templink == NULL){
             fprintf(stderr, "%s not a group in config file\n", argv[2]);
             //TODO: check to see if its a real IP or Server
-            list_add(sockList, net_create_tcp_socket(argv[2], NULL));
+            list_add(sockList, net_create_tcp_socket(argv[2], client->port));
+
         } else {
             int i = 0;
+            int len = ((struct config_group_t *)(templink->item))->servers->len;
+            struct link_t *curr = templink;
             
-
-            for(i = 0; i < ((struct config_group_t *)(templink->item))->servers->len; i++) {
-                list_add(sockList, net_create_tcp_socket(NULL, NULL));
+            for(i = 0; i < len; i++) {
+                list_add(sockList, net_create_tcp_socket((char *)(curr->item), client->port));
+                curr= curr->next;
             }
            
         }
