@@ -12,6 +12,56 @@ void command_test_stat(char buf[]);
 
 int main(int argc, char **argv)
 {
+	char bob[20];
+	bob[0] = 1;
+	bob[1] = 4;
+	bob[2] = 'j';
+	bob[3] = 'e';
+	bob[4] = 'n';
+	bob[5] = 'n';
+	bob[6] = 'y';
+	bob[7] = '\0';
+	char *a0 = "jenny,tennis!please";
+	char *a;
+	a = a0;
+	char *b;
+
+	struct command_t *test;
+	test = command_parse(bob);
+	fprintf(stderr,"%d\n",test->type);
+	fprintf(stderr,"%d\n",test->status);
+	fprintf(stderr,"%s\n",test->buf);
+
+
+	fprintf(stderr,"Command Test\n");
+	fprintf(stderr,"a: '%s'\n\n",a);
+
+	b = command_parse_string(&a);
+	fprintf(stderr,"a: '%s'\n",a);
+	fprintf(stderr,"b: '%s'\n\n",b);
+
+	b = command_parse_string(&a);
+	fprintf(stderr,"a: '%s'\n",a);
+	fprintf(stderr,"b: '%s'\n\n",b);
+
+	b = command_parse_string(&a);
+	fprintf(stderr,"a: '%s'\n",a);
+	fprintf(stderr,"b: '%s'\n\n",b);
+
+	b = command_parse_string(&a);
+	if(!b) fprintf(stderr,"strlen equals zero, no string to parse\n");
+
+	a = a0;
+	struct list_t *l;
+	struct link_t *ln;
+	l = command_parse_list(&a);
+	ln = l->head;
+	while(ln != NULL) {
+		fprintf(stderr,"'%s',",(char *)ln->item);
+		ln = ln->next;
+	}
+
+#if 0
 	char cmd1[] = "GOAT!bob:";
 	char cmd2[] = "!:";
 	char cmd3[] = "!";
@@ -94,10 +144,10 @@ int main(int argc, char **argv)
 	command_test_stat(stat8);
 	command_test_stat(stat9);
 	fprintf(stderr,"================================================================================\n");
-
+#endif
 	return 0;
 }
-
+#if 0
 void
 command_test_cmd(char buf[])
 {
@@ -183,3 +233,4 @@ command_test_print_list(struct list_t *list)
 		fprintf(stderr,"\n");
 	}
 }
+#endif
