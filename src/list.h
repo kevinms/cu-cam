@@ -27,17 +27,4 @@ void list_head_to_tail(struct list_t *list);
 /* returns 0 for no, 1 for yes */
 int list_is_in(struct list_t *list, void *item);
 
-/* list iteration */
-extern struct link_t *g_link;
-
-void list_set_list_to_iterate(struct list_t *list);
-
-struct link_t *list_next_link();
-struct link_t *list_prev_link();
-struct link_t *list_peek_link();
-
-void *list_next_item();
-void *list_prev_item();
-void *list_peek_item();
-
 #endif /* !_LIST_H_ */
