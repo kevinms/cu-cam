@@ -107,19 +107,24 @@ deamonize()
 	signal(SIGHUP, SIG_IGN); /* catch hangup signal */
 }
 
+/* Clean up all zombies */
 void
 child_exit_signal_handler()
 {
-	pid_t pid;       /* Process ID from fork() */
+	pid_t pid; /* Process ID from fork() */
 
-	while (child_proc_count) /* Clean up all zombies */
-	{
-		pid = waitpid((pid_t) -1, NULL, WNOHANG);  /* Non-blocking wait */
-		if (pid < 0)  /* waitpid() error? */
+	while (child_proc_count) {
+		/* Non-blocking wait */
+		pid = waitpid((pid_t) -1, NULL, WNOHANG);
+
+		/* waitpid() error? */
+		if (pid < 0)  
 			die_with_error("waitpid() failed");
-		else if (pid == 0)  /* No child to wait on */
+		/* No child to wait on */
+		else if (pid == 0)
 			break;
+		/* Cleaned up after a child */
 		else
-			child_proc_count--;  /* Cleaned up after a child */
+			child_proc_count--;
 	}
 }
