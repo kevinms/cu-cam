@@ -64,5 +64,3 @@ command_free(struct command_t *cmd)
 		cmd = NULL;
 	}
 }
-
-#endif
