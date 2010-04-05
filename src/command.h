@@ -35,6 +35,14 @@ struct command_t {
 	struct list_t *files;
 };
 
+//possible wrapper functions for client requests
+/*
+//Sending, return -1 on fail to send 
+int command_send_get(char *buf);
+int command_send_put(char *buf);
+int command_send_stat(char *buf);
+*/
+
 /* Parsing */
 struct command_t *command_parse(char *buf);
 int command_parse_get(struct command_t *cmd, char *par);

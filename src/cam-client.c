@@ -19,11 +19,17 @@
 #include <time.h>
 #include "utils.h"
 #include "net.h"
+#include "config.h"
 
 int
 main(int argc, char **argv)
 {
-	struct net_t *
+	struct net_t* connection;
+
+        config_load("camclient.rc",CONFIG_CLIENT); /* Load configuration file */
+
+        
+
 	//TODO:
 	//argument checking
 
@@ -34,25 +40,6 @@ main(int argc, char **argv)
 }
 
 #if 0
-
-
-double totalAverageThroughput = 0;
-double totalAverageRTT = 0;
-double avgR=0;
-double totalTime = 0;
-double sTime = 0;
-long totalBytesSent = 0;
-long totalBytesReceived = 0;
-long numberMessagesSent = 0;
-long numberMessagesReceived = 0;
-int alarmData = 0;
-
-
-void wait (double sec) {
-  clock_t waitVal;
-  waitVal = clock() + sec*CLOCKS_PER_SEC ;
-  while (clock() < waitVal);
-}
 
 int main(int argc, char *argv[]) {
     double timeStamp;
