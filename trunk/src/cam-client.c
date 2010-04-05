@@ -17,21 +17,88 @@
 #include <signal.h>	
 #include <sys/time.h>
 #include <time.h>
+
 #include "utils.h"
 #include "net.h"
 #include "config.h"
 
+#define CMD_GET  1
+#define CMD_PUT  2
+#define CMD_STAT 3
+
+void clientCNTCCode();
+
 int
 main(int argc, char **argv)
 {
-	struct net_t* connection;
+    int cmdType;
 
-        config_load("camclient.rc",CONFIG_CLIENT); /* Load configuration file */
+    //setup interupt
+    signal (SIGINT, clientCNTCCode);
 
-        
+    //load config
+    config_load("camclient.rc",CONFIG_CLIENT);
+    
+    if (argc < 2)    /* Test for correct number of arguments */
+    {
+       fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
+       exit(1);
+    }
 
-	//TODO:
-	//argument checking
+    //check for first flag
+    if(strcmp(argv[1], "-p") == 0) {
+        /*Start Put Code */
+        fprintf(stdout, "putting...\n");
+        cmdType = CMD_PUT;
+        /*End Put Code */
+    }else if(strcmp(argv[1], "-g") == 0) {
+        /*Start Get Code */
+        fprintf(stdout, "getting...\n");
+        cmdType = CMD_GET;
+        /*End Get Code */
+    }else if(strcmp(argv[1], "-s") == 0) {
+        /*Start Stat Code */
+        fprintf(stdout, "gathering info...\n");
+        cmdType = CMD_STAT;
+
+        if(client == NULL) {
+            fprintf(stderr, "Bad Config Load");
+            exit(1);
+        }
+
+     	struct link_t *templink;
+        struct list_t *sockList = list_init();
+
+	templink = client->group->head;
+	while(templink != NULL && (strcmp(((struct config_group_t *)(templink->item))->name, argv[2]) != 0))
+		templink = templink->next;
+
+        if(templink == NULL){
+            fprintf(stderr, "%s not a group in config file\n", argv[2]);
+            //TODO: check to see if its a real IP or Server
+            list_add(sockList, net_create_tcp_socket(argv[2], NULL));
+        } else {
+            int i = 0;
+            
+
+            for(i = 0; i < ((struct config_group_t *)(templink->item))->servers->len; i++) {
+                list_add(sockList, net_create_tcp_socket(NULL, NULL));
+            }
+           
+        }
+
+        /*End Stat Code */
+    }else {
+       fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
+       exit(1);
+    }
+
+
+
+
+
+
+
 
 	
 	
@@ -39,45 +106,14 @@ main(int argc, char **argv)
 	return 0;
 }
 
+void clientCNTCCode() {
+	printf("\nEmergency Quit Initiated...\n");
+        exit(1);
+}
+
 #if 0
-
+//HW3 REFERENCE
 int main(int argc, char *argv[]) {
-    double timeStamp;
-    double startTime = getTime();
-    sTime = startTime;
-    int sock;                        /* Socket descriptor */
-    struct sockaddr_in servAddr; /* Echo server address */
-    struct hostent *thehost;         /* Hostent from gethostbyname() */
-    unsigned short echoServPort;     /* Echo server port */
-    char *servIP;                    /* Server IP address (dotted quad) */
-    char *buffer;                /* String to send to echo server */
-    char echoBuffer[RCVBUFSIZE];     /* Buffer for echo string */
-    unsigned int msgSize;      /* Length of Data*/
-    unsigned int seqNum = 0;
-    int bytesRcvd;   /* Bytes read in single recv() and total bytes read */
-
-    unsigned long initSendRate, sendRate;
-    double minRTT, sampleRTT, avgRTT;
-    int len, i, stage;
-    float rateInc, interval, dbgTime;
-    struct sigaction alarmAction;
-    alarmAction.sa_handler = catchAlarm;
-    alarmAction.sa_flags = 0;
-    if (sigfillset(&alarmAction.sa_mask) < 0)
-        DieWithError("sigfillset() failed");
-    if (sigaction(SIGALRM, &alarmAction, 0) < 0)
-	DieWithError("sigaction() failed for SIGALRM");
-
-
-
-    signal (SIGINT, clientCNTCCode);
-
-    if (argc != 8)    /* Test for correct number of arguments */
-    {
-       //                           localhost      5000             100000                  0.2                 0.100                 10000                   1
-       fprintf(stderr, "Usage: %s <Server IP> <Server Port> <Starting Send Rate(bps)> <Rate Increase> <Interval Period(sec)> <Message Size(bytes)>> <Debug Time(sec)>\n", argv[0]);
-       exit(1);
-    }
 
     servIP = argv[1];             /* First arg: server IP address (dotted quad) */
     echoServPort = atoi(argv[2]); /* Use given port, if any */
@@ -182,35 +218,5 @@ int main(int argc, char *argv[]) {
         totalTime = getTime() - startTime;
         wait(((double)len/(double)sendRate));
     }
-    //Never Reached! ((once its working that is...))
-    close(sock);
-    exit(0);
 }
-void quit_and_print() {
-        totalAverageThroughput = totalBytesReceived / (double)totalTime;
-        totalAverageRTT = avgR / (double)totalTime;
-        printf("totalAverageThroughput %.1lf\ntotalAverageRTT = %.9lf\ntotalTime = %.1lf\ntotalBytesSent = %.1ld\ntotalBytesReceived = %.1ld\nnumberMessagesSent = %.1ld\nnumberMessagesReceived = %.1ld\n",
-        totalAverageThroughput, totalAverageRTT, totalTime, totalBytesSent, totalBytesReceived, numberMessagesSent, numberMessagesReceived);
-	exit(0);
-}
-
-void clientCNTCCode() {
-	printf("TCPClient:  CNT-C Interrupt,  exiting....\n");
-        alarm(0);
-	quit_and_print();
-}
-void   catchAlarm(int ignored){
-    alarm(0);
-    totalTime = getTime() - sTime;
-    totalAverageThroughput = totalBytesReceived / (double)totalTime;
-    totalAverageRTT = avgR / totalTime;
-
-    printf("Debug Data:\n");
-    printf("Average Throughput: %.1lf\n",totalAverageThroughput);
-    printf("Average RTT: %.9lf\n",avgR);
-        alarm(alarmData);
-    return;
-
-}
-
 #endif

@@ -207,3 +207,23 @@ list_peek_link()
 
 	return NULL;
 }
+
+/* returns 0 for no, 1 for yes */
+int
+list_is_in(struct list_t *list, void *item) {
+
+    	struct link_t *templink;
+
+	if(list == NULL)
+		return 0;
+
+	templink = list->head;
+	while(templink != NULL && templink->item != item)
+		templink = templink->next;
+
+	if(templink == NULL)
+		return 0;
+        else
+            return 1;
+
+}
