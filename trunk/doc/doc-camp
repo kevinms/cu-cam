@@ -108,3 +108,5 @@ hits 2^16 which should be more than enough to 'always' avoid collisions:
     error status.  If it takes more than one packet to send all the requested
     stats then the status byte will be set to STAT_MF until the last packet it
     will be set to STAT_EOF.
+
+    Possible errors: STAT_MALF_REQ, STAT_NOS_USER, STAT_UNK_STAT, STAT_ERROR
