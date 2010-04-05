@@ -22,6 +22,7 @@ struct config_server_t
 struct config_client_t
 {
 	int stat_interval;
+	char *port;
 
 	struct list_t *group;
 };

@@ -68,6 +68,8 @@ config_parse_client(FILE *in)
 	while(!feof(in)) {
 		if(!strcmp(key,"[group]"))
 			list_add(p->group,config_parse_group(in));
+		else if(!strcmp(key,"server_port"))
+			p->port = config_read_value(in);
 		else if(!strcmp(key,"client_stat_interval")) {
 			tmp = config_read_value(in);
 			p->stat_interval = atoi(tmp);
