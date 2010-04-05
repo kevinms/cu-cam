@@ -26,8 +26,8 @@ unsigned int child_proc_count = 0;
 int
 main(int argc, char **argv)
 {
-	int maxDescriptor;         /* Maximum socket descriptor value */
-	fd_set sockSet;            /* Set of socket descriptors for select() */
+	int maxDescriptor;   /* Maximum socket descriptor value */
+	fd_set sockSet;      /* Set of socket descriptors for select() */
 	int client_sock;
 	struct net_t *n_tcp;
 	struct net_t *n_udp;

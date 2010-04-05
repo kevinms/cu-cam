@@ -34,7 +34,10 @@ void
 print_client_groups()
 {
 	list_set_list_to_iterate(client->group);
-	while(list_peek_link()!=NULL) {
+
+	struct link_t *tmp;
+	tmp = client->group->head;
+	while(tmp!=NULL) {
 		fprintf(stderr,"[group]\n");
 		fprintf(stderr,"group_name = %s\n",((struct config_group_t *)list_peek_item())->name);
 		fprintf(stderr,"group_servers = {\n");
