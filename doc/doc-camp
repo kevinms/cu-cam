@@ -32,10 +32,8 @@ Packet Format
 
 /* Status Codes */
 #define STAT_OK        0  // Everyting is ok
-
 #define STAT_MF        1  // More file fragements (used by get and put)
 #define STAT_EOF       2  // End of file|finished sending file
-
 #define STAT_NO_SPACE  3  //ERR Not enough disk space for file
 #define STAT_BAD_PERM  4  //ERR Bad permissions for file
 #define STAT_MALF_REQ  5  //ERR Malformed request|packet
