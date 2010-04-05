@@ -60,6 +60,10 @@ Pleasent ASCII art to calm the nerves:
 3.  Usage Guide
 --------------------------------------------------------------------------------
 
+./cam-client -g <server> <username> <filename> <savelocation>
+./cam-client -p <group>|<server> <username> <filename>
+./cam-client -s <group>|<server> <usernames> <stat_type>
+
 3.1  ADMIN
     1. Manually state each student account in camclient.rc
     2. Be sure to check/modify any other unwanted defaults in 'camclient.rc'
