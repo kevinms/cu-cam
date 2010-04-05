@@ -24,6 +24,9 @@ void list_del(struct list_t *list);
 void list_tail_to_head(struct list_t *list);
 void list_head_to_tail(struct list_t *list);
 
+/* returns 0 for no, 1 for yes */
+int list_is_in(struct list_t *list, void *item);
+
 /* list iteration */
 extern struct link_t *g_link;
 
