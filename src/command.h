@@ -8,6 +8,28 @@
 #define CMD_PUT  2
 #define CMD_STAT 3
 
+/* Status Codes */
+/*
+Not enough disk space for file!
+Incorrect Permissions (folder or file)
+Malformed Request From Client
+File Send Size is <= 0
+User/File In Request Not On Server
+Unknown Stat Type
+
+Incorrect Permissions (folder or file)
+Malformed Request From Server
+Recieve Error Notification From Server
+*/
+#define STAT_OK       1
+#define STAT_NO_SPACE 2
+#define STAT_BAD_PERM 4
+#define STAT_MALF_REQ 8
+#define STAT_BAD_SIZE 16
+#define STAT_NOS_FILE 32
+#define STAT_BAD_STAT 64
+#define STAT_ERROR    128
+
 /*
  * +---+---+----+
  * |cmd|err|data|
