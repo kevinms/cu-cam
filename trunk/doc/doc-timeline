@@ -18,15 +18,18 @@ Karl Brewer
 2.  Development Timeline
 --------------------------------------------------------------------------------
 
+[Total]
+    [###########################                 ]
+
 [Phase1]
     [####] Brainstorm
     [####] Clearly define features
     [####] Detailed implementation details
 [Phase2]
     [####] Configuration system
-    [### ] Basic command parser
-    [### ] Concurrent server skeleton
-    [    ] UDP/TCP client skeleton
+    [####] Basic command parser
+    [####] Concurrent server skeleton
+    [### ] UDP/TCP client skeleton
 [Phase3]
     [    ] Retrieve project files from any host 'easily'
     [    ] Distribute project files to multiple hosts
@@ -67,51 +70,40 @@ If time allows we would like to implement a few more features:
 --------------------------------------------------------------------------------
 
 Dates are as follows:
-
-3.24
-	Begin code for concurrent server
-	Begin code for UDP/TCP client
-
-3.26
-	Setup local emulated network for UDP/TCP communication
-	Continue work on client and server
-
-3.27
-	Work session for client and server
-		Be able to send and receive small packets
-		Error checks pseudocoded
-
-4.3
-	Edit documentation to meet MS3 requirements
-	Continue work on client and server
-		Error checks implemented
-		Begin code for host activity monitor system
-
-4.5
-	MS3 turned in
-
-4.7
-	Continue work on client and server
-		Be able to retrieve project files from any host
-		Distribute project files to multiple hosts
-		Complete host activity monitor system
-
-4.9
-	Finalize work on client and server
-		Complete retrieval system
-		Complete distribution system
-		Verify that all possible errors have been accounted for
-	Brainstorm possible changes in extra features
-
-4.15
-	Complete code to meet MS4 requirements
-
-4.17
-	Implement extra features
-
-4.18
-	Complete MS4, rehearse MS5 presentation
-
-4.19
-	Present code to class
-	Impress all
+[####] 3.24
+       Begin code for concurrent server
+       Begin code for UDP/TCP client
+[####] 3.26
+       Setup local emulated network for UDP/TCP communication
+       Finish up Basic command parser
+[####] 3.27
+       Work session for client and server
+       Make sure that the Net module is working and complete
+       Error checks pseudocoded
+[####] 4.3
+       Edit documentation to meet MS3 requirements
+       Continue work on client and server
+       Error checks implemented
+       Begin code for host activity monitor system
+[    ] 4.5
+       MS3 turned in
+[    ] 4.7
+       Continue work on client and server
+       Be able to retrieve project files from any host
+       Distribute project files to multiple hosts
+       Complete host activity monitor system
+[    ] 4.9
+       Finalize work on client and server
+       Complete retrieval system
+       Complete distribution system
+       Verify that all possible errors have been accounted for
+       Brainstorm possible changes in extra features
+[    ] 4.15
+       Complete code to meet MS4 requirements
+[    ] 4.17
+       Implement extra features
+[    ] 4.18
+       Complete MS4, rehearse MS5 presentation
+[    ] 4.19
+       Present code to class
+       Impress all

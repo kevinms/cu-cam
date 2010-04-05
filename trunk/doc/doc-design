@@ -61,15 +61,11 @@ Pleasent ASCII art to calm the nerves:
 --------------------------------------------------------------------------------
 
 3.1  ADMIN
-    01. On each host that you intend on running the cam-server on put all 
-        student accounts into the 'student' group (the group name can be changed
-        in camclient.rc) or manually state each student account in camclient.rc
-    02. Be sure to check/modify any other unwanted defaults in 'camclient.rc'
-    03. Start the cam-server on each host that you would like to manage
-    04. Add all hosts that are running the cam-server to 'camclient.rc' or have the
-        server use a broadcast/multicast reachability test to find all hosts
-        running camd (this may only work for lans)
-    05. Run cam-admin to begin managing project files
+    1. Manually state each student account in camclient.rc
+    2. Be sure to check/modify any other unwanted defaults in 'camclient.rc'
+    3. Start the cam-server on each host that you would like to manage
+    4. Add all hosts that are running the cam-server to 'camclient.rc'
+    5. Run cam-client to begin managing project files
 
 3.2  STUDENT
     01. [[yet to be decided]]
@@ -80,17 +76,12 @@ Pleasent ASCII art to calm the nerves:
 
 4.1  CAMP - Class Assignment Manager Protocol
 
-    I do not put faith in security by obscurity and therefore the application 
-    layer protocol will docuemented and incorporate authentication/encryption.
-    This is to insure the clever student will not take advantage of what should 
-    be a helpful program for only 'menial' tasks.
+    We do not put faith in security by obscurity and therefore the application 
+    layer protocol will docuemented and incorporate authentication/encryption if
+    time permits.  This is to insure the clever student will not take advantage
+    of what should be a helpful program for only 'menial' tasks.
 
-    Possible message format:
-    +---------+-----------+
-    | command | arguments |
-    +---------+-----------+
-
-    Commands={AUTH,PEER,PUT,GET,STAT}
+    Please see doc-camp for more information.
 
 4.2  cam-server
 

@@ -1,127 +1,110 @@
                CAMP - Class Assignment Manager Protocol
 
+Table of Contents
+
+    1.  PACKET FORMAT
+        1.1  type
+        1.2  status
+        1.3  data
+    2.  NEGOTIATION/DATA TRANSFER
+        2.1  GET
+        2.2  PUT
+        2.3  STAT
+
+--------------------------------------------------------------------------------
+Packet Format
+--------------------------------------------------------------------------------
+
+   TCP: GET PUT                UDP: STAT
+0               1          0               1
++------+--------+          +---------------+
+| type | status |          |    seq_num    |
++------+--------+          +------+--------+
+|     data      |          | type | status |
++---------------+          +------+--------+
+                           |     data      |
+                           +---------------+
+
+/* Type */
+#define CMD_GET  0
+#define CMD_PUT  1
+#define CMD_STAT 2
+
+/* Status Codes */
+#define STAT_OK        0  // Everyting is ok
+
+#define STAT_MF        1  // More file fragements (used by get and put)
+#define STAT_EOF       2  // End of file|finished sending file
+
+#define STAT_NO_SPACE  3  //ERR Not enough disk space for file
+#define STAT_BAD_PERM  4  //ERR Bad permissions for file
+#define STAT_MALF_REQ  5  //ERR Malformed request|packet
+#define STAT_BAD_SIZE  6  //ERR Bad file size <= 0
+#define STAT_NOS_FILE  7  //ERR No such file
+#define STAT_NOS_USER  8  //ERR No such user
+#define STAT_UNK_STAT  9  //ERR Unkown stat type
+#define STAT_ERROR     10 //ERR General error notification
+
+/* Data */
+
+GET!<user>:<file>
+PUT!<user>{,<user>}|all:<file>
+STAT!<user>{,<user>}|all:<stat_type>
+
+:               list seperator
+,               list item seperator
+foo             const string
+<bar>           parameter
+<bar>{,<bar>}   list of parameters
+<bar|foobar>    either 'foo' or 'foobar'
+
 ------------------------------------------------------------------------
-Message Format
-------------------------------------------------------------------------
-
-TCP Application Protocol:
-Commands: GET PUT
-+---------+------+
-| Command | Data |
-+---------+------+
-
-UDP Application Protocol:
-Commands: STAT
-+---------+---------+------+
-| seq_num | Command | Data |
-+---------+---------+------+
-
-------------------------------------------------------------------------
-Step 1 - Connect
-------------------------------------------------------------------------
-
-Connect to cam-server if it is a TCP connection
-
-TCP - GET
-      PUT
-UDP - STAT
-
-------------------------------------------------------------------------
-Step 2 - Negotiation/Data Transfer
+Negotiation/Data Transfer
 ------------------------------------------------------------------------
 
 Multiple Files can be sent (folders) with a tarbowling extension
-
 ((tarbowling = tar files, then send tarball))
 
+Each message sent from client to server will have a type byte and status byte
+set in the first two bytes, with the notable exception of all UDP packets having
+the first 2 bytes a sequence number.  This sequence will loop back to 0 once it
+hits 2^16 which should be more than enough to 'always' avoid collisions:
 
+2.1  GET
+    The type byte for all get packets will be set to CMD_GET
+    The client will first send a packet with the following data section: 
+    <user>:<file> and the status byte set to STAT_OK.
+    The server will then send a reply setting the status byte to STAT_OK and 4
+    bytes in the data section for the file size, or the correct error status.
+    The client will respond with either STAT_OK, or the correct error status.
+    The server will then send a reply setting the status byte to STAT_MF,
+    STAT_EOF, or the correct error status.  If STAT_MF the client will continue
+    listening for more file pieces.  If STAT_EOF the client knows it has
+    recieved all file pieces and closes the connection.  If there was an error
+    the connection will be closed and the user will be notified of the error.
 
-client: GET!<user>:<file>
-	+---------+------+------+
-	|   GET   | User | File |
-	+---------+------+------+
-server: <file size or error>
-	+----------------+		+-------+--------+
-	|   File Size    |	OR	| ERROR | Message|
-	+----------------+		+-------+--------+
-server: <file>
-	+---------+
-	|  Data   |
-	+---------+
+    Possible errors: STAT_NO_SPACE, STAT_BAD_PERM, STAT_MALF_REQ, STAT_BAD_SIZE,
+        STAT_NOS_FILE, STAT_ERROR
+2.2  PUT
+    The type byte for all put packets will be set to CMD_PUT
+    The client will first send a packet with the following data section:
+    <user>{,<user>}|all:<file> and the status byte set to STAT_OK.
+    The server will reply with STAT_OK, or the correct error message. The client
+    will send a packet with the status STAT_OK and 4 bytes in the data section
+    for the file size, or the correct error status.  The server will reply with
+    STAT_OK or the correct error message.  The client will then begin sending
+    pieces of the file 1 packet at a time setting the status to STAT_MF until
+    the end of file where the status will be STAT_EOF, or the correct error
+    status.  If there was an error the connection will be closed and the user
+    will be notifed of the error.
 
-client: PUT!<user>{,<user>}|all:<file>
-	+---------+-----------+------+
-	|   PUT   | User List | File |
-	+---------+-----------+------+
-server: <ready or errors>
-	+------+		+-------+--------+
-	| Ack  |	OR	| ERROR | Message|
-	+------+		+-------+--------+
-client: <file size>
-	+----------------+
-	|   File Size    |
-	+----------------+
-client: <file>
-	+---------+
-	|  Data   |
-	+---------+
-
-client: STAT!<user>{,<user>}|all:<stat_type>{,<stat_type>}
-	+----------+-----------+-----------+
-	|   STAT   | User List | Stat List |
-	+----------+-----------+-----------+
-server: STAT!<user>:<stats> | STAT!<error>
-	+----------+------+-------+		+----------+-------+---------+
-	|   STAT   | User | Stats |	OR	|   STAT   | Error | Message |
-	+----------+------+-------+		+----------+-------+---------+
-server: STAT!<user>:<stats>
-	+----------+------+-------+
-	|   STAT   | User | Stats |
-	+----------+------+-------+
-server: etc
-    - Will need to have a stat interval variable in the camclient.rc or 
-      the system default
-
-------------------------------------------------------------------------
-Step 3 - Errors Behavior
-------------------------------------------------------------------------
-
-C = Cause Of Error
-E = Error Response/Actions Taken
-
-	SERVER SIDE:
-
-		C: Incorrect Permissions (folder or file)
-		E: Notify Client, Drop Request
-
-		C: Malformed Request From Client
-		E: Notify Client, Drop Request
-
-		C: File Send Size is <= 0
-		E: Notify Client, Drop Request
-
-		C: User/File In Request Not On Server
-		E: Notify Client, Drop Request
-
-		C: Unknown Stat Type
-		E: Notify Client, Drop Request
-
-	CLIENT SIDE:
-
-		C: Incorrect Permissions (folder or file)
-		E: Alert User Of Error, Stop Attempt
-
-		C: Cannot Reach Server
-		E: Alert User, Stop Attempt For That Server
-
-		C: Malformed Request From Server
-		E: Alert User, Stop Attempt
-
-		C: Recieve Error Notification From Server
-		E: Depends on Config File Settings, Either Retry Job, or, Stop Attempt
-		
-
-	SHARED:
-		C: Bad config file on startup
-		E: Notify User, Use Default Config
-
+    Possible errors: STAT_NO_SPACE, STAT_BAD_PERM, STAT_MALF_REQ, STAT_BAD_SIZE,
+        STAT_NOS_FILE, STAT_NOS_USER, STAT_ERROR
+2.3  STAT
+    The type byte for all stat packets will be set to CMD_STAT
+    The client will first send a packet with the following data section:
+    <user>{,<user>}|all:<stat_type> and the status byte set to STAT_OK.
+    The server will reply with STAT_OK and the requested stats or the correct
+    error status.  If it takes more than one packet to send all the requested
+    stats then the status byte will be set to STAT_MF until the last packet it
+    will be set to STAT_EOF.
