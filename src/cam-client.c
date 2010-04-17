@@ -23,96 +23,92 @@
 #include "net.h"
 #include "config.h"
 
-#define CMD_GET  1
-#define CMD_PUT  2
-#define CMD_STAT 3
+
+struct action_t {
+	char function;
+        int usesGroup;
+        struct link_t *sockList;
+        char *username;
+        char *fileName;
+        char *saveLoc;
+	char *buf;
+};
 
 void clientCNTCCode();
+struct action_t parseCmdArgs(int argc, char **argv);
+int verifyGroupIs(char **argv);
 
 int
 main(int argc, char **argv)
 {
-    int cmdType;
-
+    struct action_t job;
     //setup interupt
     signal (SIGINT, clientCNTCCode);
 
-    //load config
+    //load & check config
     config_load("camclient.rc",CONFIG_CLIENT);
+
+    //Parse commandline arguments
+    job = parseCmdArgs(argc, argv);
     
-    if (argc < 2)    /* Test for correct number of arguments */
-    {
-       fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
-       exit(1);
+    return 0;
+}
+
+void
+clientCNTCCode() {
+	printf("\nEmergency Quit Initiated...\n");
+        exit(1);
+}
+
+struct action_t
+parseCmdArgs(int argc, char **argv) {
+
+    struct action_t currentAction;
+
+    //check first flag
+    if(strcmp(argv[1], "-g") == 0 && argc == 6) {
+        currentAction.function = 'g';
+        currentAction.fileName = argv[4];
+        currentAction.saveLoc = argv[5];
+    }else if(strcmp(argv[1], "-p") == 0 && argc == 5) {
+        currentAction.function = 'p';
+        currentAction.fileName = argv[4];
+        currentAction.saveLoc = NULL;
+    }else if(strcmp(argv[1], "-s") == 0 && argc == 5) {
+        currentAction.function = 's';
+        currentAction.fileName = NULL;
+        currentAction.saveLoc = NULL;
+    }else {
+        fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
+        exit(1);
     }
 
-    //check for first flag
-    if(strcmp(argv[1], "-p") == 0) {
-        /*Start Put Code */
-        fprintf(stdout, "putting...\n");
-        cmdType = CMD_PUT;
-        /*End Put Code */
-    }else if(strcmp(argv[1], "-g") == 0) {
-        /*Start Get Code */
-        fprintf(stdout, "getting...\n");
-        cmdType = CMD_GET;
-        /*End Get Code */
-    }else if(strcmp(argv[1], "-s") == 0) {
-        /*Start Stat Code */
-        fprintf(stdout, "gathering info...\n");
-        cmdType = CMD_STAT;
+    currentAction.sockList = (struct link_t *)list_init();
 
-        if(client == NULL) {
-            fprintf(stderr, "Bad Config Load");
-            exit(1);
-        }
+    if(verifyGroupIs(argv) == (-1)) {
+        currentAction.usesGroup = -1;
+    }else {
+        currentAction.usesGroup = 1;
+    }
 
-     	struct link_t *templink;
-        struct list_t *sockList = list_init();
+    currentAction.username = argv[3];
 
-	templink = client->group->head;
+    return currentAction;
+}
+
+int
+verifyGroupIs(char **argv) {
+        struct link_t *templink;
+        
+        templink = client->group->head;
+
 	while(templink != NULL && (strcmp(((struct config_group_t *)(templink->item))->name, argv[2]) != 0))
 		templink = templink->next;
 
         if(templink == NULL){
-            fprintf(stderr, "%s not a group in config file\n", argv[2]);
-            //TODO: check to see if its a real IP or Server
-            list_add(sockList, net_create_tcp_socket(argv[2], client->port));
-
-        } else {
-            int i = 0;
-            int len = ((struct config_group_t *)(templink->item))->servers->len;
-            struct link_t *curr = templink;
-            
-            for(i = 0; i < len; i++) {
-                list_add(sockList, net_create_tcp_socket((char *)(curr->item), client->port));
-                curr= curr->next;
-            }
-           
-        }
-
-        /*End Stat Code */
-    }else {
-       fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
-       exit(1);
-    }
-
-
-
-
-
-
-
-
-	
-	
-
-	return 0;
-}
-
-void clientCNTCCode() {
-	printf("\nEmergency Quit Initiated...\n");
-        exit(1);
+            //fprintf(stderr, "%s not a group in config file\n", argv[2]);
+            return -1;
+        } else return 1;
 }
 
 #if 0
