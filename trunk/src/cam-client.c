@@ -78,11 +78,34 @@ statC(struct action_t job){
 
 void
 openAll(struct action_t job){
-//TODO: stuff goes here
+
+        struct link_t *templink;
+
+        templink = job.serverList->head;
+        templink = templink->next;
+
+	while(templink != job.serverList->tail){
+            if(job.function != 's'){
+                list_add(job.sockList, net_create_tcp_socket(templink->item, client->port));
+            } else {
+                list_add(job.sockList, net_create_udp_socket(templink->item, client->port));
+            }
+            templink = templink->next;
+        }
 }
+
 void
 closeAll(struct action_t job){
-//TODO: stuff goes here
+        struct link_t *templink;
+
+        templink = job.serverList->head;
+
+        templink = templink->next;
+
+	while(templink != job.serverList->tail){
+            //TODO:create close socket routine
+            templink = templink->next;
+        }
 }
 
 struct action_t
@@ -108,10 +131,9 @@ parseCmdArgs(int argc, char **argv)  {
         exit(1);
     }
 
-    currentAction.serverList = list_init();
     currentAction.sockList = list_init();
 
-    if(verifyGroup(argv) == (-1)) {
+    if(verifyGroup(argv, currentAction) == (-1)) {
         //Does not use group
         currentAction.usesGroup = -1;
     }else {
@@ -125,7 +147,7 @@ parseCmdArgs(int argc, char **argv)  {
 }
 
 int
-verifyGroup(char **argv) {
+verifyGroup(char **argv, struct action_t job) {
         struct link_t *templink;
         
         templink = client->group->head;
@@ -135,8 +157,13 @@ verifyGroup(char **argv) {
 
         if(templink == NULL){
             //fprintf(stderr, "%s not a group in config file\n", argv[2]);
+            job.serverList = list_init();
+            list_add(job.serverList, argv[2]);
             return -1;
-        } else return 1;
+        } else{
+            job.serverList = ((struct config_group_t *)(templink->item))->servers;
+            return 1;
+        }
 }
 
 #if 0
