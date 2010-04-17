@@ -22,21 +22,7 @@
 #include "command.h"
 #include "net.h"
 #include "config.h"
-
-
-struct action_t {
-	char function;
-        int usesGroup;
-        struct link_t *sockList;
-        char *username;
-        char *fileName;
-        char *saveLoc;
-	char *buf;
-};
-
-void clientCNTCCode();
-struct action_t parseCmdArgs(int argc, char **argv);
-int verifyGroupIs(char **argv);
+#include "cam-client.h"
 
 int
 main(int argc, char **argv)
@@ -50,18 +36,57 @@ main(int argc, char **argv)
 
     //Parse commandline arguments
     job = parseCmdArgs(argc, argv);
-    
+
+    openAll(job);
+
+    if(job.function == 'g'){
+        getC(job);
+    } else
+    if(job.function == 'p'){
+        putC(job);
+    } else
+    if(job.function == 's'){
+        statC(job);
+    }
+
+    closeAll(job);
+
     return 0;
 }
 
 void
 clientCNTCCode() {
+    //TODO: stuff goes here
 	printf("\nEmergency Quit Initiated...\n");
         exit(1);
 }
 
+void
+getC(struct action_t job){
+    //TODO: stuff goes here
+}
+
+void
+putC(struct action_t job){
+//TODO: stuff goes here
+}
+
+void
+statC(struct action_t job){
+//TODO: stuff goes here
+}
+
+void
+openAll(struct action_t job){
+//TODO: stuff goes here
+}
+void
+closeAll(struct action_t job){
+//TODO: stuff goes here
+}
+
 struct action_t
-parseCmdArgs(int argc, char **argv) {
+parseCmdArgs(int argc, char **argv)  {
 
     struct action_t currentAction;
 
@@ -83,11 +108,14 @@ parseCmdArgs(int argc, char **argv) {
         exit(1);
     }
 
-    currentAction.sockList = (struct link_t *)list_init();
+    currentAction.serverList = list_init();
+    currentAction.sockList = list_init();
 
-    if(verifyGroupIs(argv) == (-1)) {
+    if(verifyGroup(argv) == (-1)) {
+        //Does not use group
         currentAction.usesGroup = -1;
     }else {
+        //Uses group
         currentAction.usesGroup = 1;
     }
 
@@ -97,7 +125,7 @@ parseCmdArgs(int argc, char **argv) {
 }
 
 int
-verifyGroupIs(char **argv) {
+verifyGroup(char **argv) {
         struct link_t *templink;
         
         templink = client->group->head;
