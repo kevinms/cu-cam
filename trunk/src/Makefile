@@ -62,7 +62,7 @@ test-net: $(T_NET_OBJECTS)
 # Cleanup rules
 
 clean:
-	rm -fv *.o $(EXECUTABLE) pbuogt-out pbuogt-event pbuogt-script *~
+	rm -fv *.o $(EXECUTABLE) *~
 
 clean-test:
 	rm -fv *.o $(T_EXECUTABLE) *~
