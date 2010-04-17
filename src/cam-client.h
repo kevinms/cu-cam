@@ -19,7 +19,7 @@ struct action_t {
 
 void clientCNTCCode();
 struct action_t parseCmdArgs(int argc, char **argv);
-int verifyGroup(char **argv);
+int verifyGroup(char **argv, struct action_t job);
 void openAll(struct action_t job);
 void closeAll(struct action_t job);
 
