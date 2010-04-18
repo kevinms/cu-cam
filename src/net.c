@@ -209,7 +209,7 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 	char header[2];
 	int hdrsize = 2;
 
-	char send_buf[blocksize + hdrsize];
+	char send_buf[blocksize];
 	int offset = 0;
 	int rc;
 
@@ -218,19 +218,19 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 
 	while(offset != bufsize && rc != -1) {
 		fprintf(stderr,"offset: %d, blocksize: %d, hdrsize: %d, bufsize: %d, total: %d\n",offset, blocksize, hdrsize, bufsize, offset + (blocksize - hdrsize));
-		if(offset + (blocksize - hdrsize) > bufsize) {
-			blocksize -= (offset + (blocksize - hdrsize)) - bufsize;
+		if(offset + (blocksize) > bufsize) {
+			blocksize -= (offset + (blocksize)) - bufsize;
 			header[1] = STAT_EOF;
 			fprintf(stderr,"setting STAT_EOF\n");
 		}
 
-		memcpy(send_buf,header,hdrsize);
-		memcpy(send_buf+hdrsize,buf+offset,blocksize-hdrsize);
-		fprintf(stderr,"header[1]: %d,send_buf[1]: %d\n",header[1],send_buf[1]);
+		//memcpy(send_buf,header,hdrsize);
+		memcpy(send_buf,buf+offset,blocksize);
+		fprintf(stderr,"send_buf[1]: %d\n",send_buf[1]);
 		fprintf(stderr,"before send: offset: %d, bufsize: %d, blocksize: %d\n",offset, bufsize, blocksize);
 
 		rc = net_send_tcp(sock, send_buf, blocksize);
-		offset += (rc-hdrsize);
+		offset += (rc);
 		fprintf(stderr,"after send: offset: %d, bufsize: %d, blocksize: %d\n\n",offset, bufsize, blocksize);
 	}
 
