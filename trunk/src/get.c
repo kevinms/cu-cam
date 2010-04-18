@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "get.h"
 #include "command.h"
+#include "utils.h"
 
 
 void
@@ -90,7 +91,9 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
         inBuf = net_recv_tcp(n->sock);
 
-        FILE *fp = fopen(fileName, "w+b");
+        //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
+        
+        FILE *fp = fopen(fileFromPath(fileName), "ab");
 
         fwrite(inBuf + 2, fileSize, 1, fp);
 

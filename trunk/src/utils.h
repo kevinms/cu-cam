@@ -17,5 +17,6 @@ int endianness();
 void reverse_byte_order(char *str, int size);
 void hton_data(char *str, int size);
 void ntoh_data(char *str, int size);
+char *fileFromPath(char * path);
 
 #endif /* !UTILS_H_ */
