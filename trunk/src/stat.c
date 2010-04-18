@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define RCVBUFSIZE 10016
-
 /*Error types
 STAT_MALF_REQ,
 STAT_NOS_USER, 
@@ -40,23 +38,85 @@ void packet_parse(){
 #define NPACK 10
 
 
-
+/*
 int main(){
 	stat_handle();
 	return 0;
 }
-
+*/
 
 //    Client portion
-void stat_request()
+void stat_request(struct net_t *n, struct list_t *userName, int flag)
 {
+	//create packet
+	char *inBuf;
+    char buf[256];
+    int dataSize = 0;
+
+    buf[0] = CMD_GET;
+    buf[1] = STAT_OK;
+
+    dataSize += 2;
+
+    strncpy(buf + dataSize, userName->head->item, strlen(userName->head->item));
+    dataSize += (strlen(userName->head->item));
+
+    buf[dataSize] = ':';
+    dataSize ++;
+
+    strncpy(buf + dataSize, flag, 1);
+    dataSize += 1;
+
+    
+    
+    
 	//send request packet to server
-	
+	net_send_tcp(n->sock, buf, dataSize);
 
 	//handle reply packet
-
-
+	inBuf = net_recv_tcp(n->sock);
+	
+	//handle errors
+	if(inBuf[0] != CMD_STAT) {
+        printf("Error: Recieved unexpected packet type\n");
+        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
+        exit(1);
+    }
+	
+	if(inBuf[1] == STAT_MALF_REQ) {
+        printf("Error: Malformed request, now quitting\n");
+        exit(1);
+    }else
+    if(inBuf[1] == STAT_NOS_USER) {
+        printf("Error: No such user, now quitting\n");
+        exit(1);
+    }
+    else
+    if(inBuf[1] == STAT_UNK_STAT) {
+        printf("Error: Unexpextes statistic return, now quitting\n");
+        exit(1);
+    }
+    else
+    if(inBuf[1] == STAT_ERROR) {
+        printf("Error: An unknown error has occured, now quitting\n");
+        exit(1);
+    }else
+    if(inBuf[1] == STAT_OK) {
+        printf("Error: Everything is OK!\n");
 	//print data
+	printf("%s", inBuf);
+	
+	exit(1);
+    }else {
+        printf("Error: An unknown error has occured, now quitting\n");
+        exit(1);
+    }
+
+
+    
+
+    
+    return 0;
 
 }
 
@@ -64,13 +124,13 @@ void stat_request()
 
 //    Server portion
 
-char *runCommand_getResults(char *command)
+char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 {
 	//running command on server
 	system( command );
 
 
-	//Storing results...);
+	//Storing results...
 	
 	int count = 0;
 	FILE* tempFile;
@@ -89,7 +149,6 @@ char *runCommand_getResults(char *command)
     
     fread(result, sizeof(char), count, tempFile);
 	
-
 	
 	/*
 	while( !feof( tempFile ) && tempFile )
@@ -103,6 +162,12 @@ char *runCommand_getResults(char *command)
 	*/
 
 	fclose( tempFile ); 
+	
+	
+	
+	net_send_fragments_tcp(sock, result, count, 400);
+	
+	
 	//printf("The file contains this\n\n%s", result);
 
 	
@@ -131,22 +196,30 @@ char *runCommand_getResults(char *command)
 	return result;
 }
 
-void stat_handle()
+void stat_handle(int sock, struct command_t *cmd)
 {
 	//Parse the packet to find out username and flag
+	char *tmp;
+	
+	tmp = cmd->buf;
+	
+	cmd->buf;
+	
 
-	char *userName = "burnsh";
-	char *directory = "/home/burnsh/";
-	int flag = 2;
-
+	char *userName;
+	username = command_parse_string(&tmp);
+	int flag = -1;
+	flag = command_parse_string(&tmp);
+	
+	
 	if(flag == ST_WHO) //show users logged on
 	{
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
 		char *finalCommand = "users > STAT_temp.temp";
 
-		char *results = runCommand_getResults(finalCommand);		
+		char *results = runCommand_getResults(finalCommand, sock, cmd);		
 		
-		printf("%s", results);
+		//printf("%s", results);
 	}
 
 	if(flag == ST_PROC) //show processes of user
@@ -161,14 +234,15 @@ void stat_handle()
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
 
-		char *results = runCommand_getResults(finalCommand);
-		printf("%s", results);
+		char *results = runCommand_getResults(finalCommand, sock, cmd);
+		//printf("%s", results);
 	}
 	
 	if(flag == ST_LS) //show directory
 	{
+		char *directory = "/home/burnsh/";
 		char *finalCommand = "";
-		char *command = "ls ";
+		char *command = "ls ";type
 		char *endCommand = " > STAT_temp.temp";
   			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
 			strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
@@ -177,17 +251,9 @@ void stat_handle()
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
 
-		char *results = runCommand_getResults(finalCommand);
-		printf("%s", results);
+		char *results = runCommand_getResults(finalCommand, sock, cmd);
+		//printf("%s", results);
 	}
-	
-	
-	//put results in a packet directed to the client that requested it
-	
-	
-	
-	
-	//then send to that client
 	
 	return;
 }
