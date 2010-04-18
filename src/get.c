@@ -2,7 +2,10 @@
 #include "get.h"
 #include "utils.h"
 #include <string.h>
+#include <sys/statvfs.h>
+
 #include <stdlib.h>
+
 
 void
 get_handle(int sock, struct command_t *cmd)
@@ -148,6 +151,13 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         int fileSize = ntohl(*(int *)(inBuf+2));
         printf("Size Of File Is : %d\n", fileSize);
         //TODO: check that file System has enough space for file
+        struct statvfs info;
+        statvfs("/", &info);
+        printf("%d\n",(info.f_bavail * info.f_bsize));
+        if(info.f_bavail * info.f_bsize < fileSize) {
+            printf("Error: Not enough free space\n");
+            exit(1);
+        }
 
         //TODO: check for other errors
 
@@ -164,9 +174,8 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         //send all clear
         net_send_tcp(n->sock, buf, dataSize);
 
-		// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
-        //inBuf = net_recv_tcp(n->sock);
-		net_recv_fragments_tcp(n->sock, &inBuf, fileSize);
+	// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
+        net_recv_fragments_tcp(n->sock, &inBuf, fileSize);
 
         //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
         
