@@ -256,15 +256,15 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 			return rc;
 		}
 
-		memcpy((*buf)+count,data+2,rc-2);
-		count += rc-2;
+		memcpy((*buf)+count,data,rc);
+		count += rc;
 
 		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
 
-		if(data[1] == STAT_EOF) {
-			fprintf(stderr,"STAT_EOF recieved\n");
-			return rc;
-		}
+//		if(data[1] == STAT_EOF) {
+//			fprintf(stderr,"STAT_EOF recieved\n");
+//			return rc;
+//		}
 	}
 	return -1;
 }
