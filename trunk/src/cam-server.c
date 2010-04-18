@@ -87,7 +87,8 @@ main(int argc, char **argv)
 
 				if(cmd->type == CMD_GET)
 					get_handle(client_sock, cmd);
-				else if(cmd->type == CMD_PUT);
+				else if(cmd->type == CMD_PUT)
+                                        put_handle(client_sock, cmd);
 				else if(cmd->type == CMD_STAT);
 /******************************************************************************/
 				exit(0);         /* Child process done */
