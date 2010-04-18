@@ -33,11 +33,12 @@ void packet_parse(){
 
 */
 
+#if 0
 int main(){
 	stat_handle();
 	return 0;
 }
-
+#endif
 
 //    Client portion
 void stat_request()

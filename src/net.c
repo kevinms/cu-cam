@@ -7,6 +7,7 @@
 
 #include "net.h"
 #include "utils.h"
+#include "command.h"
 
 struct net_t *
 net_create_tcp_socket(char *node, char *service)
@@ -169,7 +170,7 @@ net_handle_udp_client(int clntSocket)
 		die_with_error("sendto() sent a different number of bytes than expected");
 }
 
-void
+int
 net_send_tcp(int sock, char *buf, int size)
 {
 	int dataSent = 0;
@@ -179,6 +180,7 @@ net_send_tcp(int sock, char *buf, int size)
 		die_with_error("send() failed");
 
 	fprintf(stderr,"SEND SENT: %d bytes\n",dataSent);
+	return dataSent;
 }
 
 char *
@@ -196,6 +198,68 @@ net_recv_tcp(int sock)
 	fprintf(stderr,"RECV RECVED: %d bytes\n",recvMsgSize);
 
 	return buf;
+}
+
+int
+net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
+{
+	char header[2];
+	int hdrsize = 2;
+
+	char send_buf[blocksize + hdrsize];
+	int offset = 0;
+	int count = 0;
+	int rc;
+
+	header[0] = CMD_GET;
+	header[1] = STAT_MF;
+
+	while(offset < bufsize && rc != -1) {
+		if(offset + (blocksize - hdrsize) > bufsize) {
+			blocksize -= (offset + (blocksize - hdrsize)) - bufsize;
+			header[1] = STAT_EOF;
+		}
+
+		memcpy(send_buf,header,hdrsize);
+		memcpy(send_buf,buf+offset,blocksize-hdrsize);
+		fprintf(stderr,"offset: %d, bufsize: %d, blocksize: %d, count: %d\n",offset, bufsize, blocksize, count);
+
+		rc = net_send_tcp(sock, send_buf, blocksize);
+		offset += (blocksize-hdrsize);
+		count += rc;
+	}
+
+	if(rc == -1)
+		return rc;
+	return count;
+}
+
+int
+net_recv_fragments_tcp(int sock, char **buf, int bufsize)
+{
+	char data[RCVBUFSIZE];
+	//char *buf;
+	int rc;
+	int count = 0;
+
+	*buf = (char *)malloc(bufsize);
+	data[1] = STAT_MF;
+
+	while(data[1] == STAT_MF) {
+		rc = recv(sock, data, RCVBUFSIZE, 0);
+		if(rc < 0) {
+			return rc;
+		}
+
+		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
+
+		memcpy((*buf)+count,data+2,rc-2);
+		count += rc;
+		if(data[1] == STAT_EOF) {
+			return rc;
+		}
+	}
+	return -1;
 }
 
 #if 0

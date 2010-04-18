@@ -22,8 +22,11 @@
 
 void deamonize();
 void child_exit_signal_handler();
+void CNTC_exit(int signum);
 
 unsigned int child_proc_count = 0;
+struct net_t *n_tcp;
+struct net_t *n_udp;
 
 int
 main(int argc, char **argv)
@@ -31,8 +34,6 @@ main(int argc, char **argv)
 	int maxDescriptor;   /* Maximum socket descriptor value */
 	fd_set sockSet;      /* Set of socket descriptors for select() */
 	int client_sock;
-	struct net_t *n_tcp;
-	struct net_t *n_udp;
 	pid_t pid;           /* Process ID from fork() */
 
 	char *buf;
@@ -43,6 +44,8 @@ main(int argc, char **argv)
 
 	n_tcp = net_create_tcp_socket(NULL,server->port); /* Create a tcp socket to listen on */
 	n_udp = net_create_udp_socket(NULL,server->port); /* Create a udp socket to listen on */
+
+	signal(SIGINT, CNTC_exit);
 
 	net_bind(n_tcp);
 	net_bind(n_udp);
@@ -79,6 +82,9 @@ main(int argc, char **argv)
 /******************************************************************************/
 				buf = net_recv_tcp(client_sock);
 				cmd = command_parse(buf);
+
+				fprintf(stderr,"type: %d, status: %d, data: %s\n",cmd->type, cmd->status, cmd->buf);
+
 				if(cmd->type == CMD_GET)
 					get_handle(client_sock, cmd);
 				else if(cmd->type == CMD_PUT);
@@ -141,4 +147,13 @@ child_exit_signal_handler()
 		else
 			child_proc_count--;
 	}
+}
+
+void CNTC_exit(int signum)
+{
+	fprintf(stderr,"control c\n");
+	child_exit_signal_handler();
+	net_free(n_tcp);
+	net_free(n_udp);
+	exit(0);
 }
