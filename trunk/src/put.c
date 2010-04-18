@@ -1,4 +1,11 @@
 #include "put.h"
+#include <stdio.h>
+#include "get.h"
+#include "utils.h"
+#include <string.h>
+#include <sys/statvfs.h>
+
+#include <stdlib.h>
 
 void
 put_handle(int sock, struct command_t *cmd) {
