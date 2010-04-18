@@ -120,14 +120,19 @@ reverse_byte_order(char *str, int size)
 void
 hton_data(char *str, int size)
 {
-	if(endianness() == EN_LIT)
+	if(endianness() == EN_LIT) {
+		fprintf(stderr,"Little Endian");
 		reverse_byte_order(str,size);
+	}
 }
 
 void
 ntoh_data(char *str, int size)
 {
-	reverse_byte_order(str,size);
+	if(endianness() == EN_LIT) {
+		fprintf(stderr,"Little Endian");
+		reverse_byte_order(str,size);
+	}
 }
 
 
