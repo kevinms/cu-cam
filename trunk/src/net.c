@@ -164,12 +164,12 @@ net_handle_udp_client(int clntSocket)
 }
 
 void
-net_send_tcp(struct net_t *n, char *buf, int size)
+net_send_tcp(int sock, char *buf, int size)
 {
 	int dataSent = 0;
 
 	/* Echo message back to client */
-	if (send(n->sock, buf, size, 0) != size)
+	if (send(sock, buf, size, 0) != size)
 		die_with_error("send() failed");
 }
 
