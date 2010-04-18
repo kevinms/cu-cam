@@ -200,6 +200,7 @@ net_recv_tcp(int sock)
 	return buf;
 }
 
+//TODO: make blocksize be a config file parameter
 int
 net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 {
@@ -215,6 +216,7 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 	header[1] = STAT_MF;
 
 	while(offset < bufsize && rc != -1) {
+		fprintf(stderr,"offset: %d, blocksize: %d, hdrsize: %d, bufsize: %d, total: %d\n",offset, blocksize, hdrsize, bufsize, offset + (blocksize - hdrsize));
 		if(offset + (blocksize - hdrsize) > bufsize) {
 			blocksize -= (offset + (blocksize - hdrsize)) - bufsize;
 			header[1] = STAT_EOF;
@@ -222,7 +224,8 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 		}
 
 		memcpy(send_buf,header,hdrsize);
-		memcpy(send_buf,buf+offset,blocksize-hdrsize);
+		memcpy(send_buf+hdrsize,buf+offset,blocksize-hdrsize);
+		fprintf(stderr,"header[1]: %d,send_buf[1]: %d\n",header[1],send_buf[1]);
 		fprintf(stderr,"offset: %d, bufsize: %d, blocksize: %d, count: %d\n",offset, bufsize, blocksize, count);
 
 		rc = net_send_tcp(sock, send_buf, blocksize);
