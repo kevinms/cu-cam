@@ -1,9 +1,9 @@
 #include "get.h"
 
 void
-get_handle()
+get_handle(int sock, struct command_t *cmd)
 {
-
+	//cmd->
 }
 
 int

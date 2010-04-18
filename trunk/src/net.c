@@ -20,7 +20,7 @@ net_create_tcp_socket(char *node, char *service)
 		return NULL;
 	}
 
-	memset(&n->hints, 0, sizeof n->hints); /* make sure the struct is empty */
+	memset(&n->hints, 0, sizeof(n->hints)); /* make sure the struct is empty */
 	n->hints.ai_family = AF_UNSPEC;        /* don't care IPv4 or IPv6 */
 	n->hints.ai_socktype = SOCK_STREAM;    /* TCP stream sockets */
 	n->hints.ai_flags = AI_PASSIVE;        /* fill in my IP for me */
@@ -47,7 +47,7 @@ net_create_udp_socket(char *node, char *service)
 		return NULL;
 	}
 
-	memset(&n->hints, 0, sizeof n->hints); /* make sure the struct is empty */
+	memset(&n->hints, 0, sizeof(n->hints)); /* make sure the struct is empty */
 	n->hints.ai_family = AF_UNSPEC;        /* don't care IPv4 or IPv6 */
 	n->hints.ai_socktype = SOCK_DGRAM;    /* TCP stream sockets */
 	n->hints.ai_flags = AI_PASSIVE;        /* fill in my IP for me */
@@ -174,7 +174,7 @@ net_send_tcp(struct net_t *n, char *buf, int size)
 }
 
 char *
-net_recv_tcp(struct net_t *n)
+net_recv_tcp(int sock)
 {
 	char *buf;
 	int recvMsgSize;
@@ -182,7 +182,7 @@ net_recv_tcp(struct net_t *n)
 	buf = (char *)malloc(RCVBUFSIZE);
 
 	/* See if there is more data to receive */
-	if ((recvMsgSize = recv(n->sock, buf, RCVBUFSIZE, 0)) < 0)
+	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
 		die_with_error("recv() failed");
 
 	return buf;
