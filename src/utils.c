@@ -112,7 +112,7 @@ reverse_byte_order(char *str, int size)
 	for(i = 0; i < size; i++) {
 		tmp[i] = str[i];
 	}
-	for(i = 0, j = size; i< size; i++,j--) {
+	for(i = 0, j = size-1; i< size; i++,j--) {
 		str[i] = tmp[j];
 	}
 }
