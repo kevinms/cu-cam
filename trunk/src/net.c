@@ -256,7 +256,7 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 		}
 
 		memcpy((*buf)+count,data+2,rc-2);
-		count += rc;
+		count += rc-2;
 
 		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
 
