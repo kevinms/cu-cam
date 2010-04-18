@@ -1,15 +1,98 @@
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include "get.h"
-#include "command.h"
 #include "utils.h"
-
+#include <string.h>
+#include <stdlib.h>
 
 void
 get_handle(int sock, struct command_t *cmd)
 {
-	//cmd->
+	char buf[RCVBUFSIZE];
+	int size = 0;
+	char *tmp;
+	char *tok;
+	FILE *f;
+	int filesize;
+	char *username;
+	char *filename;
+	char *rbuf;
+	char *filedata;
+
+	//void net_send_tcp(int sock, char *buf, int size);
+	//char *c(int sock);
+
+	buf[0] = CMD_GET;
+	size++;
+	tmp = cmd->buf;
+
+/*******************************************************************************
+  Sending file size or error
+*******************************************************************************/
+	//TODO: make sure user exists
+	username = command_parse_string(&tmp);
+	fprintf(stderr,"user: %s\n",username);
+	//buf[1] = STAT_NOS_USER;
+
+	//TODO: make sure file exists
+	fprintf(stderr,"tmp: %s\n",tmp);
+	filename = command_parse_string(&tmp);
+	fprintf(stderr,"filename: %s\n",filename);
+
+	f = fopen(filename, "rb");
+	size++;
+	if(f == NULL) {
+		buf[1] = STAT_NOS_FILE;
+	} else {
+		filesize = fsize(filename);
+		fprintf(stderr,"filesize: %d\n",filesize);
+		//TODO: what if an int is not 4 bytes.... hmmmm.....
+		*(int*)(buf+size) = htonl(filesize);
+		
+		fprintf(stderr,"filesize: %d\n",*(int*)(buf+size));
+		size += 4;
+		if(filesize > 0)
+			buf[1] = STAT_OK;
+		else
+			buf[1] = STAT_BAD_SIZE;
+	}
+	net_send_tcp(sock, buf, size);
+	command_free(cmd);
+
+/*******************************************************************************
+  Send file!!!
+*******************************************************************************/
+	fprintf(stderr,"bobasdfasfd\n\n");
+	rbuf = net_recv_tcp(sock);
+	fprintf(stderr,"bobasdfasfd\n\n");
+	cmd = command_parse(rbuf);
+
+	if(cmd->type != CMD_GET);
+		//TODO: error
+
+	if(cmd->status != STAT_OK);
+		//TODO: error
+
+	memset(buf, 0, RCVBUFSIZE);
+	size = 0;
+
+	fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
+
+	buf[0] = CMD_GET;
+	buf[1] = STAT_MF;
+	size += 2;
+
+	filedata = (char *)malloc(filesize);
+	fprintf(stderr,"filesize: %d\n",filesize);
+	fprintf(stderr,"fread: %d\n",fread(filedata, 1, filesize, f));
+	hton_data(filedata,filesize);
+
+	/* begin sending file parts */
+	memcpy(buf+size, filedata, filesize);
+	size += filesize;
+	
+	fprintf(stderr,"size: %d\n",size);
+	net_send_fragments_tcp(sock, filedata, filesize, 256);
+	//net_send_tcp(sock, buf, size);
 }
 
 int
@@ -89,13 +172,16 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         //send all clear
         net_send_tcp(n->sock, buf, dataSize);
 
-        inBuf = net_recv_tcp(n->sock);
+		// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
+        //inBuf = net_recv_tcp(n->sock);
+		net_recv_fragments_tcp(n->sock, &inBuf, fileSize);
+		ntoh_data(inBuf, fileSize);
 
         //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
         
-        FILE *fp = fopen(fileFromPath(fileName), "ab");
+        FILE *fp = fopen(saveLoc, "ab");
 
-        fwrite(inBuf + 2, fileSize, 1, fp);
+        fwrite(inBuf, fileSize, 1, fp);
 
         fclose(fp);
 
