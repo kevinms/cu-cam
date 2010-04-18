@@ -107,9 +107,11 @@ endianness()
 void
 reverse_byte_order(char *str, int size)
 {
+	fprintf(stderr,"ummm...");
 	char tmp[size];
 	int i,j;
-		fprintf(stderr,"starting reverse bytes\n");
+	fprintf(stderr,"starting reverse bytes\n");
+	fflush(stderr);
 	for(i = 0; i < size; i++) {
 		tmp[i] = str[i];
 	}
@@ -135,6 +137,7 @@ ntoh_data(char *str, int size)
 	if(endianness() == EN_LIT) {
 		fprintf(stderr,"Little Endian");
 		reverse_byte_order(str,size);
+		fprintf(stderr,"WHAT?????!!??");
 	}
 }
 
