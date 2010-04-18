@@ -56,7 +56,6 @@ main(int argc, char **argv)
         statC(&job);
     }
 
-    for(;;);
     //close all sockets
     closeAll(&job);
 
@@ -80,7 +79,6 @@ getC(struct action_t *job){
 
         printf("connecting\n");
 	net_connect(netLink);
-        printf("connected\n");
 
         if(get_request(netLink, job->username, job->fileName, job->saveLoc) == -1) {
             printf("General Get Error Message Goes Here");
