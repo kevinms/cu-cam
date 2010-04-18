@@ -262,7 +262,7 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
 
 		if(count == bufsize) {
-			fprintf(stderr,"STAT_EOF recieved\n");
+			fprintf(stderr,"End of File recieved\n");
 			return rc;
 		}
 	}
