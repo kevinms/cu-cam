@@ -27,7 +27,9 @@
 int
 main(int argc, char **argv)
 {
+    //create new job
     struct action_t job;
+
     //setup interupt
     signal (SIGINT, clientCNTCCode);
 
@@ -37,8 +39,10 @@ main(int argc, char **argv)
     //Parse commandline arguments
     job = parseCmdArgs(argc, argv);
 
+    //open all sockets
     openAll(job);
 
+    //call proper command
     if(job.function == 'g'){
         getC(job);
     } else
@@ -49,8 +53,10 @@ main(int argc, char **argv)
         statC(job);
     }
 
+    //close all sockets
     closeAll(job);
 
+    //done
     return 0;
 }
 
