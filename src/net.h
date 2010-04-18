@@ -41,7 +41,7 @@ void net_handle_udp_client(int fd);
 
 /* send/recv tcp */
 void net_send_tcp(struct net_t *n, char *buf, int size);
-char *net_recv_tcp(struct net_t *n);
+char *net_recv_tcp(int sock);
 
 /* send/recv udp */
 void net_sendto_udp(struct net_t *n);

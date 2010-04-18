@@ -18,6 +18,8 @@
 #include "net.h"
 #include "command.h"
 
+#include "get.h"
+
 void deamonize();
 void child_exit_signal_handler();
 
@@ -32,6 +34,9 @@ main(int argc, char **argv)
 	struct net_t *n_tcp;
 	struct net_t *n_udp;
 	pid_t pid;           /* Process ID from fork() */
+
+	char *buf;
+	struct command_t *cmd;
 
 	config_load("camserver.rc",CONFIG_SERVER); /* Load configuration file */
 	if(server->deamon) deamonize();            /* Run as a deamon */
@@ -60,16 +65,25 @@ main(int argc, char **argv)
 		if (select(maxDescriptor + 1, &sockSet, NULL, NULL, NULL) == 0)
 			printf("Server still alive\n");
 		else if (FD_ISSET(n_tcp->sock, &sockSet)) {
+			fprintf(stderr,"JSG\n");
 			client_sock = net_accept_tcp_client(n_tcp->sock);
-
 			if (client_sock < 0)
 				continue;
 			/* Fork child process and report any errors */
 			if ((pid = fork()) < 0)
 				die_with_error("fork() failed");
 			else if (pid == 0) { /* If this is the child process */
+				fprintf(stderr,"Accepted client, %s, and forked process!\n","karl");
 				net_free(n_tcp); /* Child closes parent socket file descriptor */
-				net_handle_tcp_client(client_sock);
+				//net_handle_tcp_client(client_sock);
+/******************************************************************************/
+				buf = net_recv_tcp(client_sock);
+				cmd = command_parse(buf);
+				if(cmd->type == CMD_GET)
+					get_handle(client_sock, cmd);
+				else if(cmd->type == CMD_PUT);
+				else if(cmd->type == CMD_STAT);
+/******************************************************************************/
 				exit(0);         /* Child process done */
 			}
 

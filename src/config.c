@@ -27,12 +27,11 @@ config_load(char *rcfile, int type)
 	}
 	else if(type == CONFIG_CLIENT) {
 		client = config_parse_client(in);
+		if(client == NULL) {
+			fprintf(stderr, "Bad Config Load\n");
+			exit(1);
+		}
 	}
-
-        if(client == NULL) {
-            fprintf(stderr, "Bad Config Load\n");
-            exit(1);
-        }
 }
 
 struct config_server_t *
