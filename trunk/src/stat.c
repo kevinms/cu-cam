@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <fcntl.h>
+
+#define RCVBUFSIZE 10016
 
 /*Error types
 STAT_MALF_REQ,
@@ -31,14 +32,20 @@ void packet_parse(){
 	int 
 }
 
+
 */
 
-#if 0
+
+#define BUFLEN 512
+#define NPACK 10
+
+
+
 int main(){
 	stat_handle();
 	return 0;
 }
-#endif
+
 
 //    Client portion
 void stat_request()
@@ -59,9 +66,6 @@ void stat_request()
 
 char *runCommand_getResults(char *command)
 {
-
-	//char *result;
-	
 	//running command on server
 	system( command );
 
@@ -81,7 +85,7 @@ char *runCommand_getResults(char *command)
 	result = (char*)calloc(count, sizeof(char));	
 
 	if(result == NULL)
-    	printf("ERROR MEMORY LOL");
+    	printf("ERROR MEMORY");
     
     fread(result, sizeof(char), count, tempFile);
 	
