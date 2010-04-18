@@ -193,7 +193,7 @@ net_recv_tcp(int sock)
 	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
 		die_with_error("recv() failed");
 
-	fprintf(stderr,"SEND SENT: %d bytes\n",recvMsgSize);
+	fprintf(stderr,"RECV RECVED: %d bytes\n",recvMsgSize);
 
 	return buf;
 }
