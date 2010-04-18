@@ -129,3 +129,23 @@ ntoh_data(char *str, int size)
 {
 	reverse_byte_order(str,size);
 }
+
+
+char *
+fileFromPath(char * path) {
+    int len = strlen(path);
+    int j = 0;
+    int i = len;
+
+    while(i != 0 && path[i] != '/'){
+        j++;
+        i--;
+    }
+    if(path[i] == '/') {
+        j--;
+    }
+    char * result = malloc(j);
+    strncpy(result, path + (len - j), j);
+
+    return result;
+}
