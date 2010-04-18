@@ -248,6 +248,7 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 	while(data[1] == STAT_MF) {
 		rc = recv(sock, data, RCVBUFSIZE, 0);
 		if(rc < 0) {
+			fprintf(stderr,"error: rc < 0\n");
 			return rc;
 		}
 
