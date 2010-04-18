@@ -17,7 +17,7 @@ put_handle(int sock, struct command_t *cmd) {
     //char *tok;
     FILE *f;
     int filesize;
-    struct list_t *username;
+    struct list_t *username = ;
     char *filename;
     char *rbuf;
     char *filedata;
