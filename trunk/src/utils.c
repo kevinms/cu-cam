@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 
 int
 p_strsplit(char *buf, char **seg)
@@ -75,4 +76,56 @@ die_with_error(char *error_message)
 {
     perror(error_message);
     exit(1);
+}
+
+int fsize(const char *f) {
+	struct stat st; 
+
+	if (stat(f, &st) == 0)
+		return st.st_size;
+
+	return -1; 
+}
+
+int
+endianness()
+{
+	unsigned int n = 1;
+	unsigned char *c;
+	c = (unsigned char *)&n;
+
+	if(!*c) {
+		printf("Big Endian\n");
+		return EN_BIG;
+	}
+	else {
+		printf("Little Endian\n");
+		return EN_LIT;
+	}
+}
+
+void
+reverse_byte_order(char *str, int size)
+{
+	char tmp[size];
+	int i,j;
+	for(i = 0; i < size; i++) {
+		str[i] = tmp[i];
+	}
+	for(i = 0, j = size; i< size; i++,j--) {
+		str[i] = tmp[j];
+	}
+}
+
+void
+hton_data(char *str, int size)
+{
+	if(endianness() == EN_LIT)
+		reverse_byte_order(str,size);
+}
+
+void
+ntoh_data(char *str, int size)
+{
+	reverse_byte_order(str,size);
 }
