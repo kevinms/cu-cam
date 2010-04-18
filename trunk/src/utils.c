@@ -126,7 +126,7 @@ void
 hton_data(char *str, int size)
 {
 	if(endianness() == EN_LIT) {
-		fprintf(stderr,"Little Endian");
+		fprintf(stderr,"Little Endian\n");
 		reverse_byte_order(str,size);
 	}
 }
@@ -135,9 +135,9 @@ void
 ntoh_data(char *str, int size)
 {
 	if(endianness() == EN_LIT) {
-		fprintf(stderr,"Little Endian");
+		fprintf(stderr,"Little Endian\n");
 		reverse_byte_order(str,size);
-		fprintf(stderr,"WHAT?????!!??");
+		fprintf(stderr,"WHAT???\n");
 	}
 }
 
