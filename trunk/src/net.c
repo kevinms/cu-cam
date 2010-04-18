@@ -35,6 +35,8 @@ net_create_tcp_socket(char *node, char *service)
 
 	int opt = 1;
 	setsockopt(n->sock, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));
+	setsockopt(n->sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
 
 	return n;
 }
@@ -188,6 +190,8 @@ net_recv_tcp(int sock)
 	/* See if there is more data to receive */
 	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
 		die_with_error("recv() failed");
+
+	fprintf(stderr,"RECEIVE SENT: %d bytes\n",recvMsgSize);
 
 	return buf;
 }
