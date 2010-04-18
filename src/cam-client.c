@@ -84,13 +84,35 @@ getC(struct action_t *job){
             printf("General Get Error Message Goes Here");
             exit(1);
         }
+
+        printf("Done\n");
 }
 
 void
 putC(struct action_t *job){
 //TODO: stuff goes here
 
+    struct link_t *templink;
+    struct link_t *templinkName;
+    
+    templink = job->sockList->head;
+    templinkName = job->serverList->head;
 
+    
+    while(templink != NULL && templinkName != NULL){
+        printf("connecting to %s...",(char*)templinkName->item);
+        net_connect((struct net_t *)templink->item);
+        printf("Connected\n");
+        printf("Putting...");
+        if(put_request((struct net_t *)templink->item, job->username, job->fileName, job->saveLoc) == -1) {
+            printf("Failed To Put To Server %s\n",(char*)templinkName->item);
+        } else {
+            printf("Put finished\n");
+        }
+        templinkName = templinkName->next;
+        templink = templink->next;
+    }
+    printf("Done\n");
 }
 
 void
