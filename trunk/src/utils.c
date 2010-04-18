@@ -87,61 +87,6 @@ int fsize(const char *f) {
 	return -1; 
 }
 
-int
-endianness()
-{
-	unsigned int n = 1;
-	unsigned char *c;
-	c = (unsigned char *)&n;
-
-	if(!*c) {
-		printf("Big Endian\n");
-		return EN_BIG;
-	}
-	else {
-		printf("Little Endian\n");
-		return EN_LIT;
-	}
-}
-
-void
-reverse_byte_order(char *str, int size)
-{
-	fprintf(stderr,"ummm...");
-	char tmp[size];
-	int i,j;
-	fprintf(stderr,"starting reverse bytes\n");
-	fflush(stderr);
-	for(i = 0; i < size; i++) {
-		tmp[i] = str[i];
-	}
-	fprintf(stderr,"half reversed bytes\n");
-	for(i = 0, j = size-1; i< size; i++,j--) {
-		str[i] = tmp[j];
-	}
-	fprintf(stderr,"reversed bytes\n");
-}
-
-void
-hton_data(char *str, int size)
-{
-	if(endianness() == EN_LIT) {
-		fprintf(stderr,"Little Endian\n");
-		reverse_byte_order(str,size);
-	}
-}
-
-void
-ntoh_data(char *str, int size)
-{
-	if(endianness() == EN_LIT) {
-		fprintf(stderr,"Little Endian\n");
-		reverse_byte_order(str,size);
-		fprintf(stderr,"WHAT???\n");
-	}
-}
-
-
 char *
 fileFromPath(char * path) {
     int len = strlen(path);
