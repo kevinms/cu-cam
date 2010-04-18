@@ -39,6 +39,14 @@ int net_accept_tcp_client(int fd);
 void net_handle_tcp_client(int fd);
 void net_handle_udp_client(int fd);
 
+/* send/recv tcp */
+void net_send_tcp(struct net_t *n, char *buf, int size);
+char *net_recv_tcp(struct net_t *n);
+
+/* send/recv udp */
+void net_sendto_udp(struct net_t *n);
+char *net_recvfrom_udp(struct net_t *n);
+
 /* free struct net_t */
 void net_free(struct net_t *n);
 
