@@ -46,35 +46,29 @@ int main(){
 */
 
 //    Client portion
-void stat_request(struct net_t *n, struct list_t *userName, int flag)
+void stat_request(struct net_t *n, struct list_t *userName, char flag)
 {
 	//create packet
 	char *inBuf;
     char buf[256];
     int dataSize = 0;
 
-    buf[0] = CMD_GET;
+    buf[0] = CMD_STAT;
     buf[1] = STAT_OK;
+	buf[2] = flag;	
 
-    dataSize += 2;
+    dataSize += 3;
 
-    strncpy(buf + dataSize, userName->head->item, strlen(userName->head->item));
-    dataSize += (strlen(userName->head->item));
+	if(flag==ST_PROC){
+		strncpy(buf + dataSize, userName->head->item, strlen(userName->head->item));
+    	dataSize += (strlen(userName->head->item));
+	}
 
-    buf[dataSize] = ':';
-    dataSize ++;
-
-    strncpy(buf + dataSize, flag, 1);
-    dataSize += 1;
-
-    
-    
-    
 	//send request packet to server
 	net_send_tcp(n->sock, buf, dataSize);
 
 	//handle reply packet
-	inBuf = net_recv_tcp(n->sock);
+//	inBuf = net_recv_fragment_tcp(n->sock, **buf, bufsize);
 	
 	//handle errors
 	if(inBuf[0] != CMD_STAT) {
@@ -100,23 +94,10 @@ void stat_request(struct net_t *n, struct list_t *userName, int flag)
     if(inBuf[1] == STAT_ERROR) {
         printf("Error: An unknown error has occured, now quitting\n");
         exit(1);
-    }else
-    if(inBuf[1] == STAT_OK) {
-        printf("Error: Everything is OK!\n");
-	//print data
-	printf("%s", inBuf);
-	
-	exit(1);
-    }else {
-        printf("Error: An unknown error has occured, now quitting\n");
-        exit(1);
     }
-
-
-    
-
-    
-    return 0;
+	else if(inBuf[1] == STAT_OK) {
+		printf("%s", inBuf);
+    }
 
 }
 
@@ -200,16 +181,14 @@ void stat_handle(int sock, struct command_t *cmd)
 {
 	//Parse the packet to find out username and flag
 	char *tmp;
+	char flag;
+	char *userName;
 	
 	tmp = cmd->buf;
-	
-	cmd->buf;
-	
+	flag = tmp[0];
+	tmp++;	
 
-	char *userName;
-	username = command_parse_string(&tmp);
-	int flag = -1;
-	flag = command_parse_string(&tmp);
+	userName = command_parse_string(&tmp);
 	
 	
 	if(flag == ST_WHO) //show users logged on
@@ -217,7 +196,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
 		char *finalCommand = "users > STAT_temp.temp";
 
-		char *results = runCommand_getResults(finalCommand, sock, cmd);		
+		runCommand_getResults(finalCommand, sock, cmd);		
 		
 		//printf("%s", results);
 	}
@@ -234,7 +213,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
 
-		char *results = runCommand_getResults(finalCommand, sock, cmd);
+		runCommand_getResults(finalCommand, sock, cmd);
 		//printf("%s", results);
 	}
 	
@@ -242,7 +221,7 @@ void stat_handle(int sock, struct command_t *cmd)
 	{
 		char *directory = "/home/burnsh/";
 		char *finalCommand = "";
-		char *command = "ls ";type
+		char *command = "ls ";
 		char *endCommand = " > STAT_temp.temp";
   			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
 			strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
@@ -251,7 +230,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
 
-		char *results = runCommand_getResults(finalCommand, sock, cmd);
+		runCommand_getResults(finalCommand, sock, cmd);
 		//printf("%s", results);
 	}
 	
