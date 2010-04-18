@@ -21,14 +21,17 @@ Incorrect Permissions (folder or file)
 Malformed Request From Server
 Recieve Error Notification From Server
 */
-#define STAT_OK       1
-#define STAT_NO_SPACE 2
-#define STAT_BAD_PERM 4
-#define STAT_MALF_REQ 8
-#define STAT_BAD_SIZE 16
-#define STAT_NOS_FILE 32
-#define STAT_BAD_STAT 64
-#define STAT_ERROR    128
+#define STAT_OK        0  // Everyting is ok
+#define STAT_MF        1  // More file fragements (used by get and put)
+#define STAT_EOF       2  // End of file|finished sending file
+#define STAT_NO_SPACE  3  //ERR Not enough disk space for file
+#define STAT_BAD_PERM  4  //ERR Bad permissions for file
+#define STAT_MALF_REQ  5  //ERR Malformed request|packet
+#define STAT_BAD_SIZE  6  //ERR Bad file size <= 0
+#define STAT_NOS_FILE  7  //ERR No such file
+#define STAT_NOS_USER  8  //ERR No such user
+#define STAT_UNK_STAT  9  //ERR Unkown stat type
+#define STAT_ERROR     10 //ERR General error notification
 
 /*
  * +---+---+----+
