@@ -10,7 +10,7 @@ get_handle(int sock, struct command_t *cmd)
 	char buf[RCVBUFSIZE];
 	int size = 0;
 	char *tmp;
-	char *tok;
+	//char *tok;
 	FILE *f;
 	int filesize;
 	char *username;
@@ -84,7 +84,7 @@ get_handle(int sock, struct command_t *cmd)
 	filedata = (char *)malloc(filesize);
 	fprintf(stderr,"filesize: %d\n",filesize);
 	fprintf(stderr,"fread: %d\n",fread(filedata, 1, filesize, f));
-	//hton_data(filedata,filesize);
+	hton_data(filedata,filesize);
 
 	/* begin sending file parts */
 	//memcpy(buf+size, filedata, filesize);
