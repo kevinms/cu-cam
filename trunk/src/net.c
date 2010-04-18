@@ -218,6 +218,7 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 		if(offset + (blocksize - hdrsize) > bufsize) {
 			blocksize -= (offset + (blocksize - hdrsize)) - bufsize;
 			header[1] = STAT_EOF;
+			fprintf(stderr,"setting STAT_EOF\n");
 		}
 
 		memcpy(send_buf,header,hdrsize);
