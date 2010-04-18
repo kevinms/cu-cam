@@ -13,10 +13,6 @@ int list_lookup_string(struct list_t *list, char *name);
 double getTime();
 void die_with_error(char *error_message);
 int fsize(const char *f);
-int endianness();
-void reverse_byte_order(char *str, int size);
-void hton_data(char *str, int size);
-void ntoh_data(char *str, int size);
 char *fileFromPath(char * path);
 
 #endif /* !UTILS_H_ */

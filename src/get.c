@@ -61,9 +61,7 @@ get_handle(int sock, struct command_t *cmd)
 /*******************************************************************************
   Send file!!!
 *******************************************************************************/
-	fprintf(stderr,"bobasdfasfd\n\n");
 	rbuf = net_recv_tcp(sock);
-	fprintf(stderr,"bobasdfasfd\n\n");
 	cmd = command_parse(rbuf);
 
 	if(cmd->type != CMD_GET);
@@ -84,15 +82,8 @@ get_handle(int sock, struct command_t *cmd)
 	filedata = (char *)malloc(filesize);
 	fprintf(stderr,"filesize: %d\n",filesize);
 	fprintf(stderr,"fread: %d\n",fread(filedata, 1, filesize, f));
-	hton_data(filedata,filesize);
 
-	/* begin sending file parts */
-	//memcpy(buf+size, filedata, filesize);
-	//size += filesize;
-	
-	//fprintf(stderr,"size: %d\n",size);
 	net_send_fragments_tcp(sock, filedata, filesize, 512);
-	//net_send_tcp(sock, buf, size);
 }
 
 
@@ -176,7 +167,6 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 		// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
         //inBuf = net_recv_tcp(n->sock);
 		net_recv_fragments_tcp(n->sock, &inBuf, fileSize);
-		ntoh_data(inBuf, fileSize);
 
         //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
         
