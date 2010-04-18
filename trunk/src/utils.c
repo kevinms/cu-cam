@@ -109,12 +109,15 @@ reverse_byte_order(char *str, int size)
 {
 	char tmp[size];
 	int i,j;
+		fprintf(stderr,"starting reverse bytes\n");
 	for(i = 0; i < size; i++) {
 		tmp[i] = str[i];
 	}
+	fprintf(stderr,"half reversed bytes\n");
 	for(i = 0, j = size-1; i< size; i++,j--) {
 		str[i] = tmp[j];
 	}
+	fprintf(stderr,"reversed bytes\n");
 }
 
 void
