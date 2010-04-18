@@ -186,6 +186,7 @@ parseCmdArgs(int argc, char **argv,struct action_t *currentAction)  {
  
 }
 
+
 int
 verifyGroup(char **argv, struct action_t *job) {
         struct link_t *templink;
