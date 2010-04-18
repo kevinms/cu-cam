@@ -175,8 +175,10 @@ net_send_tcp(int sock, char *buf, int size)
 	int dataSent = 0;
 
 	/* Echo message back to client */
-	if (send(sock, buf, size, 0) != size)
+	if ((dataSent = send(sock, buf, size, 0)) != size)
 		die_with_error("send() failed");
+
+	fprintf(stderr,"SEND SENT: %d bytes\n",dataSent);
 }
 
 char *
@@ -191,7 +193,7 @@ net_recv_tcp(int sock)
 	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
 		die_with_error("recv() failed");
 
-	fprintf(stderr,"RECEIVE SENT: %d bytes\n",recvMsgSize);
+	fprintf(stderr,"SEND SENT: %d bytes\n",recvMsgSize);
 
 	return buf;
 }
