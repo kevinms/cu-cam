@@ -6,8 +6,10 @@ get_handle()
 
 }
 
-void
-get_request()
+int
+get_request(struct net_t *n, struct list_t *list, char *fileName, char *saveLoc)
 {
 
+
+    return 0;
 }

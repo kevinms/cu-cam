@@ -21,6 +21,9 @@
 #include "utils.h"
 #include "command.h"
 #include "net.h"
+#include "get.h"
+#include "put.h"
+#include "stat.h"
 #include "config.h"
 #include "cam-client.h"
 
@@ -37,24 +40,25 @@ main(int argc, char **argv)
     config_load("camclient.rc",CONFIG_CLIENT);
 
     //Parse commandline arguments
-    job = parseCmdArgs(argc, argv);
+    parseCmdArgs(argc, argv, &job);
 
     //open all sockets
-    openAll(job);
+    openAll(&job);
 
     //call proper command
     if(job.function == 'g'){
-        getC(job);
+        getC(&job);
     } else
     if(job.function == 'p'){
-        putC(job);
+        putC(&job);
     } else
     if(job.function == 's'){
-        statC(job);
+        statC(&job);
     }
 
+    for(;;);
     //close all sockets
-    closeAll(job);
+    closeAll(&job);
 
     //done
     return 0;
@@ -68,92 +72,100 @@ clientCNTCCode() {
 }
 
 void
-getC(struct action_t job){
-    //TODO: stuff goes here
+getC(struct action_t *job){
+
+        struct net_t *netLink;
+
+        netLink = (struct net_t *)job->sockList->head->item;
+
+        printf("connecting\n");
+	net_connect(netLink);
+        printf("connected\n");
+
+        if(get_request(netLink, job->username, job->fileName, job->saveLoc) == -1) {
+            printf("General Get Error Message Goes Here");
+            exit(1);
+        }
 }
 
 void
-putC(struct action_t job){
+putC(struct action_t *job){
 //TODO: stuff goes here
 }
 
 void
-statC(struct action_t job){
+statC(struct action_t *job){
 //TODO: stuff goes here
 }
 
 void
-openAll(struct action_t job){
+openAll(struct action_t *job){
 
         struct link_t *templink;
 
-        templink = job.serverList->head;
-        templink = templink->next;
+        templink = job->serverList->head;
 
-	while(templink != job.serverList->tail){
-            if(job.function != 's'){
-                list_add(job.sockList, net_create_tcp_socket(templink->item, client->port));
+	while(templink != NULL){
+            if(job->function != 's'){
+                //printf("connecting to %s via port %s\n", (char *)templink->item, client->port);
+                
+                list_add(job->sockList, net_create_tcp_socket(templink->item, client->port));
             } else {
-                list_add(job.sockList, net_create_udp_socket(templink->item, client->port));
+                list_add(job->sockList, net_create_udp_socket(templink->item, client->port));
             }
             templink = templink->next;
         }
 }
 
 void
-closeAll(struct action_t job){
+closeAll(struct action_t *job){
         struct link_t *templink;
 
-        templink = job.serverList->head;
+        templink = job->serverList->head;
 
-        templink = templink->next;
 
-	while(templink != job.serverList->tail){
+	while(templink != NULL){
             //TODO:create close socket routine
             templink = templink->next;
         }
 }
 
-struct action_t
-parseCmdArgs(int argc, char **argv)  {
-
-    struct action_t currentAction;
+void
+parseCmdArgs(int argc, char **argv,struct action_t *currentAction)  {
 
     //check first flag
     if(strcmp(argv[1], "-g") == 0 && argc == 6) {
-        currentAction.function = 'g';
-        currentAction.fileName = argv[4];
-        currentAction.saveLoc = argv[5];
+        currentAction->function = 'g';
+        currentAction->fileName = argv[4];
+        currentAction->saveLoc = argv[5];
     }else if(strcmp(argv[1], "-p") == 0 && argc == 5) {
-        currentAction.function = 'p';
-        currentAction.fileName = argv[4];
-        currentAction.saveLoc = NULL;
+        currentAction->function = 'p';
+        currentAction->fileName = argv[4];
+        currentAction->saveLoc = NULL;
     }else if(strcmp(argv[1], "-s") == 0 && argc == 5) {
-        currentAction.function = 's';
-        currentAction.fileName = NULL;
-        currentAction.saveLoc = NULL;
+        currentAction->function = 's';
+        currentAction->fileName = NULL;
+        currentAction->saveLoc = NULL;
     }else {
         fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
         exit(1);
     }
 
-    currentAction.sockList = list_init();
+    currentAction->sockList = list_init();
 
     if(verifyGroup(argv, currentAction) == (-1)) {
         //Does not use group
-        currentAction.usesGroup = -1;
+        currentAction->usesGroup = -1;
     }else {
         //Uses group
-        currentAction.usesGroup = 1;
+        currentAction->usesGroup = 1;
     }
 
-    currentAction.username = argv[3];
-
-    return currentAction;
+ 
 }
 
 int
-verifyGroup(char **argv, struct action_t job) {
+verifyGroup(char **argv, struct action_t *job) {
         struct link_t *templink;
         
         templink = client->group->head;
@@ -162,12 +174,16 @@ verifyGroup(char **argv, struct action_t job) {
 		templink = templink->next;
 
         if(templink == NULL){
-            //fprintf(stderr, "%s not a group in config file\n", argv[2]);
-            job.serverList = list_init();
-            list_add(job.serverList, argv[2]);
+            fprintf(stderr, "%s not a group in config file\n", argv[2]);
+            job->serverList = list_init();
+            job->username = list_init();
+            list_add(job->serverList, argv[2]);        
+            list_add(job->username, argv[3]);
+
             return -1;
         } else{
-            job.serverList = ((struct config_group_t *)(templink->item))->servers;
+            job->serverList = ((struct config_group_t *)(templink->item))->servers;
+            job->serverList = ((struct config_group_t *)(templink->item))->users;
             return 1;
         }
 }
