@@ -243,15 +243,13 @@ int
 net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 {
 	char data[RCVBUFSIZE];
-	//char *buf;
 	int rc;
 	int count = 0;
 
 	*buf = (char *)malloc(bufsize);
 	data[1] = STAT_MF;
 
-	while(data[1] == STAT_MF) {
-		rc = recv(sock, data, RCVBUFSIZE, 0);
+	while(count == bufsize) {
 		if(rc < 0) {
 			fprintf(stderr,"error: rc < 0\n");
 			return rc;
