@@ -261,10 +261,10 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 
 		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
 
-//		if(data[1] == STAT_EOF) {
-//			fprintf(stderr,"STAT_EOF recieved\n");
-//			return rc;
-//		}
+		if(count == bufsize) {
+			fprintf(stderr,"STAT_EOF recieved\n");
+			return rc;
+		}
 	}
 	return -1;
 }
