@@ -138,20 +138,8 @@ void stat_handle()
 	{
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
 		char *finalCommand = "users > STAT_temp.temp";
-		//char *command = "ps -ef | grep '";
-		//char *endCommand = "' > STAT_temp.temp";
-  		//	finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
-		//	strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
 
-		//strcat(finalCommand,command);
-		//strcat(finalCommand,userName);
-		//strcat(finalCommand,endCommand);
-
-		char *results = runCommand_getResults(finalCommand);
-		
-		//strtok(results, "Login: ");
-		//char *username = strtok(results, "Name: ");
-		
+		char *results = runCommand_getResults(finalCommand);		
 		
 		printf("%s", results);
 	}
