@@ -84,16 +84,17 @@ get_handle(int sock, struct command_t *cmd)
 	filedata = (char *)malloc(filesize);
 	fprintf(stderr,"filesize: %d\n",filesize);
 	fprintf(stderr,"fread: %d\n",fread(filedata, 1, filesize, f));
-	hton_data(filedata,filesize);
+	//hton_data(filedata,filesize);
 
 	/* begin sending file parts */
-	memcpy(buf+size, filedata, filesize);
-	size += filesize;
+	//memcpy(buf+size, filedata, filesize);
+	//size += filesize;
 	
-	fprintf(stderr,"size: %d\n",size);
-	net_send_fragments_tcp(sock, filedata, filesize, 256);
+	//fprintf(stderr,"size: %d\n",size);
+	net_send_fragments_tcp(sock, filedata, filesize, 512);
 	//net_send_tcp(sock, buf, size);
 }
+
 
 int
 get_request(struct net_t *n, struct list_t *userName, char *fileName, char *saveLoc)
