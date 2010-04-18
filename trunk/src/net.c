@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 
 #include "net.h"
 #include "utils.h"
@@ -31,6 +32,9 @@ net_create_tcp_socket(char *node, char *service)
 	}
 
 	n->sock = socket(n->servinfo->ai_family, n->servinfo->ai_socktype, n->servinfo->ai_protocol);
+
+	int opt = 1;
+	setsockopt(n->sock, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt));
 
 	return n;
 }
