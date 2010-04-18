@@ -176,8 +176,10 @@ net_send_tcp(int sock, char *buf, int size)
 	int dataSent = 0;
 
 	/* Echo message back to client */
-	if ((dataSent = send(sock, buf, size, 0)) != size)
-		die_with_error("send() failed");
+	if ((dataSent = send(sock, buf, size, 0)) != size) {
+		fprintf(stderr,"should have sent: %d bytes but actually sent: %d\n",size,dataSent);
+		fprintf(stderr,"send() failed\n");
+	}
 
 	fprintf(stderr,"SEND SENT: %d bytes\n",dataSent);
 	return dataSent;
@@ -209,13 +211,12 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 
 	char send_buf[blocksize + hdrsize];
 	int offset = 0;
-	int count = 0;
 	int rc;
 
 	header[0] = CMD_GET;
 	header[1] = STAT_MF;
 
-	while(offset < bufsize && rc != -1) {
+	while(offset != bufsize && rc != -1) {
 		fprintf(stderr,"offset: %d, blocksize: %d, hdrsize: %d, bufsize: %d, total: %d\n",offset, blocksize, hdrsize, bufsize, offset + (blocksize - hdrsize));
 		if(offset + (blocksize - hdrsize) > bufsize) {
 			blocksize -= (offset + (blocksize - hdrsize)) - bufsize;
@@ -226,16 +227,16 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 		memcpy(send_buf,header,hdrsize);
 		memcpy(send_buf+hdrsize,buf+offset,blocksize-hdrsize);
 		fprintf(stderr,"header[1]: %d,send_buf[1]: %d\n",header[1],send_buf[1]);
-		fprintf(stderr,"offset: %d, bufsize: %d, blocksize: %d, count: %d\n",offset, bufsize, blocksize, count);
+		fprintf(stderr,"before send: offset: %d, bufsize: %d, blocksize: %d\n",offset, bufsize, blocksize);
 
 		rc = net_send_tcp(sock, send_buf, blocksize);
-		offset += (blocksize-hdrsize);
-		count += rc;
+		offset += (rc-hdrsize);
+		fprintf(stderr,"after send: offset: %d, bufsize: %d, blocksize: %d\n\n",offset, bufsize, blocksize);
 	}
 
 	if(rc == -1)
 		return rc;
-	return count;
+	return offset;
 }
 
 int
@@ -256,10 +257,11 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 			return rc;
 		}
 
-		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
-
 		memcpy((*buf)+count,data+2,rc-2);
 		count += rc;
+
+		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
+
 		if(data[1] == STAT_EOF) {
 			fprintf(stderr,"STAT_EOF recieved\n");
 			return rc;
