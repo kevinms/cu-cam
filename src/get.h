@@ -6,8 +6,7 @@
 #ifndef _GET_H
 #define	_GET_H
 
-    void get_handle();
-    void get_request();
+	void get_handle();
+	void get_request();
 
 #endif	/* _GET_H */
-

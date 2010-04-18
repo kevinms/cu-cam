@@ -164,6 +164,63 @@ net_handle_udp_client(int clntSocket)
 }
 
 void
+net_send_tcp(struct net_t *n, char *buf, int size)
+{
+	int dataSent = 0;
+
+	/* Echo message back to client */
+	if (send(n->sock, buf, size, 0) != size)
+		die_with_error("send() failed");
+}
+
+char *
+net_recv_tcp(struct net_t *n)
+{
+	char *buf;
+	int recvMsgSize;
+
+	buf = (char *)malloc(RCVBUFSIZE);
+
+	/* See if there is more data to receive */
+	if ((recvMsgSize = recv(n->sock, buf, RCVBUFSIZE, 0)) < 0)
+		die_with_error("recv() failed");
+
+	return buf;
+}
+
+#if 0
+void
+net_sendto_udp(int sock, char *buf, int size)
+{
+	/* Send received datagram back to the client */
+	if (sendto(clntSocket, echoBuffer, recvMsgSize, 0,
+		(struct sockaddr *) &echoClntAddr, sizeof(echoClntAddr)) != recvMsgSize)
+		die_with_error("sendto() sent a different number of bytes than expected");
+}
+
+char *
+net_recvfrom_udp(struct net_t *n)
+{
+
+	char buf;     /* Buffer for echo string */
+	int size;                 /* Size of received message */
+	struct sockaddr_in echoClntAddr; /* Client address */
+	unsigned int cliAddrLen;         /* Length of incoming message */
+
+	buf = (char *)malloc(RCVBUFSIZE);
+
+	/* Set the size of the in-out parameter */
+	cliAddrLen = sizeof(echoClntAddr);
+
+	/* Block until receive message from a client */
+	if ((size = recvfrom(clntSocket, buf, RCVBUFSIZE, 0, (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
+		die_with_error("recvfrom() failed");
+
+	return buf;
+}
+#endif
+
+void
 net_free(struct net_t *n)
 {
 	close(n->sock);
