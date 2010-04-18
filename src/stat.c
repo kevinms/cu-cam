@@ -33,17 +33,18 @@ void packet_parse(){
 
 */
 
-#if 0
+
 int main(){
 	stat_handle();
 	return 0;
 }
-#endif
+
 
 //    Client portion
 void stat_request()
 {
 	//send request packet to server
+	
 
 	//handle reply packet
 
@@ -62,7 +63,7 @@ char *runCommand_getResults(char *command)
 	//char *result;
 	
 	//running command on server
-	int processList = system( command );
+	system( command );
 
 
 	//Storing results...);
@@ -72,7 +73,6 @@ char *runCommand_getResults(char *command)
 
 	
 	tempFile = fopen("STAT_temp.temp", "r" );
-	int ch;
 	fseek(tempFile,0,SEEK_END);
 	count = ftell(tempFile);
 	char *result;
@@ -176,6 +176,14 @@ void stat_handle()
 		char *results = runCommand_getResults(finalCommand);
 		printf("%s", results);
 	}
+	
+	
+	//put results in a packet directed to the client that requested it
+	
+	
+	
+	
+	//then send to that client
 	
 	return;
 }
