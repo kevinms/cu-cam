@@ -115,7 +115,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	printf("================================================================================\n");
 	printf("                        Data Recieved From The Server                           \n");
 	printf("================================================================================\n");
-	printf("%s\n");
+	printf("%s\n",inBuf);
 }
 
 //    Server portion
