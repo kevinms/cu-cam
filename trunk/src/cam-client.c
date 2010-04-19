@@ -86,7 +86,7 @@ getC(struct action_t *job){
         }else {
 
             if(get_request(netLink, job->username, job->fileName, job->saveLoc) == -1) {
-                printf("General Get Error Message Goes Here");
+                printf("Failed To Get From Server");
                 exit(1);
             }
         }
@@ -203,7 +203,7 @@ parseCmdArgs(int argc, char **argv,struct action_t *currentAction)  {
         currentAction->fileName = NULL;
         currentAction->saveLoc = argv[4];
     }else {
-        fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
+        fprintf(stderr, "Incorrect Usage, see Docs for %s for details\n", argv[0]);
         exit(1);
     }
 
