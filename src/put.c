@@ -130,7 +130,7 @@ put_handle(int sock, struct command_t *cmd) {
 int
 put_request(struct net_t *n, struct list_t *userName, char *fileName, char *saveLoc) {
 
-    printf("Rocking the put\n");
+    printf("initialized\n");
 
     int filesize;
     FILE *f;
@@ -163,15 +163,15 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     strncpy(buf + dataSize, fileName, strlen(fileName));
     dataSize += (strlen(fileName));
 
-    printf("buf stuff : '%s'\n", (buf+2));
-    printf("data size : '%d'\n", dataSize);
+    //printf("buf stuff : '%s'\n", (buf+2));
+    //printf("data size : '%d'\n", dataSize);
 
     net_send_tcp(n->sock, buf, dataSize);
 
 
 
     inBuf = net_recv_tcp(n->sock);
-    if(inBuf[0] != CMD_GET) {
+    if(inBuf[0] != CMD_PUT) {
         printf("Error: Recieved unexpected packet type\n");
         return -1;
     }
@@ -209,7 +209,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     f = fopen(fileName, "rb");
 	size++;
 	if(f == NULL) {
-            printf("Error: No such file.");
+            printf("Error: No such file.\n");
             return -1;
 	} else {
 		filesize = fsize(fileName);

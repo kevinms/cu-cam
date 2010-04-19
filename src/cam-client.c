@@ -57,6 +57,7 @@ main(int argc, char **argv)
     }
 
     //close all sockets
+    if(job.sockList->head->item != NULL)
     closeAll(&job);
 
     //done
@@ -78,13 +79,17 @@ getC(struct action_t *job){
         netLink = (struct net_t *)job->sockList->head->item;
 
         printf("connecting\n");
-	net_connect(netLink);
 
-        if(get_request(netLink, job->username, job->fileName, job->saveLoc) == -1) {
-            printf("General Get Error Message Goes Here");
-            exit(1);
+        if(net_connect(netLink) == -1 ) {
+            printf("Failed..is this a correct address and is the server running?\n");
+            
+        }else {
+
+            if(get_request(netLink, job->username, job->fileName, job->saveLoc) == -1) {
+                printf("General Get Error Message Goes Here");
+                exit(1);
+            }
         }
-
         printf("Done\n");
 }
 
@@ -101,13 +106,17 @@ putC(struct action_t *job){
     
     while(templink != NULL && templinkName != NULL){
         printf("connecting to %s...",(char*)templinkName->item);
-        net_connect((struct net_t *)templink->item);
-        printf("Connected\n");
-        printf("Putting...");
-        if(put_request((struct net_t *)templink->item, job->username, job->fileName, job->saveLoc) == -1) {
-            printf("Failed To Put To Server %s\n",(char*)templinkName->item);
-        } else {
-            printf("Put finished\n");
+        if(net_connect((struct net_t *)templink->item) == -1 ) {
+            printf("Failed..is this a correct address and is the server running?\n");
+            templink->item = NULL;
+        }else {
+            printf("Connected\n");
+            printf("Putting...");
+            if(put_request((struct net_t *)templink->item, job->username, job->fileName, job->saveLoc) == -1) {
+                printf("Failed To Put To Server %s\n",(char*)templinkName->item);
+            } else {
+                 printf("Put finished\n");
+            }
         }
         templinkName = templinkName->next;
         templink = templink->next;
@@ -130,10 +139,14 @@ statC(struct action_t *job){
 
     while(templink != NULL && templinkName != NULL){
         printf("connecting to %s...",(char*)templinkName->item);
-        net_connect((struct net_t *)templink->item);
-        printf("Connected\n");
-        printf("Stating...");
-        stat_request((struct net_t *)templink->item, job->username, flag);
+        if(net_connect((struct net_t *)templink->item) == -1) {
+            printf("Failed..is this a correct address and is the server running?\n");
+            templink->item = NULL;
+        }else {
+            printf("Connected\n");
+            printf("Stating...");
+            stat_request((struct net_t *)templink->item, job->username, flag);
+        }
         templinkName = templinkName->next;
         templink = templink->next;
     }
