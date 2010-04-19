@@ -22,3 +22,12 @@ group_users = {
 	ALICE
 	BOB
 }
+[group]
+group_name = "test"
+group_servers = {
+	130.127.49.133
+}
+group_users = {
+	halp
+	bob
+}

@@ -158,30 +158,22 @@ void
 openAll(struct action_t *job){
 
         struct link_t *templink;
-
         templink = job->serverList->head;
 
 	while(templink != NULL){
-            if(job->function != 's'){
-                //printf("connecting to %s via port %s\n", (char *)templink->item, client->port);
-                
                 list_add(job->sockList, net_create_tcp_socket(templink->item, client->port));
-            } else {
-                list_add(job->sockList, net_create_tcp_socket(templink->item, client->port));
-            }
             templink = templink->next;
         }
 }
 
 void
 closeAll(struct action_t *job){
+    
         struct link_t *templink;
-
         templink = job->serverList->head;
 
-
 	while(templink != NULL){
-            //TODO:create close socket routine
+            //net_free((struct net_t *)templink->item);
             templink = templink->next;
         }
 }
@@ -240,7 +232,7 @@ verifyGroup(char **argv, struct action_t *job) {
             return -1;
         } else{
             job->serverList = ((struct config_group_t *)(templink->item))->servers;
-            job->serverList = ((struct config_group_t *)(templink->item))->users;
+            job->username = ((struct config_group_t *)(templink->item))->users;
             return 1;
         }
 }
