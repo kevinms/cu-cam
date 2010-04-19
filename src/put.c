@@ -190,7 +190,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         memset(buf, 0, RCVBUFSIZE);
 	size = 0;
 
-	fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
+	//fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
 
 	buf[0] = CMD_GET;
 	buf[1] = STAT_MF;
