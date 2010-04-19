@@ -77,9 +77,9 @@ hits 2^16 which should be more than enough to 'always' avoid collisions:
     The client will respond with either STAT_OK, or the correct error status.
     The server will then send a reply setting the status byte to STAT_MF,
     STAT_EOF, or the correct error status.  If STAT_MF the client will continue
-    listening for more file pieces.  If STAT_EOF the client knows it has
-    recieved all file pieces and closes the connection.  If there was an error
-    the connection will be closed and the user will be notified of the error.
+    listening for more file pieces until it reaches the filesize.  If there was
+    an error the connection will be closed and the user will be notified of the
+    error.
 
     Possible errors: STAT_NO_SPACE, STAT_BAD_PERM, STAT_MALF_REQ, STAT_BAD_SIZE,
         STAT_NOS_FILE, STAT_ERROR
@@ -92,9 +92,9 @@ hits 2^16 which should be more than enough to 'always' avoid collisions:
     for the file size, or the correct error status.  The server will reply with
     STAT_OK or the correct error message.  The client will then begin sending
     pieces of the file 1 packet at a time setting the status to STAT_MF until
-    the end of file where the status will be STAT_EOF, or the correct error
-    status.  If there was an error the connection will be closed and the user
-    will be notifed of the error.
+    it recieves filesize of data, or the correct error status.  If there was an
+    error the connection will be closed and the user will be notifed of the
+    error.
 
     Possible errors: STAT_NO_SPACE, STAT_BAD_PERM, STAT_MALF_REQ, STAT_BAD_SIZE,
         STAT_NOS_FILE, STAT_NOS_USER, STAT_ERROR
@@ -104,7 +104,7 @@ hits 2^16 which should be more than enough to 'always' avoid collisions:
     <user>{,<user>}|all:<stat_type> and the status byte set to STAT_OK.
     The server will reply with STAT_OK and the requested stats or the correct
     error status.  If it takes more than one packet to send all the requested
-    stats then the status byte will be set to STAT_MF until the last packet it
-    will be set to STAT_EOF.
+    stats then the status byte will be set to STAT_MF until the buf size of data
+    has been sent.
 
     Possible errors: STAT_MALF_REQ, STAT_NOS_USER, STAT_UNK_STAT, STAT_ERROR

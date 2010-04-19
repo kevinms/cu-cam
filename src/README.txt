@@ -11,37 +11,64 @@
 #*******************************************#
 Created By: Burns Hudson, Karl Brewer, Kevin Smith
 
+Table of Contents
 
-To Compile All: 
-make
-   Or
-make all
+    HowTo Compile
+    HowTo Run
+    HowTo Example Usage
+    HowTo Edit Configuration Files
+
+
+================================================================================
+HowTo Compile
+================================================================================
+    make
+      Or
+    make all
 
 To Compile Just Client:
-make cam-client
+    make cam-client
 
 To Compile Just Server:
-make cam-server
+    make cam-server
 
 To Clean:
-make clean
+    make clean
 
-To Run:
-
-  Server:
+================================================================================
+HowTo Run:
+================================================================================
+Server:
   ./cam-server
 
-  Get Function:
+Get Function:
   ./cam-client -g <server> <username> <filename> <savelocation>
 
-  Put Function:
-  ./cam-client -p <group>|<server> <username> <filename>
+Put Function:
+  ./cam-client -p <group>|<server> <usernames> <filename>
 
-  Stat Function:
-  ./cam-client -s <group>|<server> <usernames> <stat_type>
+Stat Function:
+  ./cam-client -s <group>|<server> <username> <stat_type>
 
-To Edit Configuration Files:
+================================================================================
+HowTo Example Usage:
+================================================================================
+Server:
+    ./cam-server
 
+Get a file from the user LUKESKYWALKER
+    ./cam-client -g LinuxVM1 LUKESKYWALKER deathstar.tar destroythis.tar
+
+Put a file on a server using the CPSC360 group
+    ./cam-client -p CPSC350 * networkingisfun.c homework.c
+
+Stats from ALICE on LinuxVM1
+    ./cam-client -s LinuxVM1 ALICE 0   /* List all users on LinuxVM1 */
+    ./cam-client -s LinuxVM1 ALICE 1   /* List all proccess ALICE owns */
+    ./cam-client -s LinuxVM1 ALICE 2   /* List the contents of a folder */
+================================================================================
+HowTo Edit Configuration Files:
+================================================================================
   Server Configuration:
   camserver.rc
 
