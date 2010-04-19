@@ -149,7 +149,7 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	if(result == NULL)
 		printf("ERROR MEMORY");
 
-	tempFile = fopen("STAT_temp.temp", "r" );
+	tempFile = fopen("STAT_temp.temp", "r");
 	fread(result, 1, count, tempFile);
 	
 	
@@ -217,7 +217,9 @@ void stat_handle(int sock, struct command_t *cmd)
 	char flag;
 	char *userName;
 	char *finalCommand;
-	
+	char *command;
+	char *endCommand;
+
 	tmp = cmd->buf;
 	printf("cmd->buf: %d\n", cmd->buf[0]);
 	//flag = 0;
@@ -229,17 +231,16 @@ void stat_handle(int sock, struct command_t *cmd)
 	if(flag == ST_WHO) //show users logged on
 	{
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
-		finalCommand = "w > STAT_temp.temp";
+		finalCommand = p_strcpy("w > STAT_temp.temp");
 	}else if(flag == ST_PROC) //show processes of user
 	{
 		userName = command_parse_string(&tmp);
 
-		finalCommand = "";
-		char *command = "ps -ef | grep '";
-		char *endCommand = "' > STAT_temp.temp";
+		command = p_strcpy("ps -ef | grep '");
+		endCommand = p_strcpy("' > STAT_temp.temp");
 
 		finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
-		strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
+		strlen(endCommand) + 1, sizeof(char));
 
 		strcat(finalCommand,command);
 		strcat(finalCommand,userName);
@@ -250,17 +251,20 @@ void stat_handle(int sock, struct command_t *cmd)
 		char *directory = command_parse_string(&tmp);
 		fprintf(stderr,"directory: %s\n",directory);
 
-		finalCommand = "ls /home/halp/ > STAT_temp.temp";
-		char *command = "ls ";
-		char *endCommand = " > STAT_temp.temp";
+//		finalCommand = p_strcpy("ls /home/halp/ > STAT_temp.temp");
 
-		finalCommand = (char *)malloc(strlen(command) + strlen(endCommand)+ 
-						strlen(finalCommand) + 1);
+		command = p_strcpy("ls ");
+		endCommand = p_strcpy(" > STAT_temp.temp");
 
+		fprintf(stderr,"malloc size: %d\n",strlen(command) + strlen(endCommand) + strlen(directory));
+		finalCommand = (char *)malloc(strlen(command) + strlen(endCommand) + strlen(directory));
+		memset(finalCommand, 0, strlen(command) + strlen(endCommand) + strlen(directory));
+		fprintf(stderr,"bob\n");
 		strcat(finalCommand,command);
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
 
+		printf("finalCommand: '%s'\n",finalCommand);
 	} else {
 		fprintf(stderr,"BAD FLAG\n");
 	}
