@@ -52,6 +52,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	//create packet
 	char *inBuf;
     char buf[256];
+	int size = 0;
     int dataSize = 0;
 
     buf[0] = CMD_STAT;
@@ -102,6 +103,12 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	fprintf(stderr,"dataSize: %d\n",dataSize);
 
 	free(inBuf);
+
+	buf[0] = CMD_STAT;
+	buf[1] = STAT_OK;
+	size += 2;
+	net_send_tcp(n->sock,buf,size);
+
 	net_recv_fragments_tcp(n->sock, &inBuf, dataSize);
 	
 	fprintf(stderr,"yoouuuurrrrr boooyy %s\n",inBuf);
@@ -193,7 +200,7 @@ tempFile = fopen("STAT_temp.temp", "r" );
 	*/
 	
 	//Removing temp file
-	//remove("STAT_temp.temp");
+	remove("STAT_temp.temp");
 
 	return result;
 }
