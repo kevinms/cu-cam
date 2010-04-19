@@ -171,7 +171,6 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 		//TODO: what if an int is not 4 bytes.... hmmmm.....
 		*(int*)(buf+size) = htonl(filesize);
 
-		fprintf(stderr,"filesize: %d\n",*(int*)(buf+size));
 		size += 4;
 		if(filesize > 0)
 			buf[1] = STAT_OK;
