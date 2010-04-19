@@ -150,7 +150,7 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	
 	*(int *)(buf+2) = count;
 	dataSize += sizeof(int);
-	printf("here\n");
+	printf("buf[0]: %d, buf[1]: %d, size: %d\n",buf[0],buf[1],(buf+2));
 	net_send_tcp(sock, buf, dataSize);
 	
 	buf2 = net_recv_tcp(sock);
