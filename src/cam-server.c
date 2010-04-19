@@ -28,7 +28,6 @@ void CNTC_exit(int signum);
 
 unsigned int child_proc_count = 0;
 struct net_t *n_tcp;
-struct net_t *n_udp;
 
 int
 main(int argc, char **argv)
@@ -151,6 +150,5 @@ void CNTC_exit(int signum)
 	fprintf(stderr,"control c\n");
 	child_exit_signal_handler();
 	net_free(n_tcp);
-	net_free(n_udp);
 	exit(0);
 }
