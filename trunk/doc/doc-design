@@ -62,7 +62,7 @@ Pleasent ASCII art to calm the nerves:
 
 ./cam-client -g <server> <username> <filename> <savelocation>
 ./cam-client -p <group>|<server> <username> <filename>
-./cam-client -s <group>|<server> <usernames> <stat_type>
+./cam-client -s <group>|<server> <username> <stat_type>
 
 3.1  ADMIN
     1. Manually state each student account in camclient.rc
