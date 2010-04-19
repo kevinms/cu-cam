@@ -34,33 +34,38 @@ get_handle(int sock, struct command_t *cmd)
 	//TODO: make sure user exists
 	username = command_parse_string(&tmp);
 	fprintf(stderr,"user: %s\n",username);
-	if(fcheck_for_user(username) < 0)
+	if(fcheck_for_user(username) < 0) {
+		printf("bad username: %s\n",username);
 		buf[1] = STAT_NOS_USER;
+		size++;
+		net_send_tcp(sock, buf, size);
+	}
 
 	//TODO: make sure file exists
 	fprintf(stderr,"tmp: %s\n",tmp);
 	filename = command_parse_string(&tmp);
-	if(fcheck_for_file(filename) < 0)
+	if(fcheck_for_file(filename) < 0) {
 		buf[1] = STAT_NOS_FILE;
+		size++;
+		net_send_tcp(sock, buf, size);
+	}
 	fprintf(stderr,"filename: %s\n",filename);
 
 	f = fopen(filename, "rb");
 	size++;
-	if(f == NULL) {
-		buf[1] = STAT_NOS_FILE;
-	} else {
-		filesize = fsize(filename);
-		fprintf(stderr,"filesize: %d\n",filesize);
-		//TODO: what if an int is not 4 bytes.... hmmmm.....
-		*(int*)(buf+size) = htonl(filesize);
-		
-		fprintf(stderr,"filesize: %d\n",*(int*)(buf+size));
-		size += 4;
-		if(filesize > 0)
-			buf[1] = STAT_OK;
-		else
-			buf[1] = STAT_BAD_SIZE;
-	}
+
+	filesize = fsize(filename);
+	fprintf(stderr,"filesize: %d\n",filesize);
+	//TODO: what if an int is not 4 bytes.... hmmmm.....
+	*(int*)(buf+size) = htonl(filesize);
+	
+	fprintf(stderr,"filesize: %d\n",*(int*)(buf+size));
+	size += 4;
+	if(filesize > 0)
+		buf[1] = STAT_OK;
+	else
+		buf[1] = STAT_BAD_SIZE;
+
 	net_send_tcp(sock, buf, size);
 	command_free(cmd);
 
