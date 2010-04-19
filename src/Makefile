@@ -80,7 +80,6 @@ clean-test:
 	rm -fv *.o $(T_EXECUTABLE) *~
 
 #Karl's Shortcuts
-#Testing Netbeans abilities
 test:
 	./test-config
 rm:
