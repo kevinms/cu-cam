@@ -21,6 +21,7 @@ put_handle(int sock, struct command_t *cmd) {
 	char *user = NULL;
 	char *path = "/home/";
 	char *fullpath = NULL;
+	FILE *fp;
 
 	// Setup packet header
 	buf[0] = CMD_PUT;
@@ -87,7 +88,7 @@ put_handle(int sock, struct command_t *cmd) {
 		buf[1] = STAT_ERROR;
 		net_send_tcp(sock, buf, size);
 		exit(1);
-	}else {
+	}else if(inBuf[1] != STAT_OK) {
 		fprintf(stderr,"Error: Undefined status type\n");
 		buf[1] = STAT_ERROR;
 		net_send_tcp(sock, buf, size);
@@ -104,7 +105,7 @@ put_handle(int sock, struct command_t *cmd) {
 	// Recieve fragments and put them in a buffer
 	net_recv_fragments_tcp(sock, &inBuf, fileSize);
 
-/*
+
 	//TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
 	templink = username->head;
 	while(templink != username->tail){
@@ -112,24 +113,29 @@ put_handle(int sock, struct command_t *cmd) {
 		
 
 	// Set filename relative to the user's home folder
-	fullpath = (char *)malloc(strlen(path)+strlen(username)+1+strlen(filename));
-	memset(fullpath,0,strlen(path)+strlen(username)+1+strlen(filename));
+	fullpath = (char *)malloc(strlen(path)+strlen(user)+1+strlen(filename));
+	memset(fullpath,0,strlen(path)+strlen(user)+1+strlen(filename));
 
 	strcat(fullpath,path);
-	strcat(fullpath,username);
+	strcat(fullpath,user);
 	strcat(fullpath,"/");
 	strcat(fullpath,filename);
 	fprintf(stderr,"fullpath: '%s'\n",fullpath);
 
 
+	fp = fopen(fullpath, "w+b");
+	fwrite(inBuf, fileSize, 1, fp);
+	fclose(fp);
+	free(fullpath);
+
 		
 		templink = templink->next;
 	}
-*/
+
 	// Write all data to a file
-	FILE *fp = fopen(filename, "w+b");
-	fwrite(inBuf, fileSize, 1, fp);
-	fclose(fp);
+	//FILE *fp = fopen(filename, "w+b");
+	//fwrite(inBuf, fileSize, 1, fp);
+	//fclose(fp);
 	exit(1);
 }
 
