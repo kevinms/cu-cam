@@ -1,206 +1,210 @@
 #include "put.h"
+
 #include <stdio.h>
-#include "get.h"
-#include "utils.h"
 #include <string.h>
 #include <sys/statvfs.h>
-
 #include <stdlib.h>
+
+#include "get.h"
+#include "utils.h"
 
 void
 put_handle(int sock, struct command_t *cmd) {
-    printf("Dealing with pesky puts...\n");
+	printf("Dealing with pesky puts...\n");
 
-    char *inBuf;
-    char buf[RCVBUFSIZE];
-    int size = 0;
-    //char *tok;
-    
-    struct list_t *username;
-    char *filename;
-    char *tmp = cmd->buf;
+	struct list_t *username;
+	char *filename;
+	char *tmp = cmd->buf;
+	char *inBuf;
+	char buf[RCVBUFSIZE];
+	int size = 0;
+	char *user = NULL;
 
-    //break apart username(s) and files
-    username = command_parse_list(&tmp);
+	// Setup packet header
+	buf[0] = CMD_PUT;
+	buf[1] = STAT_OK;
+	size += 2;
 
-    //check if user(s) exist
-    struct link_t *templink = username->head;
-    while(templink != username->tail){
+	// Break apart username(s) and files
+	username = command_parse_list(&tmp);
 
-       templink = templink->next;
-    }
+	// Make sure user(s) exist
+	struct link_t *templink = username->head;
+	while(templink != username->tail){
+		user = (char *)templink->item;
+		if(fcheck_for_user(user) < 0) {
+			printf("Error: bad username: %s\n",user);
+			buf[1] = STAT_NOS_USER;
+			net_send_tcp(sock, buf, size);
+			close(sock);
+			exit(0);
+		}
+		templink = templink->next;
+	}
 
-    //set file name
-    filename = templink->item;
-    //fprintf(stderr,"filename: %s\n",filename);  //filename debuging
+	// Get file name
+	filename = templink->item;
 
-    //setup and send "all clear" signal
-    //TODO: error checking to make sure everyting IS ok
-    size = 0;
-    buf[0] = CMD_PUT;
-    buf[1] = STAT_OK;
-    size += 2;
-    net_send_tcp(sock, buf, size);
+	// Send STAT_OK packet to the client and get ready to recv
+	net_send_tcp(sock, buf, size);
 
-    inBuf = net_recv_tcp(sock);
-    if(inBuf[0] != CMD_PUT) {
-        printf("Error: Recieved unexpected packet type\n");
-        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
-        exit(1);
-    }
+	// Recieve reply from server
+	inBuf = net_recv_tcp(sock);
 
-    if(inBuf[1] == STAT_BAD_PERM) {
-        size = 0;
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_BAD_PERM;
-        size += 2;
-        net_send_tcp(sock, buf, size);
-        exit(1);
-    }else
-    if(inBuf[1] == STAT_MALF_REQ) {
-        size = 0;
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_MALF_REQ;
-        size += 2;
-        net_send_tcp(sock, buf, size);
-        exit(1);
-    }else
-    if(inBuf[1] == STAT_UNK_STAT) {
-        size = 0;
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_UNK_STAT;
-        size += 2;
-        net_send_tcp(sock, buf, size);
-        exit(1);
-    }else
-    if(inBuf[1] == STAT_ERROR) {
-        size = 0;
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_ERROR;
-        size += 2;
-        net_send_tcp(sock, buf, size);
-        exit(1);
-    }else
-    if(inBuf[1] == STAT_OK) {
-        printf("Error: Everything is OK!\n");
+	// Make sure it is a CMD_PUT type
+	if(inBuf[0] != CMD_PUT) {
+		printf("Error: Recieved unexpected packet type\n");
+		printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
+		exit(1);
+	}
 
-        int fileSize = ntohl(*(int *)(inBuf+2));
-        printf("Size Of File Is : %d\n", fileSize);
-        //TODO: check that file System has enough space for file
-        struct statvfs info;
-        statvfs("/", &info);
-        //TODO: check for other errors
+	// Check for errors in the packet status
+	if(inBuf[1] == STAT_BAD_PERM) {
+		size = 0;
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_BAD_PERM;
+		size += 2;
+		net_send_tcp(sock, buf, size);
+		exit(1);
+	}else
+	if(inBuf[1] == STAT_MALF_REQ) {
+		size = 0;
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_MALF_REQ;
+		size += 2;
+		net_send_tcp(sock, buf, size);
+		exit(1);
+	}else
+	if(inBuf[1] == STAT_UNK_STAT) {
+		size = 0;
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_UNK_STAT;
+		size += 2;
+		net_send_tcp(sock, buf, size);
+		exit(1);
+	}else
+	if(inBuf[1] == STAT_ERROR) {
+		size = 0;
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_ERROR;
+		size += 2;
+		net_send_tcp(sock, buf, size);
+		exit(1);
+	}else
+	if(inBuf[1] == STAT_OK) {
+		printf("Error: Everything is OK!\n");
 
-        //clear size
-        size = 0;
+		int fileSize = ntohl(*(int *)(inBuf+2));
+		printf("Size Of File Is : %d\n", fileSize);
+		//TODO: check that file System has enough space for file
+		struct statvfs info;
+		statvfs("/", &info);
+		//TODO: check for other errors
 
-        //set flags
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_OK;
+		//clear size
+		size = 0;
 
-        size += 2;
+		//set flags
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_OK;
 
-        //send all clear
-        net_send_tcp(sock, buf, size);
+		size += 2;
 
-        // RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
-        net_recv_fragments_tcp(sock, &inBuf, fileSize);
+		//send all clear
+		net_send_tcp(sock, buf, size);
 
-        //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
+		// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
+		net_recv_fragments_tcp(sock, &inBuf, fileSize);
 
-        FILE *fp = fopen(filename, "w+b");
+		//TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
 
-        fwrite(inBuf, fileSize, 1, fp);
+		FILE *fp = fopen(filename, "w+b");
 
-        fclose(fp);
+		fwrite(inBuf, fileSize, 1, fp);
+
+		fclose(fp);
 
 
-        exit(1);
-    }else {
-        size = 0;
-        buf[0] = CMD_PUT;
-        buf[1] = STAT_ERROR;
-        size += 2;
-        net_send_tcp(sock, buf, size);
-        exit(1);
-    }
+		exit(1);
+	}else {
+		size = 0;
+		buf[0] = CMD_PUT;
+		buf[1] = STAT_ERROR;
+		size += 2;
+		net_send_tcp(sock, buf, size);
+		exit(1);
+	}
 }
 
 
 int
-put_request(struct net_t *n, struct list_t *userName, char *fileName, char *saveLoc) {
+put_request(struct net_t *n, struct list_t *userName, char *fileName, char *saveLoc) 
+{
+	int filesize;
+	FILE *f;
+	char buf[RCVBUFSIZE];
+	char *inBuf;
+	int dataSize = 0;
+	struct link_t *templink;
 
-    printf("initialized\n");
+	// Setup packet header
+	buf[0] = CMD_PUT;
+	buf[1] = STAT_OK;
+	dataSize += 2;
 
-    int filesize;
-    FILE *f;
-    char buf[RCVBUFSIZE];
-    char *inBuf;
-    int dataSize = 0;
+	// Add all usernames and filename to packet
+	templink = userName->head;
+	while(templink != NULL){
+		strncpy(buf + dataSize, templink->item, strlen(templink->item));
+		dataSize += (strlen(templink->item));
 
-    buf[0] = CMD_PUT;
-    buf[1] = STAT_OK;
+		if(templink != userName->tail) {
+			buf[dataSize] = ',';
+			dataSize ++;
+		}
+		templink = templink->next;
+	}
+	buf[dataSize] = ':';
+	dataSize ++;
 
-    dataSize += 2;
+	strncpy(buf + dataSize, fileName, strlen(fileName));
+	dataSize += (strlen(fileName));
 
-    struct link_t *templink;
+	// Sending request packet to the server
+	net_send_tcp(n->sock, buf, dataSize);
 
-    templink = userName->head;
+	// 
+	inBuf = net_recv_tcp(n->sock);
 
-    while(templink != NULL){
-        strncpy(buf + dataSize, templink->item, strlen(templink->item));
-        dataSize += (strlen(templink->item));
+	// Make sure that packet type is CMD_PUT
+	if(inBuf[0] != CMD_PUT) {
+		printf("Error: Recieved unexpected packet type\n");
+		return -1;
+	}
 
-        if(templink != userName->tail) {
-            buf[dataSize] = ',';
-            dataSize ++;
-        }
-        templink = templink->next;
-    }
-    buf[dataSize] = ':';
-    dataSize ++;
-
-    strncpy(buf + dataSize, fileName, strlen(fileName));
-    dataSize += (strlen(fileName));
-
-    //printf("buf stuff : '%s'\n", (buf+2));
-    //printf("data size : '%d'\n", dataSize);
-
-    net_send_tcp(n->sock, buf, dataSize);
-
-
-
-    inBuf = net_recv_tcp(n->sock);
-    if(inBuf[0] != CMD_PUT) {
-        printf("Error: Recieved unexpected packet type\n");
-        return -1;
-    }
-
-    if(inBuf[1] == STAT_BAD_PERM) {
-        printf("Error: Improper permissions, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_MALF_REQ) {
-        printf("Error: Malformed request, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_NOS_FILE) {
-        printf("Error: No such file, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_NOS_USER) {
-        printf("Error: No such user, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_UNK_STAT) {
-        printf("Error: Unknown responce from server, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_ERROR) {
-        printf("Error: An unknown error has occured, now quitting\n");
-        return -1;
-    }else
-    if(inBuf[1] == STAT_OK) {
+	// Check for errors in the packet status
+	if(inBuf[1] == STAT_BAD_PERM) {
+		printf("Error: Improper permissions, now quitting\n");
+		return -1;
+	}else if(inBuf[1] == STAT_MALF_REQ) {
+		printf("Error: Malformed request, now quitting\n");
+		return -1;
+	}else if(inBuf[1] == STAT_NOS_FILE) {
+		printf("Error: No such file, now quitting\n");
+		return -1;
+	}else if(inBuf[1] == STAT_NOS_USER) {
+		printf("Error: No such user, now quitting\n");
+		return -1;
+	}else if(inBuf[1] == STAT_UNK_STAT) {
+		printf("Error: Unknown responce from server, now quitting\n");
+		return -1;
+	}else if(inBuf[1] == STAT_ERROR) {
+		printf("Error: General error has occured, now quitting\n");
+		return -1;
+	}else if(inBuf[1] != STAT_OK) {
+		printf("Error: An unknown error has occured %d, now quiting\n",inBuf[1]);
+		return -1;
+	}
 
     int size = 0;
     buf[0] = CMD_PUT;
@@ -251,13 +255,6 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 	fprintf(stderr,"fread: %d\n",(int)fread(filedata, 1, filesize, f));
 
 	net_send_fragments_tcp(n->sock, filedata, filesize, 400);
-
-
-    }else {
-        printf("Error: An unknown error has occured, now quitting\n");
-        return -1;
-    }
-
 
     return 0;
 }
