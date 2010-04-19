@@ -63,8 +63,9 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
     dataSize += 3;
 
 	if(flag==ST_PROC){
-		strncpy(buf + dataSize, userName->head->item, strlen(userName->head->item));
-    	dataSize += (strlen(userName->head->item));
+		fprintf(stderr,"username: %s\n",(char *)userName->head->item);
+		strncpy(buf + dataSize, (char *)userName->head->item, strlen((char *)userName->head->item));
+		dataSize += (strlen((char *)userName->head->item));
 	}
 
 	//send request packet to server
@@ -110,8 +111,6 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	net_send_tcp(n->sock,buf,size);
 
 	net_recv_fragments_tcp(n->sock, &inBuf, dataSize);
-	
-	fprintf(stderr,"yoouuuurrrrr boooyy %s\n",inBuf);
 }
 
 //    Server portion
@@ -230,8 +229,8 @@ void stat_handle(int sock, struct command_t *cmd)
 	{
 		userName = command_parse_string(&tmp);
 
-		finalCommand = "";
-		char *command = "ps -ef | grep '";
+		finalCommand = "ps -ef | grep 'halp' > STAT_temp.temp";
+/*		char *command = "ps -ef | grep '";
 		char *endCommand = "' > STAT_temp.temp";
   			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
 			strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
@@ -239,6 +238,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,command);
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
+*/
 	}else if(flag == ST_LS) //show directory
 	{
 	
