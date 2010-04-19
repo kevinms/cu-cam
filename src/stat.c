@@ -199,7 +199,7 @@ void stat_handle(int sock, struct command_t *cmd)
 	flag = tmp[0];
 	tmp++;
 
-	
+	fprintf(stderr,"type: %d, status: %d, flag: %s\n",cmd->type, cmd->status, flag);
 	
 	if(flag == ST_WHO) //show users logged on
 	{
