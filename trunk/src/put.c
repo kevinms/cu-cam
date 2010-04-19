@@ -33,7 +33,7 @@ put_handle(int sock, struct command_t *cmd) {
 //end debug print
 
     filename = templink->item;
-    fprintf(stderr,"filename: %s\n",filename);
+    fprintf(stderr,"filename: '%s'\n",filename);
 
     //setup and send "all clear" signal
     //TODO: error checking to make sure everyting IS ok
@@ -149,6 +149,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     buf[dataSize] = ':';
     dataSize ++;
 
+    printf("filename : '%s' " , fileName);
     strncpy(buf + dataSize, fileName, strlen(fileName));
     dataSize += (strlen(fileName));
 

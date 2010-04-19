@@ -189,10 +189,6 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         printf("Error: An unknown error has occured, now quitting\n");
         exit(1);
     }
-
-
-    
-
     
     return 0;
 }
