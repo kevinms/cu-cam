@@ -118,6 +118,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     int filesize;
     FILE *f;
     char buf[256];
+    char *inBuf;
     int dataSize = 0;
 
     buf[0] = CMD_PUT;
@@ -172,8 +173,8 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
 
 
-        buf = net_recv_tcp(n->sock);
-	struct command_t * cmd = command_parse(buf);
+        inBuf = net_recv_tcp(n->sock);
+	struct command_t * cmd = command_parse(inBuf);
 
 	if(cmd->type != CMD_PUT);
 		//TODO: error
