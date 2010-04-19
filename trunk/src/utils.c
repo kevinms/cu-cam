@@ -87,6 +87,42 @@ int fsize(const char *f) {
 	return -1; 
 }
 
+int
+fcheck_for_user(const char *user)
+{
+	struct stat st;
+	char *path = "/home/";
+	char *folder = NULL;
+
+	folder = (char *)malloc(strlen(path)+strlen(user)+1);
+
+	strcat(folder,path);
+	strcat(folder,user);
+	strcat(folder,"/");
+
+	if(stat(folder,&st) == 0) {
+		printf(" %s is present\n", folder);
+		free(folder);
+		return 0;
+	}
+
+	free(folder);
+	return -1; 
+}
+
+int
+fcheck_for_file(const char *file)
+{
+	struct stat st;
+
+	if(stat(file,&st) == 0) {
+		printf(" %s is present\n", file);
+		return 0;
+	}
+
+	return -1; 
+}
+
 char *
 fileFromPath(char * path) {
     int len = strlen(path);
