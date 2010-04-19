@@ -13,7 +13,6 @@ put_handle(int sock, struct command_t *cmd) {
 
     char buf[RCVBUFSIZE];
     int size = 0;
-    char *tmp;
     //char *tok;
     FILE *f;
     int filesize;
@@ -24,17 +23,17 @@ put_handle(int sock, struct command_t *cmd) {
     char *tmp = cmd->buf;
 
 
-    username = command_parse_list(tmp);
+    username = command_parse_list(&tmp);
 
 //start debug print
     struct link_t *templink = username->head;
     while(templink != NULL){
-       fprintf(stderr,"user: %s\n",templink->item);
+       fprintf(stderr,"user: %s\n", (char *)templink->item);
        templink = templink->next;
     }
 //end debug print
 
-    filename = command_parse_string(tmp);
+    filename = command_parse_string(&tmp);
     fprintf(stderr,"filename: %s\n",filename);
 
     buf[0] = CMD_PUT;
