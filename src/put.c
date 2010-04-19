@@ -104,6 +104,7 @@ put_handle(int sock, struct command_t *cmd) {
         exit(1);
     }else {
         printf("Error: An unknown error has occured, now quitting\n");
+        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
         exit(1);
     }
 }
