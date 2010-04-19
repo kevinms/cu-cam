@@ -123,7 +123,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
     int filesize;
     FILE *f;
-    char buf[256];
+    char buf[RCVBUFSIZE];
     char *inBuf;
     int dataSize = 0;
 
