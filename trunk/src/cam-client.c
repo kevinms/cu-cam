@@ -131,7 +131,7 @@ statC(struct action_t *job){
         printf("connecting to %s...",(char*)templinkName->item);
         net_connect((struct net_t *)templink->item);
         printf("Connected\n");
-        printf("Putting...");
+        printf("Stating...");
         stat_request((struct net_t *)templink->item, job->username, flag);
         templinkName = templinkName->next;
         templink = templink->next;
