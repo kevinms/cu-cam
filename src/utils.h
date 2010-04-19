@@ -13,6 +13,8 @@ int list_lookup_string(struct list_t *list, char *name);
 double getTime();
 void die_with_error(char *error_message);
 int fsize(const char *f);
+int fcheck_for_user(const char *user);
+int fcheck_for_file(const char *file);
 char *fileFromPath(char * path);
 
 #endif /* !UTILS_H_ */

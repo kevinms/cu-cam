@@ -34,11 +34,14 @@ get_handle(int sock, struct command_t *cmd)
 	//TODO: make sure user exists
 	username = command_parse_string(&tmp);
 	fprintf(stderr,"user: %s\n",username);
-	//buf[1] = STAT_NOS_USER;
+	if(fcheck_for_user(username) < 0)
+		buf[1] = STAT_NOS_USER;
 
 	//TODO: make sure file exists
 	fprintf(stderr,"tmp: %s\n",tmp);
 	filename = command_parse_string(&tmp);
+	if(fcheck_for_file(filename) < 0)
+		buf[1] = STAT_NOS_FILE;
 	fprintf(stderr,"filename: %s\n",filename);
 
 	f = fopen(filename, "rb");
