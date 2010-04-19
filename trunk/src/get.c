@@ -123,6 +123,8 @@ get_handle(int sock, struct command_t *cmd)
 	// Actually send the file!!
 	//TODO: make the blocksize a config file option
 	net_send_fragments_tcp(sock, filedata, filesize, 400);
+
+	exit(0);
 }
 
 int
