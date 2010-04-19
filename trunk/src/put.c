@@ -22,8 +22,9 @@ put_handle(int sock, struct command_t *cmd) {
     char *filedata;
     char *tmp = cmd->buf;
 
-
+    printf("before: %s", tmp);
     username = command_parse_list(&tmp);
+    printf("whats left: %s", tmp);
 
 //start debug print
     struct link_t *templink = username->head;
@@ -72,6 +73,8 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         }
         templink = templink->next;
     }
+    buf[dataSize] = ':';
+    dataSize ++;
 
     strncpy(buf + dataSize, fileName, strlen(fileName));
     dataSize += (strlen(fileName));
