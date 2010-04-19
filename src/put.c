@@ -149,7 +149,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
 
     int size = 0;
-    buf[0] = CMD_GET;
+    buf[0] = CMD_PUT;
     size++;
 
     f = fopen(fileName, "rb");
@@ -169,6 +169,19 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 			buf[1] = STAT_BAD_SIZE;
 	}
 	net_send_tcp(n->sock, buf, size);
+
+
+
+        buf = net_recv_tcp(n->sock);
+	struct command_t * cmd = command_parse(buf);
+
+	if(cmd->type != CMD_PUT);
+		//TODO: error
+
+	if(cmd->status != STAT_OK);
+		//TODO: error
+
+
 
 
 
