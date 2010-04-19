@@ -19,6 +19,8 @@
 #include "command.h"
 
 #include "get.h"
+#include "put.h"
+#include "stat.h"
 
 void deamonize();
 void child_exit_signal_handler();
@@ -85,11 +87,18 @@ main(int argc, char **argv)
 
 				fprintf(stderr,"type: %d, status: %d, data: %s\n",cmd->type, cmd->status, cmd->buf);
 
-				if(cmd->type == CMD_GET)
+				if(cmd->type == CMD_GET) {
+					fprintf(stderr,"get_handle time\n");
 					get_handle(client_sock, cmd);
-				else if(cmd->type == CMD_PUT)
-                                        put_handle(client_sock, cmd);
-				else if(cmd->type == CMD_STAT);
+				}
+				else if(cmd->type == CMD_PUT) {
+					fprintf(stderr,"put_handle time\n");
+					put_handle(client_sock, cmd);
+				}
+				else if(cmd->type == CMD_STAT) {
+					fprintf(stderr,"stat_handle time\n");
+					stat_handle(client_sock, cmd);
+				}
 /******************************************************************************/
 				exit(0);         /* Child process done */
 			}

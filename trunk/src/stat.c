@@ -189,6 +189,7 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 
 void stat_handle(int sock, struct command_t *cmd)
 {
+	printf("asdfasfasdfasfdasdf\n");
 	//Parse the packet to find out username and flag
 	char *tmp;
 	char flag;
@@ -196,7 +197,8 @@ void stat_handle(int sock, struct command_t *cmd)
 	char *finalCommand;
 	
 	tmp = cmd->buf;
-	flag = tmp[0];
+	flag = 0;
+	//flag = tmp[0];
 	tmp++;
 
 	fprintf(stderr,"type: %d, status: %d, flag: %s\n",cmd->type, cmd->status, flag);
@@ -236,6 +238,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		fprintf(stderr,"BAD FLAG\n");
 	}
 	
+	fprintf(stderr,"runCommand_getResults\n");
 	runCommand_getResults(finalCommand, sock, cmd);		
 	
 	return;
