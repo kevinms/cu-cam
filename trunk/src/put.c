@@ -66,6 +66,7 @@ put_handle(int sock, struct command_t *cmd) {
     }else
     if(inBuf[1] == STAT_UNK_STAT) {
         printf("Error: Unknown responce from client, now quitting\n");
+        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
         exit(1);
     }else
     if(inBuf[1] == STAT_ERROR) {
