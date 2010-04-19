@@ -55,7 +55,8 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
     buf[0] = CMD_STAT;
     buf[1] = STAT_OK;
-	buf[2] = flag;	
+	printf("flag: %d\n",flag);
+	buf[2] = flag;
 
     dataSize += 3;
 
@@ -150,7 +151,7 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	
 	*(int *)(buf+2) = count;
 	dataSize += sizeof(int);
-	printf("buf[0]: %d, buf[1]: %d, size: %d\n",buf[0],buf[1],(buf+2));
+	printf("buf[0]: %d, buf[1]: %d, size: %d\n",buf[0],buf[1],*(int *)(buf+2));
 	net_send_tcp(sock, buf, dataSize);
 	
 	buf2 = net_recv_tcp(sock);
@@ -197,11 +198,12 @@ void stat_handle(int sock, struct command_t *cmd)
 	char *finalCommand;
 	
 	tmp = cmd->buf;
+	printf("cmd->buf: %d\n", cmd->buf[2]);
 	flag = 0;
 	//flag = tmp[0];
 	tmp++;
 
-	fprintf(stderr,"type: %d, status: %d, flag: %s\n",cmd->type, cmd->status, flag);
+	fprintf(stderr,"type: %d, status: %d, flag: %d\n",cmd->type, cmd->status, flag);
 	
 	if(flag == ST_WHO) //show users logged on
 	{
@@ -224,12 +226,12 @@ void stat_handle(int sock, struct command_t *cmd)
 	{
 	
 		//TODO: get directory passed in from client
-		char *directory = "/home/burnsh/";
+		char *directory = "/home/burnsh/";	
 		finalCommand = "";
 		char *command = "ls ";
 		char *endCommand = " > STAT_temp.temp";
-  			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
-			strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
+			finalCommand = (char *)calloc(strlen(command) + strlen(endCommand)+ 
+			strlen(finalCommand) + 1, sizeof(char));
 
 		strcat(finalCommand,command);
 		strcat(finalCommand,directory);
