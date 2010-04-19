@@ -176,11 +176,8 @@ net_send_tcp(int sock, char *buf, int size)
 
 	/* Echo message back to client */
 	if ((dataSent = send(sock, buf, size, 0)) != size) {
-		fprintf(stderr,"should have sent: %d bytes but actually sent: %d\n",size,dataSent);
-		fprintf(stderr,"send() failed\n");
+		//fprintf(stderr,"should have sent: %d bytes but actually sent: %d\n",size,dataSent);
 	}
-
-	fprintf(stderr,"SEND SENT: %d bytes\n",dataSent);
 	return dataSent;
 }
 
@@ -197,12 +194,9 @@ net_recv_tcp(int sock)
 	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
 		die_with_error("recv() failed");
 
-	fprintf(stderr,"RECV RECVED: %d bytes\n",recvMsgSize);
-
 	return buf;
 }
 
-//TODO: make blocksize be a config file parameter
 int
 net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 {
@@ -217,21 +211,15 @@ net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 	header[1] = STAT_MF;
 
 	while(offset != bufsize && rc != -1) {
-		fprintf(stderr,"offset: %d, blocksize: %d, hdrsize: %d, bufsize: %d, total: %d\n",offset, blocksize, hdrsize, bufsize, offset + (blocksize - hdrsize));
 		if(offset + (blocksize) > bufsize) {
 			blocksize -= (offset + (blocksize)) - bufsize;
 			header[1] = STAT_EOF;
-			fprintf(stderr,"setting STAT_EOF\n");
 		}
 
-		//memcpy(send_buf,header,hdrsize);
 		memcpy(send_buf,buf+offset,blocksize);
-		fprintf(stderr,"send_buf[1]: %d\n",send_buf[1]);
-		fprintf(stderr,"before send: offset: %d, bufsize: %d, blocksize: %d\n",offset, bufsize, blocksize);
 
 		rc = net_send_tcp(sock, send_buf, blocksize);
 		offset += (rc);
-		fprintf(stderr,"after send: offset: %d, bufsize: %d, blocksize: %d\n\n",offset, bufsize, blocksize);
 	}
 
 	if(rc == -1)
@@ -252,14 +240,12 @@ net_recv_fragments_tcp(int sock, char **buf, int bufsize)
 	while(count < bufsize) {
 		rc = recv(sock, data, RCVBUFSIZE, 0);
 		if(rc < 0) {
-			fprintf(stderr,"error: rc < 0\n");
+			fprintf(stderr,"Error: rc < 0\n");
 			return rc;
 		}
 
 		memcpy((*buf)+count,data,rc);
 		count += rc;
-
-		fprintf(stderr,"rc: %d, count: %d, data[1]: %d\n",rc, count, data[1]);
 
 		if(count == bufsize) {
 			fprintf(stderr,"End of File recieved\n");
