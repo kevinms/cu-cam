@@ -191,6 +191,7 @@ net_recv_tcp(int sock)
 	int recvMsgSize;
 
 	buf = (char *)malloc(RCVBUFSIZE);
+	memset(buf, 0, RCVBUFSIZE);
 
 	/* See if there is more data to receive */
 	if ((recvMsgSize = recv(sock, buf, RCVBUFSIZE, 0)) < 0)
