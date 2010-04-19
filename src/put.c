@@ -19,6 +19,8 @@ put_handle(int sock, struct command_t *cmd) {
 	char buf[RCVBUFSIZE];
 	int size = 0;
 	char *user = NULL;
+	char *path = "/home/";
+	char *fullpath = NULL;
 
 	// Setup packet header
 	buf[0] = CMD_PUT;
@@ -58,82 +60,77 @@ put_handle(int sock, struct command_t *cmd) {
 		exit(1);
 	}
 
+	// Setup packet header
+	size = 0;
+	buf[0] = CMD_PUT;
+	buf[1] = STAT_OK;
+	size += 2;
+
 	// Check for errors in the packet status
 	if(inBuf[1] == STAT_BAD_PERM) {
-		size = 0;
-		buf[0] = CMD_PUT;
+		fprintf(stderr,"Error: bad permissions\n");
 		buf[1] = STAT_BAD_PERM;
-		size += 2;
 		net_send_tcp(sock, buf, size);
 		exit(1);
-	}else
-	if(inBuf[1] == STAT_MALF_REQ) {
-		size = 0;
-		buf[0] = CMD_PUT;
+	}else if(inBuf[1] == STAT_MALF_REQ) {
+		fprintf(stderr,"Error: Malformed Request\n");
 		buf[1] = STAT_MALF_REQ;
-		size += 2;
 		net_send_tcp(sock, buf, size);
 		exit(1);
-	}else
-	if(inBuf[1] == STAT_UNK_STAT) {
-		size = 0;
-		buf[0] = CMD_PUT;
+	}else if(inBuf[1] == STAT_UNK_STAT) {
+		fprintf(stderr,"Error: Unkown stat type\n");
 		buf[1] = STAT_UNK_STAT;
-		size += 2;
 		net_send_tcp(sock, buf, size);
 		exit(1);
-	}else
-	if(inBuf[1] == STAT_ERROR) {
-		size = 0;
-		buf[0] = CMD_PUT;
+	}else if(inBuf[1] == STAT_ERROR) {
+		fprintf(stderr,"Error: General error\n");
 		buf[1] = STAT_ERROR;
-		size += 2;
 		net_send_tcp(sock, buf, size);
-		exit(1);
-	}else
-	if(inBuf[1] == STAT_OK) {
-		printf("Error: Everything is OK!\n");
-
-		int fileSize = ntohl(*(int *)(inBuf+2));
-		printf("Size Of File Is : %d\n", fileSize);
-		//TODO: check that file System has enough space for file
-		struct statvfs info;
-		statvfs("/", &info);
-		//TODO: check for other errors
-
-		//clear size
-		size = 0;
-
-		//set flags
-		buf[0] = CMD_PUT;
-		buf[1] = STAT_OK;
-
-		size += 2;
-
-		//send all clear
-		net_send_tcp(sock, buf, size);
-
-		// RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
-		net_recv_fragments_tcp(sock, &inBuf, fileSize);
-
-		//TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
-
-		FILE *fp = fopen(filename, "w+b");
-
-		fwrite(inBuf, fileSize, 1, fp);
-
-		fclose(fp);
-
-
 		exit(1);
 	}else {
-		size = 0;
-		buf[0] = CMD_PUT;
+		fprintf(stderr,"Error: Undefined status type\n");
 		buf[1] = STAT_ERROR;
-		size += 2;
 		net_send_tcp(sock, buf, size);
 		exit(1);
 	}
+
+	// Get filesize from packet
+	int fileSize = ntohl(*(int *)(inBuf+2));
+	printf("Size Of File Is : %d\n", fileSize);
+
+	// Send STAT_OK packet
+	net_send_tcp(sock, buf, size);
+
+	// Recieve fragments and put them in a buffer
+	net_recv_fragments_tcp(sock, &inBuf, fileSize);
+
+/*
+	//TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
+	templink = username->head;
+	while(templink != username->tail){
+		user = (char *)templink->item;
+		
+
+	// Set filename relative to the user's home folder
+	fullpath = (char *)malloc(strlen(path)+strlen(username)+1+strlen(filename));
+	memset(fullpath,0,strlen(path)+strlen(username)+1+strlen(filename));
+
+	strcat(fullpath,path);
+	strcat(fullpath,username);
+	strcat(fullpath,"/");
+	strcat(fullpath,filename);
+	fprintf(stderr,"fullpath: '%s'\n",fullpath);
+
+
+		
+		templink = templink->next;
+	}
+*/
+	// Write all data to a file
+	FILE *fp = fopen(filename, "w+b");
+	fwrite(inBuf, fileSize, 1, fp);
+	fclose(fp);
+	exit(1);
 }
 
 
