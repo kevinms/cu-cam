@@ -168,7 +168,8 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     f = fopen(fileName, "rb");
 	size++;
 	if(f == NULL) {
-		buf[1] = STAT_NOS_FILE;
+            printf("Error: No such file.");
+            return;
 	} else {
 		filesize = fsize(fileName);
 		fprintf(stderr,"filesize: %d\n",filesize);
