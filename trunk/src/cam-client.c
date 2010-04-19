@@ -118,18 +118,24 @@ putC(struct action_t *job){
 void
 statC(struct action_t *job){
 
-    struct net_t *netLink;
     char *flag  = job->saveLoc;
 
-        netLink = (struct net_t *)job->sockList->head->item;
+    struct link_t *templink;
+    struct link_t *templinkName;
 
-        printf("connecting\n");
-	net_connect(netLink);
+    templink = job->sockList->head;
+    templinkName = job->serverList->head;
 
-        if(stat_request(netLink, job->username, flag) == -1) {
-            printf("General Get Error Message Goes Here");
-            exit(1);
-        }
+
+    while(templink != NULL && templinkName != NULL){
+        printf("connecting to %s...",(char*)templinkName->item);
+        net_connect((struct net_t *)templink->item);
+        printf("Connected\n");
+        printf("Putting...");
+        stat_request((struct net_t *)templink->item, job->username, flag);
+        templinkName = templinkName->next;
+        templink = templink->next;
+    }
 
         printf("Done\n");
 }
