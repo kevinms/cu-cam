@@ -117,7 +117,21 @@ putC(struct action_t *job){
 
 void
 statC(struct action_t *job){
-//TODO: stuff goes here
+
+    struct net_t *netLink;
+    char *flag  = job->saveLoc;
+
+        netLink = (struct net_t *)job->sockList->head->item;
+
+        printf("connecting\n");
+	net_connect(netLink);
+
+        if(set_request(netLink, job->username, flag) == -1) {
+            printf("General Get Error Message Goes Here");
+            exit(1);
+        }
+
+        printf("Done\n");
 }
 
 void
@@ -167,7 +181,7 @@ parseCmdArgs(int argc, char **argv,struct action_t *currentAction)  {
     }else if(strcmp(argv[1], "-s") == 0 && argc == 5) {
         currentAction->function = 's';
         currentAction->fileName = NULL;
-        currentAction->saveLoc = NULL;
+        currentAction->saveLoc = argv[4];
     }else {
         fprintf(stderr, "Incorrect Usage, use man %s for details\n", argv[0]);
         exit(1);
