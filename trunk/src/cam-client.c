@@ -126,7 +126,7 @@ statC(struct action_t *job){
         printf("connecting\n");
 	net_connect(netLink);
 
-        if(set_request(netLink, job->username, flag) == -1) {
+        if(stat_request(netLink, job->username, flag) == -1) {
             printf("General Get Error Message Goes Here");
             exit(1);
         }
