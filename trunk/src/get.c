@@ -84,7 +84,7 @@ get_handle(int sock, struct command_t *cmd)
 
 	filedata = (char *)malloc(filesize);
 	fprintf(stderr,"filesize: %d\n",filesize);
-	fprintf(stderr,"fread: %d\n",fread(filedata, 1, filesize, f));
+	fprintf(stderr,"fread: %d\n",(int)fread(filedata, 1, filesize, f));
 
 	net_send_fragments_tcp(sock, filedata, filesize, 512);
 }
