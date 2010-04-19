@@ -17,12 +17,25 @@ put_handle(int sock, struct command_t *cmd) {
     //char *tok;
     FILE *f;
     int filesize;
-    //struct list_t *username = ;
+    struct list_t *username;
     char *filename;
     char *rbuf;
     char *filedata;
+    char *tmp = cmd->buf;
 
 
+    username = command_parse_list(tmp);
+
+//start debug print
+    struct link_t *templink = username->head;
+    while(templink != NULL){
+       fprintf(stderr,"user: %s\n",templink->item);
+       templink = templink->next;
+    }
+//end debug print
+
+    filename = command_parse_string(tmp);
+    fprintf(stderr,"filename: %s\n",filename);
 
     buf[0] = CMD_PUT;
     size++;
