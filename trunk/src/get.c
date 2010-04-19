@@ -153,7 +153,7 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         //TODO: check that file System has enough space for file
         struct statvfs info;
         statvfs("/", &info);
-        printf("%d\n",(info.f_bavail * info.f_bsize));
+        printf("%d\n",(int)(info.f_bavail * info.f_bsize));
         if(info.f_bavail * info.f_bsize < fileSize) {
             printf("Error: Not enough free space\n");
             exit(1);
