@@ -92,7 +92,7 @@ get_handle(int sock, struct command_t *cmd)
 	buf[1] = STAT_MF;
 	size += 2;
 
-	// Make sure it is a CMD_STAT type
+	// Make sure it is a CMD_GET type
 	if(cmd->type != CMD_GET) {
 		fprintf(stderr,"Error: Unexpected packet type\n");
 		buf[1] = STAT_UNK_STAT;
