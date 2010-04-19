@@ -84,12 +84,6 @@ put_handle(int sock, struct command_t *cmd) {
         //TODO: check that file System has enough space for file
         struct statvfs info;
         statvfs("/", &info);
-        printf("%d\n",(int)(info.f_bavail * info.f_bsize));
-        if(info.f_bavail * info.f_bsize < fileSize) {
-            printf("Error: Not enough free space\n");
-            exit(1);
-        }
-
         //TODO: check for other errors
 
         //clear buff
