@@ -26,14 +26,7 @@ put_handle(int sock, struct command_t *cmd) {
     //check if user(s) exist
     struct link_t *templink = username->head;
     while(templink != username->tail){
-       if(fcheck_for_user((char *)templink->item) == -1) {
-            size = 0;
-            buf[0] = CMD_PUT;
-            buf[1] = STAT_NOS_USER;
-            size += 2;
-            net_send_tcp(sock, buf, size);
-            return;
-       }
+
        templink = templink->next;
     }
 
