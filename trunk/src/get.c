@@ -189,17 +189,8 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 	}
 
 	// If STAT_OK then get ready to recieve the file from the server
-	// Get filesize from packet and make sure there is enough space for it
+	// Get filesize from packet
 	int fileSize = ntohl(*(int *)(inBuf+2));
-
-	//TODO: FIX THIS!!!check that file System has enough space for file
-	struct statvfs info;
-	statvfs("/", &info);
-	printf("freespace remaining: %d\n",(int)(info.f_bavail * info.f_bsize));
-	if(info.f_bavail * info.f_bsize < fileSize) {
-		printf("Error: Not enough free space\n");
-		exit(1);
-	}
 
 	// Reset buf and dataSize
 	memset(buf, 0, 256);
