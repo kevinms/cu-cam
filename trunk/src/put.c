@@ -18,8 +18,6 @@ put_handle(int sock, struct command_t *cmd) {
     
     struct list_t *username;
     char *filename;
-    //char *rbuf;
-    //char *filedata;
     char *tmp = cmd->buf;
 
     username = command_parse_list(&tmp);
@@ -33,7 +31,7 @@ put_handle(int sock, struct command_t *cmd) {
 //end debug print
 
     filename = templink->item;
-    fprintf(stderr,"filename: '%s'\n",filename);
+    fprintf(stderr,"filename: %s\n",filename);
 
     //setup and send "all clear" signal
     //TODO: error checking to make sure everyting IS ok
@@ -149,11 +147,22 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
     buf[dataSize] = ':';
     dataSize ++;
 
-    printf("filename : '%s' " , fileName);
     strncpy(buf + dataSize, fileName, strlen(fileName));
     dataSize += (strlen(fileName));
 
+    printf("buf stuff : '%s'\n", (buf+2));
+    printf("data size : '%d'\n", dataSize);
+
     net_send_tcp(n->sock, buf, dataSize);
+
+
+
+    inBuf = net_recv_tcp(n->sock);
+    if(inBuf[0] != CMD_GET);
+		//TODO: error
+
+    if(inBuf[1] != STAT_OK);
+		//TODO: error
 
 
     int size = 0;
