@@ -47,7 +47,6 @@ get_handle(int sock, struct command_t *cmd)
 	strcat(fullpath,username);
 	strcat(fullpath,"/");
 	strcat(fullpath,filename);
-	fprintf(stderr,"fullpath: '%s'\n",fullpath);
 
 	// Make sure file exists
 	if(fcheck_for_file(fullpath) < 0) {
