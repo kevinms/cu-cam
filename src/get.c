@@ -87,9 +87,6 @@ get_handle(int sock, struct command_t *cmd)
 	memset(buf, 0, RCVBUFSIZE);
 	size = 0;
 
-	//TODO: debug statment
-	fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
-
 	// Setup packet header
 	buf[0] = CMD_GET;
 	buf[1] = STAT_MF;
