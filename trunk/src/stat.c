@@ -62,7 +62,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
     dataSize += 3;
 
-	if(flag==ST_PROC){
+	if(flag==ST_PROC||flag==ST_LS){
 		fprintf(stderr,"username: %s\n",(char *)userName->head->item);
 		strncpy(buf + dataSize, (char *)userName->head->item, strlen((char *)userName->head->item));
 		dataSize += (strlen((char *)userName->head->item));
@@ -247,9 +247,9 @@ void stat_handle(int sock, struct command_t *cmd)
 
 	}else if(flag == ST_LS) //show directory
 	{
-	
-		//TODO: get directory passed in from client
-		char *directory = "/home/burnsh/";	
+		char *directory = command_parse_string(&tmp);
+		fprintf(stderr,"directory: %s\n",directory);
+
 		finalCommand = "";
 		char *command = "ls ";
 		char *endCommand = " > STAT_temp.temp";
@@ -264,7 +264,7 @@ void stat_handle(int sock, struct command_t *cmd)
 	}
 	
 	fprintf(stderr,"runCommand_getResults\n");
-	runCommand_getResults(finalCommand, sock, cmd);		
+	runCommand_getResults(finalCommand, sock, cmd);
 	
 	return;
 }
