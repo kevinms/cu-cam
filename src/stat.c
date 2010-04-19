@@ -138,17 +138,19 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	count = ftell(tempFile);
 */
 	count = fsize("STAT_temp.temp");
-tempFile = fopen("STAT_temp.temp", "r" );
-
-	char *result;
-//	fseek(tempFile,0,SEEK_SET);
+	fprintf(stderr,"count: %d\n", count);
 	
-	result = (char*)calloc(count, sizeof(char));
-
+	printf("bob2\n");
+	char *result = NULL;
+//	fseek(tempFile,0,SEEK_SET);
+	printf("bob1\n");
+	result = (char*)malloc(count);
+	printf("bob4\n");
 	if(result == NULL)
 		printf("ERROR MEMORY");
 
-	fread(result, sizeof(char), count, tempFile);
+	tempFile = fopen("STAT_temp.temp", "r" );
+	fread(result, 1, count, tempFile);
 	
 	
 	/*
@@ -163,8 +165,6 @@ tempFile = fopen("STAT_temp.temp", "r" );
 	*/
 
 	fclose( tempFile ); 
-
-	fprintf(stderr,"count: %d\n", count);
 
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
@@ -250,15 +250,17 @@ void stat_handle(int sock, struct command_t *cmd)
 		char *directory = command_parse_string(&tmp);
 		fprintf(stderr,"directory: %s\n",directory);
 
-		finalCommand = "";
+		finalCommand = "ls /home/halp/ > STAT_temp.temp";
 		char *command = "ls ";
 		char *endCommand = " > STAT_temp.temp";
-			finalCommand = (char *)calloc(strlen(command) + strlen(endCommand)+ 
-			strlen(finalCommand) + 1, sizeof(char));
+
+		finalCommand = (char *)malloc(strlen(command) + strlen(endCommand)+ 
+						strlen(finalCommand) + 1);
 
 		strcat(finalCommand,command);
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
+
 	} else {
 		fprintf(stderr,"BAD FLAG\n");
 	}
