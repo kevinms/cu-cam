@@ -64,16 +64,8 @@ put_handle(int sock, struct command_t *cmd) {
         printf("Error: Malformed request, now quitting\n");
         exit(1);
     }else
-    if(inBuf[1] == STAT_NOS_FILE) {
-        printf("Error: No such file, now quitting\n");
-        exit(1);
-    }else
-    if(inBuf[1] == STAT_NOS_USER) {
-        printf("Error: No such user, now quitting\n");
-        exit(1);
-    }else
     if(inBuf[1] == STAT_UNK_STAT) {
-        printf("Error: Unknown responce from server, now quitting\n");
+        printf("Error: Unknown responce from client, now quitting\n");
         exit(1);
     }else
     if(inBuf[1] == STAT_ERROR) {
