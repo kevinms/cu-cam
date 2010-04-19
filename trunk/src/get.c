@@ -184,9 +184,7 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
         fwrite(inBuf, fileSize, 1, fp);
 
         fclose(fp);
-
-
-        exit(1);
+        
     }else {
         printf("Error: An unknown error has occured, now quitting\n");
         exit(1);
