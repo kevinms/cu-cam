@@ -98,6 +98,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	dataSize = *(int *)(inBuf+2);
 	dataSize = ntohl(dataSize);
+	fprintf(stderr,"dataSize: %d\n",dataSize);
 
 	free(inBuf);
 	net_recv_fragments_tcp(n->sock, &inBuf, dataSize);
@@ -198,9 +199,9 @@ void stat_handle(int sock, struct command_t *cmd)
 	char *finalCommand;
 	
 	tmp = cmd->buf;
-	printf("cmd->buf: %d\n", cmd->buf[2]);
-	flag = 0;
-	//flag = tmp[0];
+	printf("cmd->buf: %d\n", cmd->buf[0]);
+	//flag = 0;
+	flag = tmp[0];
 	tmp++;
 
 	fprintf(stderr,"type: %d, status: %d, flag: %d\n",cmd->type, cmd->status, flag);
