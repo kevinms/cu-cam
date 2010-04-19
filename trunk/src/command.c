@@ -32,8 +32,8 @@ command_parse_string(char **buf)
 	if(size == 0)
 		return NULL;
 
-fprintf(stderr,"parse error, size: %d\n", size);
-fprintf(stderr,"test: '%s'\n", *buf);
+//fprintf(stderr,"parse error, size: %d\n", size);
+//fprintf(stderr,"test: '%s'\n", *buf);
 
 	str = (char *)malloc(size+1);
 	strncpy(str,*buf,size);
