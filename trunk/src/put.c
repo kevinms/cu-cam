@@ -50,21 +50,35 @@ put_handle(int sock, struct command_t *cmd) {
     }
 
     if(inBuf[1] == STAT_BAD_PERM) {
-        printf("Error: Improper permissions, now quitting\n");
+        size = 0;
+        buf[0] = CMD_PUT;
+        buf[1] = STAT_BAD_PERM;
+        size += 2;
+        net_send_tcp(sock, buf, size);
         exit(1);
     }else
     if(inBuf[1] == STAT_MALF_REQ) {
-        printf("Error: Malformed request, now quitting\n");
+        size = 0;
+        buf[0] = CMD_PUT;
+        buf[1] = STAT_MALF_REQ;
+        size += 2;
+        net_send_tcp(sock, buf, size);
         exit(1);
     }else
     if(inBuf[1] == STAT_UNK_STAT) {
-        printf("Error: Unknown responce from client, now quitting\n");
-        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
+        size = 0;
+        buf[0] = CMD_PUT;
+        buf[1] = STAT_UNK_STAT;
+        size += 2;
+        net_send_tcp(sock, buf, size);
         exit(1);
     }else
     if(inBuf[1] == STAT_ERROR) {
-        printf("Error: An unknown error has occured, now quitting\n");
-        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
+        size = 0;
+        buf[0] = CMD_PUT;
+        buf[1] = STAT_ERROR;
+        size += 2;
+        net_send_tcp(sock, buf, size);
         exit(1);
     }else
     if(inBuf[1] == STAT_OK) {
@@ -103,8 +117,11 @@ put_handle(int sock, struct command_t *cmd) {
 
         exit(1);
     }else {
-        printf("Error: An unknown error has occured, now quitting\n");
-        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
+        size = 0;
+        buf[0] = CMD_PUT;
+        buf[1] = STAT_ERROR;
+        size += 2;
+        net_send_tcp(sock, buf, size);
         exit(1);
     }
 }
@@ -154,12 +171,36 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
 
     inBuf = net_recv_tcp(n->sock);
-    if(inBuf[0] != CMD_GET);
-		//TODO: error
+    if(inBuf[0] != CMD_GET) {
+        printf("Error: Recieved unexpected packet type\n");
+        return -1;
+    }
 
-    if(inBuf[1] != STAT_OK);
-		//TODO: error
-
+    if(inBuf[1] == STAT_BAD_PERM) {
+        printf("Error: Improper permissions, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_MALF_REQ) {
+        printf("Error: Malformed request, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_NOS_FILE) {
+        printf("Error: No such file, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_NOS_USER) {
+        printf("Error: No such user, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_UNK_STAT) {
+        printf("Error: Unknown responce from server, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_ERROR) {
+        printf("Error: An unknown error has occured, now quitting\n");
+        return -1;
+    }else
+    if(inBuf[1] == STAT_OK) {
 
     int size = 0;
     buf[0] = CMD_PUT;
@@ -169,7 +210,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 	size++;
 	if(f == NULL) {
             printf("Error: No such file.");
-            return;
+            return -1;
 	} else {
 		filesize = fsize(fileName);
 		fprintf(stderr,"filesize: %d\n",filesize);
@@ -211,6 +252,12 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
 	net_send_fragments_tcp(n->sock, filedata, filesize, 400);
 
+
+    }else {
+        printf("Error: An unknown error has occured, now quitting\n");
+        return -1;
+    }
+
+
     return 0;
 }
-
