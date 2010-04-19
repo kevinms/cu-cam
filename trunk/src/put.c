@@ -96,17 +96,23 @@ put_handle(int sock, struct command_t *cmd) {
         //send all clear
         net_send_tcp(sock, buf, size);
 
+        // RECEIVE FRAGMENTS AND PUT THEM IN A BUFFER
+        net_recv_fragments_tcp(sock, &inBuf, fileSize);
+
+        //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
+
+        FILE *fp = fopen(filename, "w+b");
+
+        fwrite(inBuf, fileSize, 1, fp);
+
+        fclose(fp);
+
 
         exit(1);
     }else {
         printf("Error: An unknown error has occured, now quitting\n");
         exit(1);
     }
-
-
-
-
-
 }
 
 
@@ -178,13 +184,25 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
 	if(cmd->type != CMD_PUT);
 		//TODO: error
-
 	if(cmd->status != STAT_OK);
 		//TODO: error
 
+        memset(buf, 0, RCVBUFSIZE);
+	size = 0;
 
+	fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
 
+	buf[0] = CMD_GET;
+	buf[1] = STAT_MF;
+	size += 2;
 
+        char *filedata;
+
+	filedata = (char *)malloc(filesize);
+	fprintf(stderr,"filesize: %d\n",filesize);
+	fprintf(stderr,"fread: %d\n",(int)fread(filedata, 1, filesize, f));
+
+	net_send_fragments_tcp(n->sock, filedata, filesize, 400);
 
     return 0;
 }

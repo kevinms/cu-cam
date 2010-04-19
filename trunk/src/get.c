@@ -179,7 +179,7 @@ get_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
         //TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
         
-        FILE *fp = fopen(saveLoc, "ab");
+        FILE *fp = fopen(saveLoc, "w+b");
 
         fwrite(inBuf, fileSize, 1, fp);
 
