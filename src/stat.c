@@ -62,6 +62,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	dataSize = ntohl(dataSize);
 
 	free(inBuf);
+	size = 0;
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
 	size += 2;
@@ -77,7 +78,6 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	printf("%s\n",inBuf);
 }
 
-//    Server portion
 char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 {
 	int dataSize = 0;
