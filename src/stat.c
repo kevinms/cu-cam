@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "utils.h"
 
 /*Error types
 STAT_MALF_REQ,
@@ -113,24 +114,30 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	char buf[2+sizeof(int)];
 	char *buf2;
 	//running command on server
+	printf("command: %s\n",command);
 	system( command );
 
 	//Storing results...
 	int count = 0;
 	FILE* tempFile;
 
-	tempFile = fopen("STAT_temp.temp", "r" );
+
+/*
 	fseek(tempFile,0,SEEK_END);
 	count = ftell(tempFile);
+*/
+	count = fsize("STAT_temp.temp");
+tempFile = fopen("STAT_temp.temp", "r" );
+
 	char *result;
-	fseek(tempFile,0,SEEK_SET);
+//	fseek(tempFile,0,SEEK_SET);
 	
-	result = (char*)calloc(count, sizeof(char));	
+	result = (char*)calloc(count, sizeof(char));
 
 	if(result == NULL)
-    	printf("ERROR MEMORY");
-    
-    fread(result, sizeof(char), count, tempFile);
+		printf("ERROR MEMORY");
+
+	fread(result, sizeof(char), count, tempFile);
 	
 	
 	/*
@@ -145,12 +152,14 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	*/
 
 	fclose( tempFile ); 
-	
+
+	fprintf(stderr,"count: %d\n", count);
+
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
 	dataSize += 2;
 	
-	*(int *)(buf+2) = count;
+	*(int *)(buf+2) = htonl(count);
 	dataSize += sizeof(int);
 	printf("buf[0]: %d, buf[1]: %d, size: %d\n",buf[0],buf[1],*(int *)(buf+2));
 	net_send_tcp(sock, buf, dataSize);
@@ -184,7 +193,7 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	*/
 	
 	//Removing temp file
-	remove("STAT_temp.temp");
+	//remove("STAT_temp.temp");
 
 	return result;
 }
@@ -209,7 +218,7 @@ void stat_handle(int sock, struct command_t *cmd)
 	if(flag == ST_WHO) //show users logged on
 	{
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
-		finalCommand = "users > STAT_temp.temp";
+		finalCommand = "w > STAT_temp.temp";
 	}else if(flag == ST_PROC) //show processes of user
 	{
 		userName = command_parse_string(&tmp);
