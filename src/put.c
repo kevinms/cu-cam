@@ -14,12 +14,12 @@ put_handle(int sock, struct command_t *cmd) {
     char buf[RCVBUFSIZE];
     int size = 0;
     //char *tok;
-    FILE *f;
-    int filesize;
+    //FILE *f;
+    //int filesize;
     struct list_t *username;
     char *filename;
-    char *rbuf;
-    char *filedata;
+    //char *rbuf;
+    //char *filedata;
     char *tmp = cmd->buf;
 
     printf("before: %s", tmp);
@@ -50,7 +50,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 
     printf("Rocking the put\n");
 
-    char *inBuf;
+    //char *inBuf;
     char buf[256];
     int dataSize = 0;
 
