@@ -44,7 +44,7 @@ put_handle(int sock, struct command_t *cmd) {
     net_send_tcp(sock, buf, size);
 
     inBuf = net_recv_tcp(sock);
-    if(inBuf[0] != CMD_GET) {
+    if(inBuf[0] != CMD_PUT) {
         printf("Error: Recieved unexpected packet type\n");
         printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
         exit(1);
@@ -88,7 +88,7 @@ put_handle(int sock, struct command_t *cmd) {
         size = 0;
 
         //set flags
-        buf[0] = CMD_GET;
+        buf[0] = CMD_PUT;
         buf[1] = STAT_OK;
 
         size += 2;
