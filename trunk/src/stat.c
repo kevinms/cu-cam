@@ -26,6 +26,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 		strncpy(buf + dataSize, (char *)userName->head->item, strlen((char *)userName->head->item));
 		dataSize += (strlen((char *)userName->head->item));
 	}
+	printf("TWSASDFASDFAS:     '%s'\n",(char *)(buf+3));
 
 	// Send request packet to server
 	net_send_tcp(n->sock, buf, dataSize);
