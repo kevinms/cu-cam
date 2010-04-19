@@ -234,16 +234,17 @@ void stat_handle(int sock, struct command_t *cmd)
 	{
 		userName = command_parse_string(&tmp);
 
-		finalCommand = "ps -ef | grep 'halp' > STAT_temp.temp";
-/*		char *command = "ps -ef | grep '";
+		finalCommand = "";
+		char *command = "ps -ef | grep '";
 		char *endCommand = "' > STAT_temp.temp";
-  			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
-			strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
+
+		finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
+		strlen(endCommand)+ strlen(finalCommand) + 1, sizeof(char));
 
 		strcat(finalCommand,command);
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
-*/
+
 	}else if(flag == ST_LS) //show directory
 	{
 	
