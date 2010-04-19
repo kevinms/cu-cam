@@ -28,13 +28,13 @@ put_handle(int sock, struct command_t *cmd) {
 
 //start debug print
     struct link_t *templink = username->head;
-    while(templink != NULL){
+    while(templink != username->tail){
        fprintf(stderr,"user: %s\n", (char *)templink->item);
        templink = templink->next;
     }
 //end debug print
 
-    filename = command_parse_string(&tmp);
+    filename = templink->item;
     fprintf(stderr,"filename: %s\n",filename);
 
     buf[0] = CMD_PUT;
