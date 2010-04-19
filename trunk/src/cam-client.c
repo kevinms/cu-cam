@@ -119,6 +119,7 @@ void
 statC(struct action_t *job){
 
     char flag  = job->saveLoc[0];
+    flag -= 48;
 
     struct link_t *templink;
     struct link_t *templinkName;
