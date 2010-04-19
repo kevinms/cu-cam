@@ -160,9 +160,10 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,endCommand);
 
 	}else if(flag == ST_LS) { //show directory
+		printf("directorytmp: '%s'\n", tmp);
 		char *directory = command_parse_string(&tmp);
 
-		printf("directory: %s\n", directory);
+		printf("directory: '%s'\n", directory);
 
 		command = p_strcpy("ls ");
 		endCommand = p_strcpy(" > STAT_temp.temp");
