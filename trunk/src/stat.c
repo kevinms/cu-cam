@@ -22,7 +22,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	// Add any extra information to the packet (username, filename, etc)
 	if(flag==ST_PROC||flag==ST_LS){
-		fprintf(stderr,"username: %s\n",(char *)userName->head->item);
+		fprintf(stderr,"username: '%s'\n",(char *)userName->head->item);
 		strncpy(buf + dataSize, (char *)userName->head->item, strlen((char *)userName->head->item));
 		dataSize += (strlen((char *)userName->head->item));
 	}
@@ -64,6 +64,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	// Setup packet header
 	free(inBuf);
+	printf("size: %d\n", size);
 	//size = 0;
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
