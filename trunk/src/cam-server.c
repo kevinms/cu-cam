@@ -45,17 +45,15 @@ main(int argc, char **argv)
 	if(server->deamon) deamonize();            /* Run as a deamon */
 
 	n_tcp = net_create_tcp_socket(NULL,server->port); /* Create a tcp socket to listen on */
-	n_udp = net_create_udp_socket(NULL,server->port); /* Create a udp socket to listen on */
 
 	signal(SIGINT, CNTC_exit);
 
 	net_bind(n_tcp);
-	net_bind(n_udp);
 
 	net_listen(n_tcp);
 
 	/* Determine if new descriptor is the largest */
-	n_tcp->sock > n_udp->sock ? (maxDescriptor = n_tcp->sock) : (maxDescriptor = n_udp->sock);
+	maxDescriptor = n_tcp->sock;
 
 	for(;;) {
 		/* Zero socket descriptor vector and set for server sockets */
@@ -64,13 +62,11 @@ main(int argc, char **argv)
 
 		/* Add keyboard to descriptor vector */
 		FD_SET(n_tcp->sock, &sockSet);
-		FD_SET(n_udp->sock, &sockSet);
 
 		/* Suspend program until descriptor is ready or timeout */
 		if (select(maxDescriptor + 1, &sockSet, NULL, NULL, NULL) == 0)
 			printf("Server still alive\n");
 		else if (FD_ISSET(n_tcp->sock, &sockSet)) {
-			fprintf(stderr,"JSG\n");
 			client_sock = net_accept_tcp_client(n_tcp->sock);
 			if (client_sock < 0)
 				continue;
@@ -78,25 +74,18 @@ main(int argc, char **argv)
 			if ((pid = fork()) < 0)
 				die_with_error("fork() failed");
 			else if (pid == 0) { /* If this is the child process */
-				fprintf(stderr,"Accepted client, %s, and forked process!\n","karl");
 				net_free(n_tcp); /* Child closes parent socket file descriptor */
-				//net_handle_tcp_client(client_sock);
 /******************************************************************************/
 				buf = net_recv_tcp(client_sock);
 				cmd = command_parse(buf);
 
-				fprintf(stderr,"type: %d, status: %d, data: %s\n",cmd->type, cmd->status, cmd->buf);
-
 				if(cmd->type == CMD_GET) {
-					fprintf(stderr,"get_handle time\n");
 					get_handle(client_sock, cmd);
 				}
 				else if(cmd->type == CMD_PUT) {
-					fprintf(stderr,"put_handle time\n");
 					put_handle(client_sock, cmd);
 				}
 				else if(cmd->type == CMD_STAT) {
-					fprintf(stderr,"stat_handle time\n");
 					stat_handle(client_sock, cmd);
 				}
 /******************************************************************************/
@@ -106,8 +95,6 @@ main(int argc, char **argv)
 			close(client_sock); /* Parent closes child socket descriptor */
 			child_proc_count++; /* Increment number of outstanding child processes */
 		}
-		else if (FD_ISSET(n_udp->sock, &sockSet))
-			net_handle_udp_client(n_udp->sock);
 	}
 
 	return 0;

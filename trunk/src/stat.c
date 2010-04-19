@@ -47,13 +47,14 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	}else if(inBuf[1] == STAT_NOS_USER) {
 		printf("Error: No such user, now quitting\n");
 		exit(1);
-	}
-	else if(inBuf[1] == STAT_UNK_STAT) {
+	} else if(inBuf[1] == STAT_UNK_STAT) {
 		printf("Error: Unexpextes statistic return, now quitting\n");
 		exit(1);
-	}
-	else if(inBuf[1] == STAT_ERROR) {
+	} else if(inBuf[1] == STAT_ERROR) {
 		printf("Error: An unknown error has occured, now quitting\n");
+		exit(1);
+	} else if(inBuf[1] != STAT_OK) {
+		printf("Error: An undefined error has occured, now quitting\n");
 		exit(1);
 	}
 
