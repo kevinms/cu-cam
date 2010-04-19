@@ -146,6 +146,8 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 	char *inBuf;
 	int dataSize = 0;
 	struct link_t *templink;
+	struct command_t * cmd;
+	char *filedata;
 
 	// Setup packet header
 	buf[0] = CMD_PUT;
@@ -173,7 +175,7 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 	// Sending request packet to the server
 	net_send_tcp(n->sock, buf, dataSize);
 
-	// 
+	// Recieve reply from server
 	inBuf = net_recv_tcp(n->sock);
 
 	// Make sure that packet type is CMD_PUT
@@ -206,55 +208,72 @@ put_request(struct net_t *n, struct list_t *userName, char *fileName, char *save
 		return -1;
 	}
 
-    int size = 0;
-    buf[0] = CMD_PUT;
-    size++;
+	// Set the packet type
+	int size = 0;
+	buf[0] = CMD_PUT;
+	buf[1] = STAT_OK;
+	size+=2;
 
-    f = fopen(fileName, "rb");
-	size++;
-	if(f == NULL) {
-            printf("Error: No such file.\n");
-            return -1;
-	} else {
-		filesize = fsize(fileName);
-		fprintf(stderr,"filesize: %d\n",filesize);
-		//TODO: what if an int is not 4 bytes.... hmmmm.....
-		*(int*)(buf+size) = htonl(filesize);
-
-		size += 4;
-		if(filesize > 0)
-			buf[1] = STAT_OK;
-		else
-			buf[1] = STAT_BAD_SIZE;
+	// Make sure file exists
+	if(fcheck_for_file(fileName) < 0) {
+		printf("Error: bad filename: %s\n",fileName);
+		return -1;
 	}
+
+	// Open file???? WHY????
+	f = fopen(fileName, "rb");
+	if(f == NULL) {
+		printf("Error: Could not open file\n");
+		return -1;
+	}
+
+	// Get file size and store it in packet
+	filesize = fsize(fileName);
+	*(int*)(buf+size) = htonl(filesize);
+	size += 4;
+	if(filesize <= 0) {
+		fprintf(stderr,"Error: bad file size, %d", filesize);
+		return -1;
+	}
+
+	// Send packet with STAT_OK and file size
 	net_send_tcp(n->sock, buf, size);
 
+	// Recieve a reply from the server
+	inBuf = net_recv_tcp(n->sock);
+	cmd = command_parse(inBuf);
 
+	// Make sure it is a CMD_GET type
+	if(cmd->type != CMD_PUT) {
+		fprintf(stderr,"Error: Unexpected packet type\n");
+		return -1;
+	}
 
-        inBuf = net_recv_tcp(n->sock);
-	struct command_t * cmd = command_parse(inBuf);
+	// Make sure the client status is STAT_OK
+	if(cmd->status != STAT_OK) {
+		fprintf(stderr,"Error: Unexpected packet status, %d\n",cmd->status);
+		return -1;
+	}
 
-	if(cmd->type != CMD_PUT);
-		//TODO: error
-	if(cmd->status != STAT_OK);
-		//TODO: error
-
-        memset(buf, 0, RCVBUFSIZE);
+	// Reset buf and size;
+	memset(buf, 0, RCVBUFSIZE);
 	size = 0;
 
-	//fprintf(stderr,"type: %d, status: %d\n", cmd->type, cmd->status);
-
+	// Setup packet header
 	buf[0] = CMD_GET;
 	buf[1] = STAT_MF;
 	size += 2;
 
-        char *filedata;
-
+	// Read in and store all the file data
 	filedata = (char *)malloc(filesize);
-	fprintf(stderr,"filesize: %d\n",filesize);
-	fprintf(stderr,"fread: %d\n",(int)fread(filedata, 1, filesize, f));
+	if(fread(filedata, 1, filesize, f) != filesize) {
+		fprintf(stderr,"Error: Could not read all the data in file\n");
+		return -1;
+	}
 
+	// Actually send the file!!
+	//TODO: make the blocksize a config file option
 	net_send_fragments_tcp(n->sock, filedata, filesize, 400);
 
-    return 0;
+	return 0;
 }
