@@ -105,37 +105,28 @@ put_handle(int sock, struct command_t *cmd) {
 	// Recieve fragments and put them in a buffer
 	net_recv_fragments_tcp(sock, &inBuf, fileSize);
 
-
-	//TODO: FIX FILE LOCATION PLACEMENT STUFFS!!!
+	// Write all data to a file (for each user)
 	templink = username->head;
 	while(templink != username->tail){
 		user = (char *)templink->item;
-		
 
-	// Set filename relative to the user's home folder
-	fullpath = (char *)malloc(strlen(path)+strlen(user)+1+strlen(filename));
-	memset(fullpath,0,strlen(path)+strlen(user)+1+strlen(filename));
+		// Set filename relative to the user's home folder
+		fullpath = (char *)malloc(strlen(path)+strlen(user)+1+strlen(filename));
+		memset(fullpath,0,strlen(path)+strlen(user)+1+strlen(filename));
 
-	strcat(fullpath,path);
-	strcat(fullpath,user);
-	strcat(fullpath,"/");
-	strcat(fullpath,filename);
-	fprintf(stderr,"fullpath: '%s'\n",fullpath);
+		strcat(fullpath,path);
+		strcat(fullpath,user);
+		strcat(fullpath,"/");
+		strcat(fullpath,filename);
 
+		fp = fopen(fullpath, "w+b");
+		fwrite(inBuf, fileSize, 1, fp);
+		fclose(fp);
+		free(fullpath);
 
-	fp = fopen(fullpath, "w+b");
-	fwrite(inBuf, fileSize, 1, fp);
-	fclose(fp);
-	free(fullpath);
-
-		
 		templink = templink->next;
 	}
 
-	// Write all data to a file
-	//FILE *fp = fopen(filename, "w+b");
-	//fwrite(inBuf, fileSize, 1, fp);
-	//fclose(fp);
 	exit(1);
 }
 
