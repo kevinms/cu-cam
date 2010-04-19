@@ -71,6 +71,7 @@ put_handle(int sock, struct command_t *cmd) {
     }else
     if(inBuf[1] == STAT_ERROR) {
         printf("Error: An unknown error has occured, now quitting\n");
+        printf("Error Code: %d %d\n", inBuf[0],inBuf[1]);
         exit(1);
     }else
     if(inBuf[1] == STAT_OK) {
