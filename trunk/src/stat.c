@@ -61,6 +61,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	dataSize = *(int *)(inBuf+2);
 	dataSize = ntohl(dataSize);
 
+	// Setup packet header
 	free(inBuf);
 	size = 0;
 	buf[0] = CMD_STAT;
@@ -83,53 +84,43 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	int dataSize = 0;
 	char buf[2+sizeof(int)];
 	char *buf2;
-	//running command on server
+	int count = 0;
+	FILE* tempFile;
+	char *result = NULL;
+
+	// Run command on server
 	printf("command: %s\n",command);
 	system( command );
 
-	//Storing results...
-	int count = 0;
-	FILE* tempFile;
-
-
-/*
-	fseek(tempFile,0,SEEK_END);
-	count = ftell(tempFile);
-*/
+	//Get the size of the command output
 	count = fsize("STAT_temp.temp");
-	fprintf(stderr,"count: %d\n", count);
-	
-	printf("bob2\n");
-	char *result = NULL;
-//	fseek(tempFile,0,SEEK_SET);
-	printf("bob1\n");
 	result = (char*)malloc(count);
-	printf("bob4\n");
 	if(result == NULL)
-		printf("ERROR MEMORY");
+		printf("Error: could not malloc memory");
 
+	// Store command output in a buffer
 	tempFile = fopen("STAT_temp.temp", "r");
 	fread(result, 1, count, tempFile);
-
 	fclose( tempFile ); 
 
+	// Setup packet header
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
 	dataSize += 2;
-	
+
+	// Add the size of the command output to packet
 	*(int *)(buf+2) = htonl(count);
 	dataSize += sizeof(int);
-	printf("buf[0]: %d, buf[1]: %d, size: %d\n",buf[0],buf[1],*(int *)(buf+2));
+
 	net_send_tcp(sock, buf, dataSize);
-	
+
 	buf2 = net_recv_tcp(sock);
+
+	// Make sure the client status is STAT_OK
 	if(buf2[1] != STAT_OK)
 		fprintf(stderr,"Bad status number\n");
 
 	net_send_fragments_tcp(sock, result, count, 400);
-	
-	//printf("The file contains this\n\n%s", result);
-	//result = (char *)malloc(strlen(result) + count);
 	
 	//Removing temp file
 	remove("STAT_temp.temp");
@@ -139,8 +130,6 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 
 void stat_handle(int sock, struct command_t *cmd)
 {
-	printf("asdfasfasdfasfdasdf\n");
-	//Parse the packet to find out username and flag
 	char *tmp;
 	char flag;
 	char *userName;
@@ -148,20 +137,15 @@ void stat_handle(int sock, struct command_t *cmd)
 	char *command;
 	char *endCommand;
 
+	//Parse the packet to find out username and flag
 	tmp = cmd->buf;
-	printf("cmd->buf: %d\n", cmd->buf[0]);
-	//flag = 0;
 	flag = tmp[0];
 	tmp++;
 
-	fprintf(stderr,"type: %d, status: %d, flag: %d\n",cmd->type, cmd->status, flag);
-	
 	if(flag == ST_WHO) //show users logged on
 	{
-		//char *finalCommand = "finger -lp > STAT_temp.temp";
 		finalCommand = p_strcpy("w > STAT_temp.temp");
-	}else if(flag == ST_PROC) //show processes of user
-	{
+	}else if(flag == ST_PROC) { //show processes of user
 		userName = command_parse_string(&tmp);
 
 		command = p_strcpy("ps -ef | grep '");
@@ -174,30 +158,22 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
 
-	}else if(flag == ST_LS) //show directory
-	{
+	}else if(flag == ST_LS) { //show directory
 		char *directory = command_parse_string(&tmp);
-		fprintf(stderr,"directory: %s\n",directory);
-
-//		finalCommand = p_strcpy("ls /home/halp/ > STAT_temp.temp");
 
 		command = p_strcpy("ls ");
 		endCommand = p_strcpy(" > STAT_temp.temp");
 
-		fprintf(stderr,"malloc size: %d\n",strlen(command) + strlen(endCommand) + strlen(directory));
 		finalCommand = (char *)malloc(strlen(command) + strlen(endCommand) + strlen(directory));
 		memset(finalCommand, 0, strlen(command) + strlen(endCommand) + strlen(directory));
-		fprintf(stderr,"bob\n");
 		strcat(finalCommand,command);
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
 
-		printf("finalCommand: '%s'\n",finalCommand);
 	} else {
-		fprintf(stderr,"BAD FLAG\n");
+		fprintf(stderr,"Error: Bad flag\n");
 	}
 	
-	fprintf(stderr,"runCommand_getResults\n");
 	runCommand_getResults(finalCommand, sock, cmd);
 	
 	return;
