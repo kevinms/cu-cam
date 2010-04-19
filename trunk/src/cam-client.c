@@ -118,7 +118,7 @@ putC(struct action_t *job){
 void
 statC(struct action_t *job){
 
-    char *flag  = job->saveLoc;
+    char flag  = job->saveLoc[0];
 
     struct link_t *templink;
     struct link_t *templinkName;
