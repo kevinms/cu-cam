@@ -1,0 +1,125 @@
+cu-cam (Clemson University Class Assignment Manager)
+Milestone 4
+4.19.2010
+
+Group members: 
+Karl Brewer(karlb)
+Burns Hudson(burnsh)
+Kevin Smith(kevin4)
+
+================================================================================
+
+	The objectives and motivations for your project
+
+CU-cam (Clemson University Class Assignment Manager) was designed to allow one 
+user to easily update multiple remote directories and monitor a variety of 
+statistical information on different host machines.
+
+Most CS professors need to distribute files to their students. This program's PUT
+function allows the client (professor) to distribute files to a specified user's
+directory on a server, or multiple user's directories on a server; where a server
+is a machine containing the student's home/USERID folder, running the cam-server 
+as a daemon.
+
+The GET function allows for the client to pull files from a remote server running
+the daemon cam-server. If a professor wants to check on their student's progress,
+they could grab the assignment file from the student(s) directories and save it
+to their own system. It could also prove to be a useful alternative to the handin
+command, allowing for a professor to snatch the assignment file exactly at the 
+due time.
+
+Statistical usage in this program allows for a client to view all tasks that a
+specified user is running on a remote system (the server). A different use for 
+the statistics function allows the client to see the list of users that are
+currently logged into the server. The last implementation of statistics offers
+the client the ability to see any directory on any server running the daemon.
+
+	Overall system design
+
+The program is designed to allow one client to communicate to any server running
+cam-server. The client sends a request to the server with a packet containing
+a type byte, status byte, and data. The possibilities for the type byte are 
+'put', 'get', and 'stat'. Once the server receives the packet, it parses the type
+byte to find out how to handle the rest of the packet. After the correct route
+has been taken, it sends back a packet with a status byte set to STAT_OK to make
+sure that the client is ready. In the cases of 'stat' and 'get', the client
+prepairs to receive the requested data, while with 'put', the server does not
+send the STAT_OK until it verifies that it can accept the file that will be
+sent. The client sends back a packet with STAT_OK, and then the server does its
+thing from there, sending back all requested statistics or files stuffed into
+TCP packets.
+
+================================================================================
+
+	Relate the code modules with items discussed in the system design
+
+cam-client.h, cam-client.c
+	Contains the functions that take the client's input and parst it out and
+	tell the code where to go from there.
+
+cam-server.c
+	Contains the daemon server that parses client requests and directs code to
+	match the request.
+
+command.h, command.c
+	Enabled easy and painless parsing of the data section of each packet.  We
+	can parse strings of users and files into lists or just individual strings.
+
+config.h, config.c
+	Configuration files that contain most of the DEFINEs that are used in
+	various functions in both the server and the client.
+
+get.h, get.c
+	Holds the functions that allow the client to pull files from the server
+	and place them in their own directory. The server uses the function 
+	get_handle, while the client uses the function get_request.
+
+list.h, list.c
+	Just your average double linked list implementation. With various accessors
+	and mutators.
+
+net.h, net.c
+	This is the network library that handles the creation/destruction sending/
+	recieving and more of the all tcp sockets.
+
+put.h, put.c
+	Holds the functions that allow the client to push files onto the server
+	from a file on the client system. The server uses the function  put_handle, 
+	while the client uses the function put_request.
+
+stat.h, stat.c
+	Holds the functions that allow the client to run system commands on the 
+	server and get the results back for statistical purposes. The server uses 
+	the function stat_handle, while the client uses the function stat_request. 
+	There is also a third function, runCommand_getResults, that has the ability 
+	to run any system command on the server and send the results back to the 
+	client. stat_hande (server side) limits what can be passed to 
+	runCommand_getResults so that the client is limited in the types of 
+	commands that can be run.
+
+utils.h, utils.c
+	If you can't immediately think where a function would be it will mostly
+	likely be right here.  getTime() fcheck_for_user() and more are included
+	here.
+
+================================================================================
+	What each team member contributed to the project.
+
+Karl Brewer
+	Get/Put
+	Extended features
+	Efficiency analysis
+Burns Hudson
+	Statistics
+	Graphics
+	Powerpoint
+	Project writeup draft
+Kevin Smith
+	Get
+	Extended features
+	Extreme debugging
+	Project writeup revision
+All
+	MS1-MS3
+	Debugging and testing
+	(really, we all worked on all of it)
