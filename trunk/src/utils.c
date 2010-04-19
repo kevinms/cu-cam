@@ -95,10 +95,13 @@ fcheck_for_user(const char *user)
 	char *folder = NULL;
 
 	folder = (char *)malloc(strlen(path)+strlen(user)+1);
+	memset(folder,0,strlen(path)+strlen(user)+1);
 
 	strcat(folder,path);
 	strcat(folder,user);
 	strcat(folder,"/");
+
+	fprintf(stderr,"bob %s\n",folder);
 
 	if(stat(folder,&st) == 0) {
 		printf(" %s is present\n", folder);
