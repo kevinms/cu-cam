@@ -24,6 +24,7 @@ net_create_tcp_socket(char *node, char *service)
 	memset(&n->hints, 0, sizeof(n->hints)); /* make sure the struct is empty */
 	n->hints.ai_family = AF_UNSPEC;        /* don't care IPv4 or IPv6 */
 	n->hints.ai_socktype = SOCK_STREAM;    /* TCP stream sockets */
+	n->hints.ai_socktype = SOCK_STREAM;    /* TCP stream sockets */
 	n->hints.ai_flags = AI_PASSIVE;        /* fill in my IP for me */
 
 	if ((status = getaddrinfo(node, service, &n->hints, &n->servinfo)) != 0) {
@@ -201,7 +202,6 @@ int
 net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize)
 {
 	char header[2];
-	int hdrsize = 2;
 
 	char send_buf[blocksize];
 	int offset = 0;
