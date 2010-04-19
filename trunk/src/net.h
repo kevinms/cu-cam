@@ -22,7 +22,6 @@ struct net_t {
 
 /* setup a socket */
 struct net_t *net_create_tcp_socket(char *node, char *service);
-struct net_t *net_create_udp_socket(char *node, char *service);
 
 /* server bind to port */
 void net_bind(struct net_t *n);
@@ -36,17 +35,12 @@ int net_connect(struct net_t *n);
 /* server accept tcp client */
 int net_accept_tcp_client(int fd);
 
-/* handle tcp & udp clients */
+/* handle tcp clients */
 void net_handle_tcp_client(int fd);
-void net_handle_udp_client(int fd);
 
 /* send/recv tcp */
 int net_send_tcp(int sock, char *buf, int size);
 char *net_recv_tcp(int sock);
-
-/* send/recv udp */
-void net_sendto_udp(struct net_t *n);
-char *net_recvfrom_udp(struct net_t *n);
 
 /* send smaller fragments of data each with the specified header*/
 int net_send_fragments_tcp(int sock, char *buf, int bufsize, int blocksize);
