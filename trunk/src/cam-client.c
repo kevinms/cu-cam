@@ -153,7 +153,7 @@ openAll(struct action_t *job){
                 
                 list_add(job->sockList, net_create_tcp_socket(templink->item, client->port));
             } else {
-                list_add(job->sockList, net_create_udp_socket(templink->item, client->port));
+                list_add(job->sockList, net_create_tcp_socket(templink->item, client->port));
             }
             templink = templink->next;
         }
