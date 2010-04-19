@@ -111,6 +111,11 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	net_send_tcp(n->sock,buf,size);
 
 	net_recv_fragments_tcp(n->sock, &inBuf, dataSize);
+
+	printf("================================================================================\n");
+	printf("                        Data Recieved From The Server                           \n");
+	printf("================================================================================\n");
+	printf("%s\n");
 }
 
 //    Server portion
