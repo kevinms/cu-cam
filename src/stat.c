@@ -64,7 +64,7 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	// Setup packet header
 	free(inBuf);
-	size = 0;
+	//size = 0;
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
 	size += 2;
