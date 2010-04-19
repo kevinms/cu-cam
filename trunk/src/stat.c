@@ -22,11 +22,9 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	// Add any extra information to the packet (username, filename, etc)
 	if(flag==ST_PROC||flag==ST_LS){
-		fprintf(stderr,"username: '%s'\n",(char *)userName->head->item);
 		strncpy(buf + dataSize, (char *)userName->head->item, strlen((char *)userName->head->item));
 		dataSize += (strlen((char *)userName->head->item));
 	}
-	printf("TWSASDFASDFAS:     '%s', %d\n",(char *)(buf+3), dataSize);
 
 	// Send request packet to server
 	net_send_tcp(n->sock, buf, dataSize);
@@ -65,7 +63,6 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 
 	// Setup packet header
 	free(inBuf);
-	printf("size: %d\n", size);
 	//size = 0;
 	buf[0] = CMD_STAT;
 	buf[1] = STAT_OK;
@@ -92,7 +89,6 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 	char *result = NULL;
 
 	// Run command on server
-	printf("command: %s\n",command);
 	system( command );
 
 	//Get the size of the command output
@@ -162,10 +158,7 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,endCommand);
 
 	}else if(flag == ST_LS) { //show directory
-		printf("directorytmp: '%s', %d\n", tmp, strlen(tmp));
 		char *directory = command_parse_string(&tmp);
-
-		printf("directory: '%s', %d\n", directory, strlen(directory));
 
 		command = p_strcpy("ls ");
 		endCommand = p_strcpy(" > STAT_temp.temp");
