@@ -67,9 +67,8 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
 	//send request packet to server
 	net_send_tcp(n->sock, buf, dataSize);
 
-	//handle reply packet
-//	inBuf = net_recv_fragment_tcp(n->sock, **buf, bufsize);
-	
+	inBuf = net_recv_tcp(n->sock);
+	fprintf(stderr, "inbuf[0]: %d, inbuf[1]: %d\n", inBuf[0],inBuf[1]);
 	//handle errors
 	if(inBuf[0] != CMD_STAT) {
         printf("Error: Recieved unexpected packet type\n");
@@ -95,28 +94,29 @@ void stat_request(struct net_t *n, struct list_t *userName, char flag)
         printf("Error: An unknown error has occured, now quitting\n");
         exit(1);
     }
-	else if(inBuf[1] == STAT_OK) {
-		printf("%s", inBuf);
-    }
 
+	dataSize = *(int *)(inBuf+2);
+	dataSize = ntohl(dataSize);
+
+	free(inBuf);
+	net_recv_fragments_tcp(n->sock, &inBuf, dataSize);
+	
+	fprintf(stderr,"yoouuuurrrrr boooyy %s\n",inBuf);
 }
 
-
-
 //    Server portion
-
 char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 {
+	int dataSize = 0;
+	char buf[2+sizeof(int)];
+	char *buf2;
 	//running command on server
 	system( command );
 
-
 	//Storing results...
-	
 	int count = 0;
 	FILE* tempFile;
 
-	
 	tempFile = fopen("STAT_temp.temp", "r" );
 	fseek(tempFile,0,SEEK_END);
 	count = ftell(tempFile);
@@ -144,10 +144,20 @@ char *runCommand_getResults(char *command, int sock, struct command_t *cmd)
 
 	fclose( tempFile ); 
 	
+	buf[0] = CMD_STAT;
+	buf[1] = STAT_OK;
+	dataSize += 2;
 	
+	*(int *)(buf+2) = count;
+	dataSize += sizeof(int);
+	printf("here\n");
+	net_send_tcp(sock, buf, dataSize);
 	
+	buf2 = net_recv_tcp(sock);
+	if(buf2[1] != STAT_OK)
+		fprintf(stderr,"Bad status number\n");
+
 	net_send_fragments_tcp(sock, result, count, 400);
-	
 	
 	//printf("The file contains this\n\n%s", result);
 
@@ -183,27 +193,23 @@ void stat_handle(int sock, struct command_t *cmd)
 	char *tmp;
 	char flag;
 	char *userName;
+	char *finalCommand;
 	
 	tmp = cmd->buf;
 	flag = tmp[0];
-	tmp++;	
+	tmp++;
 
-	userName = command_parse_string(&tmp);
 	
 	
 	if(flag == ST_WHO) //show users logged on
 	{
 		//char *finalCommand = "finger -lp > STAT_temp.temp";
-		char *finalCommand = "users > STAT_temp.temp";
-
-		runCommand_getResults(finalCommand, sock, cmd);		
-		
-		//printf("%s", results);
-	}
-
-	if(flag == ST_PROC) //show processes of user
+		finalCommand = "users > STAT_temp.temp";
+	}else if(flag == ST_PROC) //show processes of user
 	{
-		char *finalCommand = "";
+		userName = command_parse_string(&tmp);
+
+		finalCommand = "";
 		char *command = "ps -ef | grep '";
 		char *endCommand = "' > STAT_temp.temp";
   			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
@@ -212,15 +218,12 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,command);
 		strcat(finalCommand,userName);
 		strcat(finalCommand,endCommand);
-
-		runCommand_getResults(finalCommand, sock, cmd);
-		//printf("%s", results);
-	}
-	
-	if(flag == ST_LS) //show directory
+	}else if(flag == ST_LS) //show directory
 	{
+	
+		//TODO: get directory passed in from client
 		char *directory = "/home/burnsh/";
-		char *finalCommand = "";
+		finalCommand = "";
 		char *command = "ls ";
 		char *endCommand = " > STAT_temp.temp";
   			finalCommand = (char *)calloc(strlen(userName) + strlen(command) + 
@@ -229,11 +232,15 @@ void stat_handle(int sock, struct command_t *cmd)
 		strcat(finalCommand,command);
 		strcat(finalCommand,directory);
 		strcat(finalCommand,endCommand);
-
-		runCommand_getResults(finalCommand, sock, cmd);
-		//printf("%s", results);
+	} else {
+		fprintf(stderr,"BAD FLAG\n");
 	}
+	
+	runCommand_getResults(finalCommand, sock, cmd);		
 	
 	return;
 }
+
+
+
 
