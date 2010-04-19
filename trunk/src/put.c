@@ -20,18 +20,26 @@ put_handle(int sock, struct command_t *cmd) {
     char *filename;
     char *tmp = cmd->buf;
 
+    //break apart username(s) and files
     username = command_parse_list(&tmp);
 
-//start debug print
+    //check if user(s) exist
     struct link_t *templink = username->head;
     while(templink != username->tail){
-       fprintf(stderr,"user: %s\n", (char *)templink->item);
+       if(fcheck_for_user((char *)templink->item) == -1) {
+            size = 0;
+            buf[0] = CMD_PUT;
+            buf[1] = STAT_NOS_USER;
+            size += 2;
+            net_send_tcp(sock, buf, size);
+            return;
+       }
        templink = templink->next;
     }
-//end debug print
 
+    //set file name
     filename = templink->item;
-    fprintf(stderr,"filename: %s\n",filename);
+    //fprintf(stderr,"filename: %s\n",filename);  //filename debuging
 
     //setup and send "all clear" signal
     //TODO: error checking to make sure everyting IS ok
