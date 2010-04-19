@@ -25,11 +25,11 @@ main(int argc, char **argv)
 	printf("----------------\n");
 	printf("client_stat_interval = %d\n",client->stat_interval);
 	printf("server_port = %s\n\n",client->port);
-	print_client_groups();
+	//print_client_groups();
 
 	return 0;
 }
-
+#if 0
 void
 print_client_groups()
 {
@@ -61,3 +61,4 @@ print_string_list(struct list_t *list)
 		tmp = tmp->next;
 	}
 }
+#endif
